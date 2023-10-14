@@ -52,6 +52,17 @@ class _ClueListViewState extends State<ClueListView> {
     setState(() {
       selectedClue = clue;
     });
+
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return CluePanel(
+            selectedClue: selectedClue,
+            onTap: () {
+              Navigator.of(context).pop(); // Close the BottomSheet
+            },
+          );
+        });
   }
 
   void collapseCategory(Category category) {
@@ -71,6 +82,7 @@ class _ClueListViewState extends State<ClueListView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Scout Quest"),
+        elevation: 0,
       ),
       body: Stack(
         children: [
@@ -116,11 +128,6 @@ class _ClueListViewState extends State<ClueListView> {
               ),
             ),
           ),
-          if (selectedClue != null)
-            CluePanel(
-              selectedClue: selectedClue!,
-              onTap: () => selectClue(null),
-            ),
         ],
       ),
     );
@@ -167,7 +174,7 @@ class _CategoryHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const CircleProgressBar(
-            count: 5,
+            count: 2,
             total: 10,
             progressColor: Colors.green,
             backgroundColor: Colors.grey,

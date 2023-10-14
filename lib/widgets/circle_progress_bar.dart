@@ -14,7 +14,7 @@ class CircleProgressBar extends StatelessWidget {
     required this.total,
     this.progressColor = Colors.blue,
     this.backgroundColor = Colors.grey,
-    this.strokeWidth = 2.0,
+    this.strokeWidth = 3.5,
     this.textStyle = const TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.bold,
