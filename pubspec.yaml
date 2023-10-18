@@ -37,6 +37,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   sliding_up_panel: ^2.0.0+1
+  audioplayers: ^5.2.0
 
 dev_dependencies:
   flutter_test:
@@ -78,7 +79,10 @@ flutter:
   # example:
   assets:
   - assets/elements/clue_data.json
-  - assets/elements/Bench.png
+  - assets/elements/images/Bench.png
+  - assets/elements/audio/Fire-Audio-1.mp3
+  - assets/elements/audio/Fire-Audio-2.mp3
+  - assets/elements/audio/Fire-Audio-3.mp3
   # fonts:
   #   - family: Schyler
   #     fonts:

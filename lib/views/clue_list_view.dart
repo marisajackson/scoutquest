@@ -13,10 +13,10 @@ class ClueListView extends StatefulWidget {
   const ClueListView({Key? key}) : super(key: key);
 
   @override
-  _ClueListViewState createState() => _ClueListViewState();
+  ClueListViewState createState() => ClueListViewState();
 }
 
-class _ClueListViewState extends State<ClueListView> {
+class ClueListViewState extends State<ClueListView> {
   List<Category> categories = [];
   ClueInfo? selectedClue;
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoutquest/models/clue_info.dart';
+import 'package:scoutquest/utils/audio_player_util.dart';
 
 class CluePanel extends StatelessWidget {
   const CluePanel({
@@ -41,10 +42,11 @@ class CluePanel extends StatelessWidget {
               height: 200.0,
               fit: BoxFit.cover,
             ),
-          const SizedBox(height: 16.0),
           if (selectedClue != null && selectedClue!.audio != null)
             // Add audio player widget or functionality here
-            Text('Audio: ${selectedClue!.audio}'),
+            // Text('Audio: ${selectedClue!.audio}'), // TODO: Add audio player
+            AudioControlWidget(audioAsset: selectedClue!.audio!),
+          const SizedBox(height: 40.0),
         ],
       ),
     );

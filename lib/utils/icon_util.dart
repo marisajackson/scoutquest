@@ -7,7 +7,8 @@ class IconUtil {
         return Icons.text_fields;
       case 'Image Clue':
         return Icons.image;
-      // Add more cases for other icons as needed
+      case 'Audio Clue':
+        return Icons.audiotrack;
       default:
         return Icons
             .text_fields; // Default to text_fields icon if the specified icon is not found
