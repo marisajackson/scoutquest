@@ -1,10 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:scoutquest/views/clue_list_view.dart';
-// import 'package:provider/provider.dart';
-// import 'package:syne_mobile_app/providers/providers.dart';
-
-// import 'app/routes/app.routes.dart';
-// import 'theme/constants.dart';
+import 'firebase_options.dart';
 
 void main() => runApp(const Core());
 
@@ -13,11 +10,14 @@ class Core extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    initializeFirebase();
     return const Lava();
-    // return MultiProvider(
-    //   providers: providers,
-    //   child: const Lava(),
-    // );
+  }
+
+  Future<void> initializeFirebase() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   }
 }
 
