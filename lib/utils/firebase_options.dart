@@ -52,12 +52,22 @@ class DefaultFirebaseOptions {
     }
   }
 
+  // static const FirebaseOptions ios = FirebaseOptions(
+  //   apiKey: 'AIzaSyBDgV_8L_hgvR6EmrRVrrwqIXEh0-rITE8',
+  //   appId: '1:332823018473:ios:93d8fe41dbaf84637ea978',
+  //   messagingSenderId: '332823018473',
+  //   projectId: 'scout-quest-be321',
+  //   storageBucket: 'scout-quest-be321.appspot.com',
+  //   iosBundleId: 'com.example.scoutquest',
+  // );
+
   static const FirebaseOptions ios = FirebaseOptions(
+    authDomain: 'localhost', // Use 'localhost' for the emulator
     apiKey: 'AIzaSyBDgV_8L_hgvR6EmrRVrrwqIXEh0-rITE8',
     appId: '1:332823018473:ios:93d8fe41dbaf84637ea978',
     messagingSenderId: '332823018473',
     projectId: 'scout-quest-be321',
     storageBucket: 'scout-quest-be321.appspot.com',
-    iosBundleId: 'com.example.scoutquest',
+    // iosBundleId: 'com.example.scoutquest',
   );
 }
