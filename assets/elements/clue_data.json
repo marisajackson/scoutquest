@@ -27,7 +27,7 @@
         "image": null
     },
     {
-        "id": "FC1",
+        "id": "WC1",
         "label": "Water Clue #1",
         "type": "Text Clue",
         "category": "Water",
@@ -36,7 +36,7 @@
         "image": null
     },
     {
-        "id": "FC2",
+        "id": "WC2",
         "label": "Water Clue #2",
         "type": "Text Clue",
         "category": "Water",
@@ -45,7 +45,7 @@
         "image": null
     },
     {
-        "id": "FC3",
+        "id": "WC3",
         "label": "Water Clue #3",
         "type": "Text Clue",
         "category": "Water",

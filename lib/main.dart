@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scoutquest/services/auth_service.dart';
-import 'package:scoutquest/utils/firebase_options.dart';
+import 'package:scoutquest/config/firebase_options.dart';
 import 'package:scoutquest/views/auth_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:scoutquest/views/clue_list_view.dart';

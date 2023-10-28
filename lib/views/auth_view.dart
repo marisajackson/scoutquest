@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scoutquest/widgets/auth/login.dart';
-import 'package:scoutquest/widgets/auth/register.dart';
+import 'package:scoutquest/views/auth/login.dart';
+import 'package:scoutquest/views/auth/register.dart';
 
 class AuthView extends StatefulWidget {
   const AuthView({super.key});

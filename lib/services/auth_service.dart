@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:scoutquest/utils/logger.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -16,7 +17,7 @@ class AuthService {
       User? user = result.user;
       return user;
     } catch (error) {
-      print(error.toString());
+      Logger.log(error.toString());
       return null;
     }
   }
@@ -29,7 +30,7 @@ class AuthService {
       User? user = result.user;
       return user;
     } catch (error) {
-      print(error.toString());
+      Logger.log(error.toString());
       return null;
     }
   }
@@ -39,7 +40,7 @@ class AuthService {
     try {
       return await _auth.signOut();
     } catch (error) {
-      print(error.toString());
+      Logger.log(error.toString());
       return null;
     }
   }

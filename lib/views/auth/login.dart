@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoutquest/services/auth_service.dart';
+import 'package:scoutquest/utils/logger.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -20,12 +21,12 @@ class LoginState extends State<Login> {
 
   // Register user with email and password
   Future<void> _loginWithEmail() async {
-    print('logging in user');
+    Logger.log('logging in user');
     final dynamic user = await _auth.loginWithEmail(email, password);
     if (user == null) {
-      print('Error logging in user');
+      Logger.log('Error logging in user');
     } else {
-      print('User logged in');
+      Logger.log('User logged in');
     }
   }
 

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoutquest/models/clue_info.dart';
 import 'package:scoutquest/utils/circle_progress_bar.dart';
-import 'package:scoutquest/widgets/clue_panel.dart';
-import 'package:scoutquest/widgets/clue_row.dart';
+import 'package:scoutquest/views/clues/clue_panel.dart';
+import 'package:scoutquest/views/clues/clue_row.dart';
 
 class ClueListView extends StatefulWidget {
   static const routeName = '/clue-list';

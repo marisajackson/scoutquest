@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoutquest/services/auth_service.dart';
+import 'package:scoutquest/utils/logger.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -20,12 +21,11 @@ class RegisterState extends State<Register> {
 
   // Register user with email and password
   Future<void> _registerWithEmail() async {
-    print('registering user');
     final dynamic user = await _auth.registerWithEmail(email, password);
     if (user == null) {
-      print('Error registering user');
+      Logger.log('Error registering user');
     } else {
-      print('User registered');
+      Logger.log('User registered');
     }
   }
 
