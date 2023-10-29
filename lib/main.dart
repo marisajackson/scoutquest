@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scoutquest/services/auth_service.dart';
 import 'package:scoutquest/config/firebase_options.dart';
-import 'package:scoutquest/views/auth_view.dart';
+import 'package:scoutquest/app/screens/auth/auth_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:scoutquest/views/clue_list_view.dart';
+import 'package:scoutquest/app/screens/clues/clues_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,7 +38,7 @@ class Lava extends StatelessWidget {
       initialData: null,
       child: MaterialApp(
         title: 'Scout Quest',
-        home: user == null ? const AuthView() : const ClueListView(),
+        home: user == null ? const AuthScreen() : const CluesScreen(),
       ),
     );
   }

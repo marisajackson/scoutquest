@@ -2,21 +2,21 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:scoutquest/models/clue_info.dart';
-import 'package:scoutquest/utils/circle_progress_bar.dart';
-import 'package:scoutquest/views/clues/clue_panel.dart';
-import 'package:scoutquest/views/clues/clue_row.dart';
+import 'package:scoutquest/data/models/clue_info.dart';
+import 'package:scoutquest/app/widgets/circle_progress_bar.dart';
+import 'package:scoutquest/app/screens/clues/clue_panel.dart';
+import 'package:scoutquest/app/screens/clues/clue_row.dart';
 
-class ClueListView extends StatefulWidget {
+class CluesScreen extends StatefulWidget {
   static const routeName = '/clue-list';
 
-  const ClueListView({Key? key}) : super(key: key);
+  const CluesScreen({Key? key}) : super(key: key);
 
   @override
-  ClueListViewState createState() => ClueListViewState();
+  CluesScreenState createState() => CluesScreenState();
 }
 
-class ClueListViewState extends State<ClueListView> {
+class CluesScreenState extends State<CluesScreen> {
   List<Category> categories = [];
   ClueInfo? selectedClue;
 

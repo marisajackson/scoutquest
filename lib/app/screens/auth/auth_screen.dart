@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:scoutquest/views/auth/login.dart';
-import 'package:scoutquest/views/auth/register.dart';
+import 'package:scoutquest/app/screens/auth/auth_login.dart';
+import 'package:scoutquest/app/screens/auth/auth_register.dart';
 
-class AuthView extends StatefulWidget {
-  const AuthView({super.key});
+class AuthScreen extends StatefulWidget {
+  const AuthScreen({super.key});
 
   @override
-  AuthViewState createState() => AuthViewState();
+  AuthScreenState createState() => AuthScreenState();
 }
 
-class AuthViewState extends State<AuthView> {
+class AuthScreenState extends State<AuthScreen> {
   bool isSignIn = true;
   void toggleView() {
     setState(() => isSignIn = !isSignIn);
@@ -24,7 +24,7 @@ class AuthViewState extends State<AuthView> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: isSignIn ? const Login() : const Register(),
+          child: isSignIn ? const AuthLogin() : const AuthRegister(),
         ),
       ),
     );

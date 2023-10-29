@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:scoutquest/services/auth_service.dart';
 import 'package:scoutquest/utils/logger.dart';
 
-class Register extends StatefulWidget {
-  const Register({super.key});
+class AuthLogin extends StatefulWidget {
+  const AuthLogin({super.key});
 
   @override
-  RegisterState createState() => RegisterState();
+  AuthLoginState createState() => AuthLoginState();
 }
 
-class RegisterState extends State<Register> {
+class AuthLoginState extends State<AuthLogin> {
   String email = '';
   String password = '';
   final AuthService _auth = AuthService();
@@ -20,12 +20,13 @@ class RegisterState extends State<Register> {
   }
 
   // Register user with email and password
-  Future<void> _registerWithEmail() async {
-    final dynamic user = await _auth.registerWithEmail(email, password);
+  Future<void> _loginWithEmail() async {
+    Logger.log('logging in user');
+    final dynamic user = await _auth.loginWithEmail(email, password);
     if (user == null) {
-      Logger.log('Error registering user');
+      Logger.log('Error logging in user');
     } else {
-      Logger.log('User registered');
+      Logger.log('User logged in');
     }
   }
 
@@ -33,9 +34,9 @@ class RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
+      children: [
         const Text(
-          'Sign Up',
+          'Login',
           textAlign: TextAlign.center,
         ),
         Padding(
@@ -73,8 +74,8 @@ class RegisterState extends State<Register> {
           ),
         ),
         ElevatedButton(
-          onPressed: _registerWithEmail,
-          child: const Text('Sign Up'),
+          onPressed: _loginWithEmail,
+          child: const Text('Login'),
         ),
       ],
     );

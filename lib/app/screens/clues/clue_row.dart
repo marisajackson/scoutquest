@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scoutquest/models/clue_info.dart';
-import 'package:scoutquest/utils/icon.dart';
+import 'package:scoutquest/data/models/clue_info.dart';
+import 'package:scoutquest/app/widgets/icon.dart';
 
 class ClueRow extends StatelessWidget {
   final ClueInfo clue;

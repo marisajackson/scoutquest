@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scoutquest/models/clue_info.dart';
-import 'package:scoutquest/utils/audio_player.dart';
+import 'package:scoutquest/data/models/clue_info.dart';
+import 'package:scoutquest/app/widgets/audio_player.dart';
 
 class CluePanel extends StatelessWidget {
   const CluePanel({
