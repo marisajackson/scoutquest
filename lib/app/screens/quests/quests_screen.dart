@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scoutquest/app.routes.dart';
 import 'package:scoutquest/app/screens/quests/quests_empty.dart';
 import 'package:scoutquest/app/screens/quests/quests_list.dart';
 import 'package:scoutquest/data/models/quest.dart';
@@ -42,6 +43,13 @@ class QuestsScreenState extends State<QuestsScreen> {
     Logger.log('refreshing quests');
   }
 
+  // function that chooses a quest
+  void _chooseQuest(Quest quest) {
+    Logger.log('Quest ${quest.name} chosen');
+    // route to clues screen
+    Navigator.pushNamed(context, cluesRoute);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,6 +61,7 @@ class QuestsScreenState extends State<QuestsScreen> {
           : QuestsList(
               quests: quests,
               onRefresh: _refreshQuests,
+              onChooseQuest: _chooseQuest,
             ),
     );
   }

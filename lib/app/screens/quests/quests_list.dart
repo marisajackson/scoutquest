@@ -4,11 +4,13 @@ import 'package:scoutquest/data/models/quest.dart';
 class QuestsList extends StatelessWidget {
   final List<Quest> quests;
   final Future<void> Function() onRefresh;
+  final Function(Quest) onChooseQuest;
 
   const QuestsList({
     super.key,
     required this.quests,
     required this.onRefresh,
+    required this.onChooseQuest,
   });
 
   @override
@@ -22,6 +24,7 @@ class QuestsList extends StatelessWidget {
           return GestureDetector(
             // Define the behavior when the item is tapped
             onTap: () {
+              onChooseQuest(quest);
               // Handle the onTap action for a quest item
               // You can navigate to the quest details or perform other actions.
             },

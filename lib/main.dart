@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scoutquest/app/screens/quests/quests_screen.dart';
+import 'package:scoutquest/app.routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,9 +21,11 @@ class Lava extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Scout Quest',
-      home: QuestsScreen(),
+      // home: CluesScreen(),
+      initialRoute: initialRoute,
+      routes: routes,
     );
   }
 }
