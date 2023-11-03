@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:scoutquest/app/widgets/qr_scanner.dart';
 import 'package:scoutquest/data/models/clue.dart';
 import 'package:scoutquest/app/widgets/circle_progress_bar.dart';
 import 'package:scoutquest/app/screens/clues/clue_panel.dart';
 import 'package:scoutquest/app/screens/clues/clue_row.dart';
 import 'package:scoutquest/data/models/quest.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
+import 'package:scoutquest/utils/logger.dart';
 // import 'package:scoutquest/utils/logger.dart';
 
 class CluesScreen extends StatefulWidget {
@@ -17,6 +19,7 @@ class CluesScreen extends StatefulWidget {
 
 class CluesScreenState extends State<CluesScreen> {
   List<Category> categories = [];
+  List<Clue> clues = [];
   Clue? selectedClue;
   late ClueRepository clueRepository;
 
@@ -28,7 +31,7 @@ class CluesScreenState extends State<CluesScreen> {
   }
 
   Future<void> loadClueInfo() async {
-    final clues = await clueRepository.getUserQuestClues();
+    clues = await clueRepository.getUserQuestClues();
     final List<Category> loadedCategories = [];
 
     for (final clue in clues) {
@@ -67,6 +70,50 @@ class CluesScreenState extends State<CluesScreen> {
         });
   }
 
+  void addClue() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return QRScanner(
+          title: 'Add Clue',
+          description: 'Scan the QR Code',
+          onQRCodeScanned: processQRCodeClue,
+        );
+      },
+    );
+  }
+
+  void processQRCodeClue(String? value) {
+    if (value == null) {
+      return;
+    }
+    // sample scan value = "http://scoutquest.co/quest_element_2023/FireClue1-4CX6TZPA.html"
+    RegExp regExp = RegExp(r'\/([A-Za-z0-9-]+)\.html');
+    Match? match = regExp.firstMatch(value);
+
+    if (match != null) {
+      String clueCode = match.group(1)!;
+      Logger.log(clueCode); // 'FireClue1-4CX6TZPA'
+      unlockClue(clueCode);
+    } else {
+      Logger.log('No match found.');
+    }
+  }
+
+  Future<void> unlockClue(String code) async {
+    final clue = clues.firstWhere((clue) => clue.code == code);
+    clueRepository.unlockClue(clue.id);
+    await loadClueInfo();
+    final category = categories.firstWhere((cat) => cat.name == clue.category);
+    expandCategory(category);
+    goBack();
+    selectClue(clues.firstWhere((clue) => clue.code == code));
+  }
+
+  void goBack() {
+    Navigator.of(context).pop();
+  }
+
   void collapseCategory(Category category) {
     setState(() {
       category.isExpanded = false;
@@ -85,6 +132,14 @@ class CluesScreenState extends State<CluesScreen> {
       appBar: AppBar(
         title: const Text("Scout Quest"),
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add), // You can choose any icon you like
+            onPressed: () {
+              addClue();
+            },
+          ),
+        ],
       ),
       body: Stack(
         children: [

@@ -64,7 +64,7 @@ class ClueRepository {
     return cluesStatus;
   }
 
-  Future unlockUserClue(clueID) async {
+  Future unlockClue(clueID) async {
     final prefs = await SharedPreferences.getInstance();
     final cluesStatus = prefs.getString('${quest.id}-clues');
     if (cluesStatus == null) {
@@ -73,7 +73,8 @@ class ClueRepository {
       prefs.setString('${quest.id}-clues', jsonEncode(cluesMap));
       return;
     }
-    Map<String, bool> cluesMap = jsonDecode(cluesStatus);
+    final cluesJSON = jsonDecode(cluesStatus);
+    Map<String, bool> cluesMap = Map<String, bool>.from(cluesJSON);
     cluesMap[clueID] = true;
     prefs.setString('${quest.id}-clues', jsonEncode(cluesMap));
   }

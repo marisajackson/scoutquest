@@ -1,5 +1,6 @@
 class Clue {
   final String id;
+  final String code;
   final String label;
   final String type;
   final String text;
@@ -10,6 +11,7 @@ class Clue {
 
   Clue({
     required this.id,
+    required this.code,
     required this.label,
     required this.type,
     required this.text,
@@ -21,6 +23,7 @@ class Clue {
   factory Clue.fromJson(Map<String, dynamic> json) {
     return Clue(
         id: json['id'],
+        code: json['code'],
         label: json['label'],
         type: json['type'],
         text: json['text'],

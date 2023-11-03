@@ -1,6 +1,7 @@
 [
     {
         "id": "FC1",
+        "code": "FireClue1-4CX6TZPA",
         "label": "Fire Clue #1",
         "type": "Image Clue",
         "category": "Fire",
@@ -10,6 +11,7 @@
     },
     {
         "id": "FC2",
+        "code": "FireClue2-4CXwfwePA",
         "label": "Fire Clue #2",
         "type": "Audio Clue",
         "category": "Fire",
@@ -19,6 +21,7 @@
     },
     {
         "id": "FC3",
+        "code": "FireClue3-4CX323PA",
         "label": "Fire Clue #3",
         "type": "Text Clue",
         "category": "Fire",
@@ -28,6 +31,7 @@
     },
     {
         "id": "WC1",
+        "code": "WaterClue1-4CX6TZPA",
         "label": "Water Clue #1",
         "type": "Text Clue",
         "category": "Water",
@@ -37,6 +41,7 @@
     },
     {
         "id": "WC2",
+        "code": "WaterClue2-4CXwfwePA",
         "label": "Water Clue #2",
         "type": "Text Clue",
         "category": "Water",
@@ -46,6 +51,7 @@
     },
     {
         "id": "WC3",
+        "code": "WaterClue3-4CX323PA",
         "label": "Water Clue #3",
         "type": "Text Clue",
         "category": "Water",
