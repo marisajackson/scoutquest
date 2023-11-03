@@ -46,7 +46,11 @@ class CluesScreenState extends State<CluesScreen> {
     });
   }
 
-  void selectClue(Clue? clue) {
+  void selectClue(Clue clue) {
+    if (clue.isUnlocked == false) {
+      return;
+    }
+
     setState(() {
       selectedClue = clue;
     });
