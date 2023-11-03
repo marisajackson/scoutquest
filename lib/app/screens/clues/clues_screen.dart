@@ -18,16 +18,17 @@ class CluesScreen extends StatefulWidget {
 class CluesScreenState extends State<CluesScreen> {
   List<Category> categories = [];
   Clue? selectedClue;
-  ClueRepository clueRepository = ClueRepository();
+  late ClueRepository clueRepository;
 
   @override
   void initState() {
     super.initState();
+    clueRepository = ClueRepository(widget.quest);
     loadClueInfo();
   }
 
   Future<void> loadClueInfo() async {
-    final clues = await clueRepository.getQuestClues(widget.quest.clueFile);
+    final clues = await clueRepository.getUserQuestClues();
     final List<Category> loadedCategories = [];
 
     for (final clue in clues) {

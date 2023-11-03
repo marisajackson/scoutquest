@@ -6,6 +6,7 @@ class Clue {
   final String category;
   final String? audio;
   final String? image;
+  bool isUnlocked = false;
 
   Clue({
     required this.id,

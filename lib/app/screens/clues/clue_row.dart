@@ -43,7 +43,7 @@ class ClueRow extends StatelessWidget {
                   ),
                   const SizedBox(height: 8.0),
                   Text(
-                    clue.text,
+                    clue.isUnlocked ? clue.text : '???',
                     style: const TextStyle(fontSize: 16.0),
                   ),
                   const SizedBox(height: 8.0),
