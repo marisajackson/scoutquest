@@ -1,16 +1,15 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:scoutquest/data/models/clue_info.dart';
+import 'package:scoutquest/data/models/clue.dart';
 import 'package:scoutquest/app/widgets/circle_progress_bar.dart';
 import 'package:scoutquest/app/screens/clues/clue_panel.dart';
 import 'package:scoutquest/app/screens/clues/clue_row.dart';
+import 'package:scoutquest/data/models/quest.dart';
+import 'package:scoutquest/data/repositories/clue_repository.dart';
+// import 'package:scoutquest/utils/logger.dart';
 
 class CluesScreen extends StatefulWidget {
-  static const routeName = '/clue-list';
-
-  const CluesScreen({Key? key}) : super(key: key);
+  final Quest quest;
+  const CluesScreen({Key? key, required this.quest}) : super(key: key);
 
   @override
   CluesScreenState createState() => CluesScreenState();
@@ -18,7 +17,8 @@ class CluesScreen extends StatefulWidget {
 
 class CluesScreenState extends State<CluesScreen> {
   List<Category> categories = [];
-  ClueInfo? selectedClue;
+  Clue? selectedClue;
+  ClueRepository clueRepository = ClueRepository();
 
   @override
   void initState() {
@@ -27,13 +27,10 @@ class CluesScreenState extends State<CluesScreen> {
   }
 
   Future<void> loadClueInfo() async {
-    final jsonString =
-        await rootBundle.loadString('assets/elements/clue_data.json');
-    final List<dynamic> jsonList = json.decode(jsonString);
+    final clues = await clueRepository.getQuestClues(widget.quest.clueFile);
     final List<Category> loadedCategories = [];
 
-    for (final json in jsonList) {
-      final clue = ClueInfo.fromJson(json as Map<String, dynamic>);
+    for (final clue in clues) {
       final category = loadedCategories
           .firstWhere((cat) => cat.name == clue.category, orElse: () {
         final newCategory = Category(name: clue.category, clues: []);
@@ -48,7 +45,7 @@ class CluesScreenState extends State<CluesScreen> {
     });
   }
 
-  void selectClue(ClueInfo? clue) {
+  void selectClue(Clue? clue) {
     setState(() {
       selectedClue = clue;
     });
@@ -137,7 +134,7 @@ class CluesScreenState extends State<CluesScreen> {
 class Category {
   final String name;
   bool isExpanded;
-  final List<ClueInfo> clues;
+  final List<Clue> clues;
 
   Category(
       {required this.name, this.isExpanded = false, this.clues = const []});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scoutquest/data/models/clue_info.dart';
+import 'package:scoutquest/data/models/clue.dart';
 import 'package:scoutquest/app/widgets/audio_player.dart';
 
 class CluePanel extends StatelessWidget {
@@ -9,7 +9,7 @@ class CluePanel extends StatelessWidget {
     required this.onTap,
   }) : super(key: key);
 
-  final ClueInfo? selectedClue;
+  final Clue? selectedClue;
   final VoidCallback onTap;
 
   @override

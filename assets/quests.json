@@ -1,7 +1,8 @@
 [
     {
         "id": "quest_element_2023",
-        "name": "Master of the Elements"
+        "name": "Master of the Elements CLUE FILE",
+        "clueFile": "assets/elements/clue_data.json"
     },
     {
         "id": "quest_element_2024",

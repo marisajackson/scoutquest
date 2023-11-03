@@ -25,7 +25,6 @@ class QuestsScreenState extends State<QuestsScreen> {
 
   Future<void> _loadQuests() async {
     try {
-      Logger.log('Loading quests...');
       final questList = await questRepository.getAvailableQuests();
       Logger.log('Loaded ${questList.length} quests');
       setState(() {
@@ -47,7 +46,7 @@ class QuestsScreenState extends State<QuestsScreen> {
   void _chooseQuest(Quest quest) {
     Logger.log('Quest ${quest.name} chosen');
     // route to clues screen
-    Navigator.pushNamed(context, cluesRoute);
+    Navigator.of(context).pushNamed(cluesRoute, arguments: quest);
   }
 
   @override

@@ -1,4 +1,4 @@
-class ClueInfo {
+class Clue {
   final String id;
   final String label;
   final String type;
@@ -7,7 +7,7 @@ class ClueInfo {
   final String? audio;
   final String? image;
 
-  ClueInfo({
+  Clue({
     required this.id,
     required this.label,
     required this.type,
@@ -17,8 +17,8 @@ class ClueInfo {
     this.image,
   });
 
-  factory ClueInfo.fromJson(Map<String, dynamic> json) {
-    return ClueInfo(
+  factory Clue.fromJson(Map<String, dynamic> json) {
+    return Clue(
         id: json['id'],
         label: json['label'],
         type: json['type'],

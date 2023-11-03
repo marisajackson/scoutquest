@@ -18,6 +18,7 @@ class QuestRepository {
         .map((questJson) => Quest(
               id: questJson['id'],
               name: questJson['name'],
+              clueFile: questJson['clueFile'] ?? '',
               // Map other quest properties as needed
             ))
         .toList();
