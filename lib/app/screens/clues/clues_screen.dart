@@ -7,7 +7,6 @@ import 'package:scoutquest/app/screens/clues/clue_row.dart';
 import 'package:scoutquest/data/models/quest.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
 import 'package:scoutquest/utils/logger.dart';
-// import 'package:scoutquest/utils/logger.dart';
 
 class CluesScreen extends StatefulWidget {
   final Quest quest;
@@ -230,12 +229,12 @@ class _CategoryHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const CircleProgressBar(
-            count: 2,
-            total: 10,
+          CircleProgressBar(
+            count: category.clues.where((clue) => clue.isUnlocked).length,
+            total: category.clues.length,
             progressColor: Colors.green,
             backgroundColor: Colors.grey,
-            textStyle: TextStyle(
+            textStyle: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Colors.black,
