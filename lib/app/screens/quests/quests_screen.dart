@@ -53,7 +53,7 @@ class QuestsScreenState extends State<QuestsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Quests'),
+        title: const Text('Scout Quest'),
       ),
       body: quests.isEmpty
           ? const QuestsEmpty()

@@ -133,58 +133,49 @@ class CluesScreenState extends State<CluesScreen> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.add), // You can choose any icon you like
+            icon: const Icon(Icons.add), // Customize icon color
             onPressed: () {
               addClue();
             },
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height, // Set a fixed height
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: categories.map((category) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          if (category.isExpanded) {
-                            collapseCategory(category);
-                          } else {
-                            expandCategory(category);
-                          }
-                        },
-                        child: _CategoryHeader(
-                          category: category,
-                          isExpanded: category.isExpanded,
-                        ),
-                      ),
-                      if (category.isExpanded)
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: category.clues.length,
-                          itemBuilder: (context, index) {
-                            final clue = category.clues[index];
-                            return ClueRow(
-                              clue: clue,
-                              onTap: () => selectClue(clue),
-                            );
-                          },
-                        ),
-                    ],
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
-        ],
+      body: Container(
+        child: ListView(
+          children: categories.map((category) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    if (category.isExpanded) {
+                      collapseCategory(category);
+                    } else {
+                      expandCategory(category);
+                    }
+                  },
+                  child: _CategoryHeader(
+                    category: category,
+                    isExpanded: category.isExpanded,
+                  ),
+                ),
+                if (category.isExpanded)
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: category.clues.length,
+                    itemBuilder: (context, index) {
+                      final clue = category.clues[index];
+                      return ClueRow(
+                        clue: clue,
+                        onTap: () => selectClue(clue),
+                      );
+                    },
+                  ),
+              ],
+            );
+          }).toList(),
+        ),
       ),
     );
   }
@@ -210,10 +201,11 @@ class _CategoryHeader extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(26.0),
-      height: 90.0,
+      margin: const EdgeInsets.only(top: 10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10.0),
@@ -232,7 +224,6 @@ class _CategoryHeader extends StatelessWidget {
           CircleProgressBar(
             count: category.clues.where((clue) => clue.isUnlocked).length,
             total: category.clues.length,
-            progressColor: Colors.green,
             backgroundColor: Colors.grey,
             textStyle: const TextStyle(
               fontSize: 16,
@@ -249,7 +240,7 @@ class _CategoryHeader extends StatelessWidget {
                 Text(
                   category.name,
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w900,
                     fontSize: 20.0,
                   ),
                 ),
