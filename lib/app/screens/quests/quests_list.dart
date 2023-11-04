@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scoutquest/data/models/quest.dart';
+import 'package:scoutquest/app/models/quest.dart';
 
 class QuestsList extends StatelessWidget {
   final List<Quest> quests;

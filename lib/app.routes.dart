@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoutquest/app/screens/clues/clues_screen.dart';
 import 'package:scoutquest/app/screens/quests/quests_screen.dart';
-import 'package:scoutquest/data/models/quest.dart';
+import 'package:scoutquest/app/models/quest.dart';
 
 const String initialRoute = '/';
 const String questsRoute = '/quests';

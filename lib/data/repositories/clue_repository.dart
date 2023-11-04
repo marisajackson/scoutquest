@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:scoutquest/data/json_loader.dart';
-import 'package:scoutquest/data/models/clue.dart';
-import 'package:scoutquest/data/models/quest.dart';
+import 'package:scoutquest/app/models/clue.dart';
+import 'package:scoutquest/app/models/quest.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ClueRepository {

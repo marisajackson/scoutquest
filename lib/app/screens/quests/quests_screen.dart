@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoutquest/app.routes.dart';
 import 'package:scoutquest/app/screens/quests/quests_empty.dart';
 import 'package:scoutquest/app/screens/quests/quests_list.dart';
-import 'package:scoutquest/data/models/quest.dart';
+import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/data/repositories/quest_repository.dart';
 import 'package:scoutquest/utils/logger.dart';
 

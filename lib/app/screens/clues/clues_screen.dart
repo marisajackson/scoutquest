@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:scoutquest/app/models/category.dart';
 import 'package:scoutquest/app/widgets/qr_scanner.dart';
-import 'package:scoutquest/data/models/clue.dart';
+import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/app/widgets/circle_progress_bar.dart';
 import 'package:scoutquest/app/screens/clues/clue_panel.dart';
 import 'package:scoutquest/app/screens/clues/clue_row.dart';
-import 'package:scoutquest/data/models/quest.dart';
+import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
 import 'package:scoutquest/utils/logger.dart';
 
@@ -179,15 +180,6 @@ class CluesScreenState extends State<CluesScreen> {
       ),
     );
   }
-}
-
-class Category {
-  final String name;
-  bool isExpanded;
-  final List<Clue> clues;
-
-  Category(
-      {required this.name, this.isExpanded = false, this.clues = const []});
 }
 
 class _CategoryHeader extends StatelessWidget {
