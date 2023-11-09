@@ -22,48 +22,43 @@ class QuestsList extends StatelessWidget {
         itemBuilder: (context, index) {
           final quest = quests[index];
           return GestureDetector(
-            // Define the behavior when the item is tapped
             onTap: () {
               onChooseQuest(quest);
-              // Handle the onTap action for a quest item
-              // You can navigate to the quest details or perform other actions.
             },
             child: Container(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(26.0),
+              margin: const EdgeInsets.only(top: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const Icon(
-                    Icons.add_box, // Replace with your quest icon
-                    size: 50.0,
+                  Image.asset(
+                    'assets/elements/elements_icon.png',
+                    width: 50,
+                    height: 50,
                   ),
-                  const SizedBox(width: 16.0),
+                  const SizedBox(width: 30.0),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          quest.name, // Display quest name
+                          quest.name,
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18.0,
-                          ),
-                        ),
-                        const SizedBox(height: 8.0),
-                        const Text(
-                          'Description: ', // Display quest description
-                          style: TextStyle(fontSize: 16.0),
-                        ),
-                        const SizedBox(height: 8.0),
-                        const Text(
-                          'Status:', // Display quest status or other information
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            color: Colors.grey,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 20.0,
                           ),
                         ),
                       ],

@@ -43,6 +43,10 @@ class QRScannerState extends State<QRScanner> {
           Expanded(
             child: MobileScanner(
               fit: BoxFit.contain,
+              scanWindow: Rect.fromPoints(
+                const Offset(50, 50),
+                const Offset(250, 250),
+              ),
               onDetect: _handleScanResult,
             ),
           ),

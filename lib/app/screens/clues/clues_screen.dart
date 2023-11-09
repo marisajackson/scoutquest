@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:scoutquest/app/models/category.dart';
+import 'package:scoutquest/app/models/clue_category.dart';
+import 'package:scoutquest/app/screens/clues/category_header.dart';
+import 'package:scoutquest/app/widgets/app_bar_manager.dart';
 import 'package:scoutquest/app/widgets/qr_scanner.dart';
 import 'package:scoutquest/app/models/clue.dart';
-import 'package:scoutquest/app/widgets/circle_progress_bar.dart';
 import 'package:scoutquest/app/screens/clues/clue_panel.dart';
 import 'package:scoutquest/app/screens/clues/clue_row.dart';
 import 'package:scoutquest/app/models/quest.dart';
@@ -18,7 +20,7 @@ class CluesScreen extends StatefulWidget {
 }
 
 class CluesScreenState extends State<CluesScreen> {
-  List<Category> categories = [];
+  List<ClueCategory> categories = [];
   List<Clue> clues = [];
   Clue? selectedClue;
   late ClueRepository clueRepository;
@@ -32,12 +34,12 @@ class CluesScreenState extends State<CluesScreen> {
 
   Future<void> loadClueInfo() async {
     clues = await clueRepository.getUserQuestClues();
-    final List<Category> loadedCategories = [];
+    final List<ClueCategory> loadedCategories = [];
 
     for (final clue in clues) {
       final category = loadedCategories
           .firstWhere((cat) => cat.name == clue.category, orElse: () {
-        final newCategory = Category(name: clue.category, clues: []);
+        final newCategory = ClueCategory(name: clue.category, clues: []);
         loadedCategories.add(newCategory);
         return newCategory;
       });
@@ -81,6 +83,11 @@ class CluesScreenState extends State<CluesScreen> {
         );
       },
     );
+
+    // if in debug mode, add a clue automatically
+    if (kDebugMode) {
+      unlockClue('FireClue1-4CX6TZPA');
+    }
   }
 
   void processQRCodeClue(String? value) {
@@ -114,13 +121,13 @@ class CluesScreenState extends State<CluesScreen> {
     Navigator.of(context).pop();
   }
 
-  void collapseCategory(Category category) {
+  void collapseCategory(ClueCategory category) {
     setState(() {
       category.isExpanded = false;
     });
   }
 
-  void expandCategory(Category category) {
+  void expandCategory(ClueCategory category) {
     setState(() {
       category.isExpanded = true;
     });
@@ -129,19 +136,12 @@ class CluesScreenState extends State<CluesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Scout Quest"),
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add), // Customize icon color
-            onPressed: () {
-              addClue();
-            },
-          ),
-        ],
+      appBar: AppBarManager(
+        appBar: AppBar(),
+        hasBackButton: true,
       ),
-      body: Container(
+      body: RefreshIndicator(
+        onRefresh: () => loadClueInfo(),
         child: ListView(
           children: categories.map((category) {
             return Column(
@@ -155,7 +155,7 @@ class CluesScreenState extends State<CluesScreen> {
                       expandCategory(category);
                     }
                   },
-                  child: _CategoryHeader(
+                  child: CategoryHeader(
                     category: category,
                     isExpanded: category.isExpanded,
                   ),
@@ -178,68 +178,19 @@ class CluesScreenState extends State<CluesScreen> {
           }).toList(),
         ),
       ),
-    );
-  }
-}
-
-class _CategoryHeader extends StatelessWidget {
-  final Category category;
-  final bool isExpanded;
-
-  const _CategoryHeader({
-    Key? key,
-    required this.category,
-    this.isExpanded = false,
-  }) : super(key: key);
-
-  @override
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(26.0),
-      margin: const EdgeInsets.only(top: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          // Handle the action when the button is pressed
+          // You can add your code to open a bottom sheet or any other action here
+          addClue();
+        },
+        label: const Text(
+          "Add Clue",
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            fontSize: 18.0,
           ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          CircleProgressBar(
-            count: category.clues.where((clue) => clue.isUnlocked).length,
-            total: category.clues.length,
-            backgroundColor: Colors.grey,
-            textStyle: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(width: 30.0),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  category.name,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 20.0,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+        ), // Change the button label // Add an optional icon
       ),
     );
   }

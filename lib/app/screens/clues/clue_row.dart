@@ -39,21 +39,23 @@ class ClueRow extends StatelessWidget {
                   Text(
                     clue.label,
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w900,
                       fontSize: 18.0,
                     ),
                   ),
                   const SizedBox(height: 8.0),
                   Text(
                     clue.isUnlocked ? clue.text : '???',
-                    style: const TextStyle(fontSize: 16.0),
+                    style: const TextStyle(
+                        fontSize: 16.0, fontWeight: FontWeight.w900),
                   ),
                   const SizedBox(height: 8.0),
                   Text(
                     clue.isUnlocked ? clue.type : '???',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14.0,
-                      color: Colors.grey,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.grey.shade700,
                     ),
                   ),
                 ],

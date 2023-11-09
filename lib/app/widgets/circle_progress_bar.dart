@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scoutquest/utils/constants.dart';
 
 class CircleProgressBar extends StatelessWidget {
   final int count;
@@ -12,7 +13,7 @@ class CircleProgressBar extends StatelessWidget {
     Key? key,
     required this.count,
     required this.total,
-    this.progressColor = Colors.blue,
+    this.progressColor = ScoutQuestColors.primaryAction,
     this.backgroundColor = Colors.grey,
     this.strokeWidth = 3.5,
     this.textStyle = const TextStyle(

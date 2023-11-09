@@ -3,6 +3,8 @@ import 'package:scoutquest/app.routes.dart';
 import 'package:scoutquest/app/screens/quests/quests_empty.dart';
 import 'package:scoutquest/app/screens/quests/quests_list.dart';
 import 'package:scoutquest/app/models/quest.dart';
+import 'package:scoutquest/app/widgets/app_bar_manager.dart';
+import 'package:scoutquest/app/widgets/qr_scanner.dart';
 import 'package:scoutquest/data/repositories/quest_repository.dart';
 import 'package:scoutquest/utils/logger.dart';
 
@@ -26,7 +28,6 @@ class QuestsScreenState extends State<QuestsScreen> {
   Future<void> _loadQuests() async {
     try {
       final questList = await questRepository.getAvailableQuests();
-      Logger.log('Loaded ${questList.length} quests');
       setState(() {
         quests = questList;
       });
@@ -37,14 +38,32 @@ class QuestsScreenState extends State<QuestsScreen> {
   }
 
   Future<void> _refreshQuests() async {
-    // Manually trigger a refresh to update the list
-    // await _loadQuests();
-    Logger.log('refreshing quests');
+    await _loadQuests();
   }
 
-  // function that chooses a quest
+  void addQuest() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return QRScanner(
+          title: 'Add Clue',
+          description: 'Scan the QR Code',
+          onQRCodeScanned: processQRCodeQuest,
+        );
+      },
+    );
+
+    // if in debug mode, add a clue automatically
+    // if (kDebugMode) {
+    //   unlockClue('FireClue1-4CX6TZPA');
+    // }
+  }
+
+  void processQRCodeQuest(scanResult) {
+    Logger.log('QR Code Scanned $scanResult');
+  }
+
   void _chooseQuest(Quest quest) {
-    Logger.log('Quest ${quest.name} chosen');
     // route to clues screen
     Navigator.of(context).pushNamed(cluesRoute, arguments: quest);
   }
@@ -52,8 +71,8 @@ class QuestsScreenState extends State<QuestsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Scout Quest'),
+      appBar: AppBarManager(
+        appBar: AppBar(),
       ),
       body: quests.isEmpty
           ? const QuestsEmpty()
@@ -62,6 +81,20 @@ class QuestsScreenState extends State<QuestsScreen> {
               onRefresh: _refreshQuests,
               onChooseQuest: _chooseQuest,
             ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          // Handle the action when the button is pressed
+          // You can add your code to open a bottom sheet or any other action here
+          addQuest();
+        },
+        label: const Text(
+          "Add Quest",
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            fontSize: 18.0,
+          ),
+        ), // Change the button label // Add an optional icon
+      ),
     );
   }
 }
