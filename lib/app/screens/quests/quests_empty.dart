@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:scoutquest/utils/logger.dart';
+import 'package:scoutquest/utils/constants.dart';
 
 class QuestsEmpty extends StatelessWidget {
-  const QuestsEmpty({Key? key}) : super(key: key);
+  const QuestsEmpty({
+    Key? key,
+    required this.onAddQuest,
+  }) : super(key: key);
+
+  final VoidCallback? onAddQuest;
 
   @override
   Widget build(BuildContext context) {
@@ -17,15 +22,12 @@ class QuestsEmpty extends StatelessWidget {
           ),
           const Text(
             'No quests available',
-            style: TextStyle(fontSize: 18.0, color: Colors.grey),
+            style: TextStyle(
+                fontSize: 18.0, color: ScoutQuestColors.secondaryText),
           ),
           const SizedBox(height: 20.0),
-          ElevatedButton(
-            onPressed: () {
-              Logger.log('Join a Quest button pressed');
-            },
-            child: const Text('Join a Quest'),
-          ),
+          FloatingActionButton.extended(
+              onPressed: onAddQuest, label: const Text('Add Quest')),
         ],
       ),
     );

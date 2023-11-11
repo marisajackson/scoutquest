@@ -37,10 +37,6 @@ class QuestsScreenState extends State<QuestsScreen> {
     }
   }
 
-  Future<void> _refreshQuests() async {
-    await _loadQuests();
-  }
-
   void addQuest() {
     showModalBottomSheet(
       context: context,
@@ -59,8 +55,30 @@ class QuestsScreenState extends State<QuestsScreen> {
     // }
   }
 
-  void processQRCodeQuest(scanResult) {
+  void processQRCodeQuest(String? scanResult) {
     Logger.log('QR Code Scanned $scanResult');
+    if (scanResult == null) {
+      return;
+    }
+
+    // sample scan value = "http://scoutquest.co/quests/quest_element_2023.html"
+    RegExp regExp = RegExp(r'\/([A-Za-z0-9-]+)\.html');
+    Match? match = regExp.firstMatch(scanResult);
+
+    // TODO: If it doesn't have a clue prefix, throw error
+
+    if (match != null) {
+      String questCode = match.group(1)!;
+      Logger.log(questCode); // 'quest_element_2023'
+      unlockQuest(questCode);
+    } else {
+      Logger.log('No match found.');
+    }
+  }
+
+  Future<void> unlockQuest(String code) async {
+    questRepository.updateUserQuestStatus(code, QuestStatus.unlocked);
+    await _loadQuests();
   }
 
   void _chooseQuest(Quest quest) {
@@ -75,26 +93,28 @@ class QuestsScreenState extends State<QuestsScreen> {
         appBar: AppBar(),
       ),
       body: quests.isEmpty
-          ? const QuestsEmpty()
+          ? QuestsEmpty(onAddQuest: addQuest)
           : QuestsList(
               quests: quests,
-              onRefresh: _refreshQuests,
+              onRefresh: _loadQuests,
               onChooseQuest: _chooseQuest,
             ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // Handle the action when the button is pressed
-          // You can add your code to open a bottom sheet or any other action here
-          addQuest();
-        },
-        label: const Text(
-          "Add Quest",
-          style: TextStyle(
-            fontWeight: FontWeight.w900,
-            fontSize: 18.0,
-          ),
-        ), // Change the button label // Add an optional icon
-      ),
+      floatingActionButton: quests.isNotEmpty
+          ? FloatingActionButton.extended(
+              onPressed: () {
+                // Handle the action when the button is pressed
+                // You can add your code to open a bottom sheet or any other action here
+                addQuest();
+              },
+              label: const Text(
+                "Add Quest",
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 18.0,
+                ),
+              ), // Change the button label // Add an optional icon
+            )
+          : null,
     );
   }
 }

@@ -94,9 +94,11 @@ class CluesScreenState extends State<CluesScreen> {
     if (value == null) {
       return;
     }
-    // sample scan value = "http://scoutquest.co/quest_element_2023/FireClue1-4CX6TZPA.html"
+    // sample scan value = "http://scoutquest.co/quests/quest_element_2023/clues/FireClue1-4CX6TZPA.html"
     RegExp regExp = RegExp(r'\/([A-Za-z0-9-]+)\.html');
     Match? match = regExp.firstMatch(value);
+
+    // TODO: If it doesn't have a clue prefix, throw error
 
     if (match != null) {
       String clueCode = match.group(1)!;
