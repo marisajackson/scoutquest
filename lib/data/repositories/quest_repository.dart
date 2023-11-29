@@ -35,8 +35,7 @@ class QuestRepository {
     final preferences = await SharedPreferences.getInstance();
     var statusString = preferences.getString(questID);
 
-    return QuestStatus.values.firstWhere(
-        (e) => e.toString() == 'QuestStatus.$statusString',
+    return QuestStatus.values.firstWhere((e) => e.toString() == statusString,
         orElse: () => QuestStatus.locked);
   }
 
