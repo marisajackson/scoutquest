@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:scoutquest/data/json_loader.dart';
 import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/app/models/quest.dart';
+import 'package:scoutquest/utils/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ClueRepository {
@@ -25,7 +26,13 @@ class ClueRepository {
         prefs.setString('$quest.id-clues', jsonEncode(cluesStatus));
       }
 
-      clue.isUnlocked = cluesStatus[clue.id];
+      clue.status = ClueStatus.values.firstWhere(
+          (e) => e.toString() == cluesStatus[clue.id],
+          orElse: () => ClueStatus.locked);
+
+      Logger.log('Clue ${clue.id} is unlocked: ${clue.status}');
+
+      clue.status = ClueStatus.found; // TODO Remove in production
     }
 
     return allClues;
@@ -64,7 +71,7 @@ class ClueRepository {
     return cluesStatus;
   }
 
-  Future unlockClue(clueID) async {
+  Future updateClueStatus(clueID, ClueStatus status) async {
     final prefs = await SharedPreferences.getInstance();
     final cluesStatus = prefs.getString('${quest.id}-clues');
     if (cluesStatus == null) {
@@ -74,8 +81,9 @@ class ClueRepository {
       return;
     }
     final cluesJSON = jsonDecode(cluesStatus);
-    Map<String, bool> cluesMap = Map<String, bool>.from(cluesJSON);
-    cluesMap[clueID] = true;
+    Map<String, ClueStatus> cluesMap = Map<String, ClueStatus>.from(cluesJSON);
+    cluesMap[clueID] = ClueStatus.values
+        .firstWhere((e) => e == status, orElse: () => ClueStatus.locked);
     prefs.setString('${quest.id}-clues', jsonEncode(cluesMap));
   }
 }

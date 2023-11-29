@@ -28,6 +28,7 @@ class QuestsScreenState extends State<QuestsScreen> {
   Future<void> _loadQuests() async {
     try {
       final questList = await questRepository.getAvailableQuests();
+
       setState(() {
         quests = questList;
       });
@@ -42,16 +43,17 @@ class QuestsScreenState extends State<QuestsScreen> {
       context: context,
       builder: (BuildContext context) {
         return QRScanner(
-          title: 'Add Clue',
-          description: 'Scan the QR Code',
+          title: 'Add Quest',
+          description: 'Scan the Quest QR Code',
           onQRCodeScanned: processQRCodeQuest,
         );
       },
     );
 
-    // if in debug mode, add a clue automatically
     // if (kDebugMode) {
-    //   unlockClue('FireClue1-4CX6TZPA');
+    // TODO Remove in production
+    processQRCodeQuest(
+        'http://scoutquest.co/quests/quest_element_grTp7XkD9.html');
     // }
   }
 
@@ -62,8 +64,11 @@ class QuestsScreenState extends State<QuestsScreen> {
     }
 
     // sample scan value = "http://scoutquest.co/quests/quest_element_2023.html"
-    RegExp regExp = RegExp(r'\/([A-Za-z0-9-]+)\.html');
+    // regex to extract quest code: quest_element_2023
+    RegExp regExp = RegExp(r'\/([^/]+)\.html');
     Match? match = regExp.firstMatch(scanResult);
+
+    Logger.log('Match $match');
 
     // TODO: If it doesn't have a clue prefix, throw error
 
@@ -78,6 +83,7 @@ class QuestsScreenState extends State<QuestsScreen> {
 
   Future<void> unlockQuest(String code) async {
     questRepository.updateUserQuestStatus(code, QuestStatus.unlocked);
+    Navigator.of(context).pop();
     await _loadQuests();
   }
 

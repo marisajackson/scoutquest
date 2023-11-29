@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:scoutquest/app/models/clue_category.dart';
 import 'package:scoutquest/app/screens/clues/category_header.dart';
@@ -52,9 +51,9 @@ class CluesScreenState extends State<CluesScreen> {
   }
 
   void selectClue(Clue clue) {
-    if (clue.isUnlocked == false) {
-      return;
-    }
+    // if (clue.isUnlocked == false) {
+    //   return;
+    // }
 
     setState(() {
       selectedClue = clue;
@@ -62,9 +61,10 @@ class CluesScreenState extends State<CluesScreen> {
 
     showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         builder: (BuildContext context) {
           return CluePanel(
-            selectedClue: selectedClue,
+            selectedClue: clue,
             onTap: () {
               Navigator.of(context).pop(); // Close the BottomSheet
             },
@@ -83,11 +83,6 @@ class CluesScreenState extends State<CluesScreen> {
         );
       },
     );
-
-    // if in debug mode, add a clue automatically
-    if (kDebugMode) {
-      unlockClue('FireClue1-4CX6TZPA');
-    }
   }
 
   void processQRCodeClue(String? value) {
@@ -103,15 +98,15 @@ class CluesScreenState extends State<CluesScreen> {
     if (match != null) {
       String clueCode = match.group(1)!;
       Logger.log(clueCode); // 'FireClue1-4CX6TZPA'
-      unlockClue(clueCode);
+      markClueFound(clueCode);
     } else {
       Logger.log('No match found.');
     }
   }
 
-  Future<void> unlockClue(String code) async {
+  Future<void> markClueFound(String code) async {
     final clue = clues.firstWhere((clue) => clue.code == code);
-    clueRepository.unlockClue(clue.id);
+    clueRepository.updateClueStatus(clue.id, ClueStatus.found);
     await loadClueInfo();
     final category = categories.firstWhere((cat) => cat.name == clue.category);
     expandCategory(category);

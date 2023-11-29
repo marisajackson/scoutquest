@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/app/models/clue_category.dart';
 import 'package:scoutquest/app/widgets/circle_progress_bar.dart';
 
@@ -11,6 +12,22 @@ class CategoryHeader extends StatelessWidget {
     required this.category,
     this.isExpanded = false,
   }) : super(key: key);
+
+  int calculateProgress(List<Clue> clues) {
+    int progress = 0;
+
+    for (Clue clue in clues) {
+      if (clue.isFound) {
+        progress += 1;
+      }
+
+      if (clue.isUnlocked) {
+        progress += 1;
+      }
+    }
+
+    return progress;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +50,8 @@ class CategoryHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           CircleProgressBar(
-            count: category.clues.where((clue) => clue.isUnlocked).length,
-            total: category.clues.length,
+            count: calculateProgress(category.clues),
+            total: category.clues.length * 2,
             textStyle: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w900,

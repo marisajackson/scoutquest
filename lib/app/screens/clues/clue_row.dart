@@ -45,13 +45,13 @@ class ClueRow extends StatelessWidget {
                   ),
                   const SizedBox(height: 8.0),
                   Text(
-                    clue.isUnlocked ? clue.text : '???',
+                    clue.isFound ? clue.getShortText : '???',
                     style: const TextStyle(
                         fontSize: 16.0, fontWeight: FontWeight.w900),
                   ),
                   const SizedBox(height: 8.0),
                   Text(
-                    clue.isUnlocked ? clue.type : '???',
+                    clue.isFound ? clue.type : '???',
                     style: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w900,

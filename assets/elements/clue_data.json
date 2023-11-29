@@ -86,6 +86,7 @@
         "type": "Text Clue",
         "category": "Water",
         "text": "Continue down the Ecology Trail,<br>Keep the photo in hand and you will prevail.<br>It will guide you to where the next clue lay.<br>So follow its lead, without delay.",
+        "shortText": "Continue down the Ecology Trail...",
         "audio": null,
         "image": "assets/elements/images/WaterClue1-oH8AZgEDk.png"
     },
@@ -96,6 +97,7 @@
         "type": "Text Clue",
         "category": "Water",
         "text": "<h1>(615) 640-6080</h1>",
+        "shortText": "(615) 640-6080",
         "audio": null,
         "image": null
     },
@@ -116,6 +118,7 @@
         "type": "Text Clue",
         "category": "Air",
         "text": "<h1>VRREI VOREKOOL</h1><p>Go to the place above and search the railing.</p>",
+        "shortText": "VRREI VOREKOOL",
         "audio": null,
         "image": null
     },
@@ -126,6 +129,8 @@
         "type": "Text Clue",
         "category": "Air",
         "text": "<p><b>How To Crack The Code</b></p>\n\n<p>The Code can be solved using <b>Native Pollinator Gardening</b>. Use this text to decipher the clues that are [Line - Word - Letter].</p>\n\n<p>I’ll get you started…</p>\n\n<p><b>[13-2-2] is A</b></p>\n\n<p><b>Native Pollinator Gardening</b> can be found using the map on the path nearby.</p>\n\n<p><b style=\"color: red\">YOU ARE HERE</b> is your guide.</p>",
+        "secretCode": "atmosphere",
+        "shortText": "How To Crack The Code",
         "audio": null,
         "image": null
     }
