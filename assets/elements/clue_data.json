@@ -2,50 +2,100 @@
     {
         "id": "FC1",
         "code": "FireClue1-4CX6TZPA",
-        "label": "Fire Clue #1",
-        "type": "Image Clue",
+        "label": "Fire Clue",
+        "type": "Audio Clue",
         "category": "Fire",
-        "text": "Sample text for Fire Clue #1",
-        "audio": null,
-        "image": "assets/elements/images/Bench.png"
+        "text": "1F↓ | Artist Name (10)",
+        "audio": "elements/audio/FireClue1-4CX6TZPA.mp3",
+        "image": null
     },
     {
         "id": "FC2",
-        "code": "FireClue2-4CXwfwePA",
-        "label": "Fire Clue #2",
+        "code": "FireClue2-grTp7XkD9",
+        "label": "Fire Clue",
         "type": "Audio Clue",
         "category": "Fire",
-        "text": "Sample text for Fire Clue #2",
-        "audio": "elements/audio/Fire-Audio-2.mp3",
+        "text": "2C→ | Artist Name (5) ",
+        "audio": "elements/audio/FireClue2-grTp7XkD9.mp3",
         "image": null
     },
     {
         "id": "FC3",
-        "code": "FireClue3-4CX323PA",
-        "label": "Fire Clue #3",
+        "code": "FireClue3-m4vfVokUV",
+        "label": "Fire Clue",
+        "type": "Audio Clue",
+        "category": "Fire",
+        "text": "5A→ | Song Title (12)",
+        "audio": "elements/audio/FireClue3-m4vfVokUV.mp3",
+        "image": null
+    },
+    {
+        "id": "FC4",
+        "code": "FireClue4-r8qCED2Hw",
+        "label": "Fire Clue",
         "type": "Text Clue",
         "category": "Fire",
-        "text": "4J(D) | Fire Breather (6)",
+        "text": "4J↓ | Fire Breather (6)",
+        "audio": null,
+        "image": null
+    },
+    {
+        "id": "FC5",
+        "code": "FireClue5-rHrrWyg8J",
+        "label": "Fire Clue",
+        "type": "Text Clue",
+        "category": "Fire",
+        "text": "7H→ | Hot Emotion (5)",
+        "audio": null,
+        "image": null
+    },
+    {
+        "id": "FC6",
+        "code": "FireClue6-hoWgh9pbz",
+        "label": "Fire Clue",
+        "type": "Text Clue",
+        "category": "Fire",
+        "text": "8B→ | Needed to build a fire… or find a match (6)",
+        "audio": null,
+        "image": null
+    },
+    {
+        "id": "FC7",
+        "code": "FireClue7-2kBauqE9j",
+        "label": "Fire Clue",
+        "type": "Text Clue",
+        "category": "Fire",
+        "text": "8B↓ | Statue of Liberty Item (5)",
+        "audio": null,
+        "image": null
+    },
+    {
+        "id": "FC8",
+        "code": "FireClue8-ABvvoc476",
+        "label": "Fire Clue",
+        "type": "Text Clue",
+        "category": "Fire",
+        "text": "12A→ | Rises from the ashes (7)",
         "audio": null,
         "image": null
     },
     {
         "id": "WC1",
-        "code": "WaterClue1-4CX6TZPA",
+        "code": "WaterClue1-oH8AZgEDk",
         "label": "Water Clue #1",
         "type": "Text Clue",
         "category": "Water",
-        "text": "Sample text for Water Clue #1",
+        "text": "Continue down the Ecology Trail,<br>Keep the photo in hand and you will prevail.<br>It will guide you to where the next clue lay.<br>So follow its lead, without delay.",
         "audio": null,
-        "image": null
+        "image": "assets/elements/images/WaterClue1-oH8AZgEDk.png"
     },
     {
         "id": "WC2",
-        "code": "WaterClue2-4CXwfwePA",
+        "code": "WaterClue2-WeKEuW7V",
         "label": "Water Clue #2",
         "type": "Text Clue",
         "category": "Water",
-        "text": "Sample text for Water Clue #2",
+        "text": "<h1>(615) 640-6080</h1>",
         "audio": null,
         "image": null
     },
@@ -55,7 +105,27 @@
         "label": "Water Clue #3",
         "type": "Text Clue",
         "category": "Water",
-        "text": "4J(D) | Water Breather (6)",
+        "text": "TBD",
+        "audio": null,
+        "image": null
+    },
+    {
+        "id": "AC1",
+        "code": "AirClue1-otbVv6tRa",
+        "label": "Air Clue #1",
+        "type": "Text Clue",
+        "category": "Air",
+        "text": "<h1>VRREI VOREKOOL</h1><p>Go to the place above and search the railing.</p>",
+        "audio": null,
+        "image": null
+    },
+    {
+        "id": "AC2",
+        "code": "AirClue2-dL6zsPn98",
+        "label": "Air Clue #2",
+        "type": "Text Clue",
+        "category": "Air",
+        "text": "<p><b>How To Crack The Code</b></p>\n\n<p>The Code can be solved using <b>Native Pollinator Gardening</b>. Use this text to decipher the clues that are [Line - Word - Letter].</p>\n\n<p>I’ll get you started…</p>\n\n<p><b>[13-2-2] is A</b></p>\n\n<p><b>Native Pollinator Gardening</b> can be found using the map on the path nearby.</p>\n\n<p><b style=\"color: red\">YOU ARE HERE</b> is your guide.</p>",
         "audio": null,
         "image": null
     }

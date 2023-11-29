@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/app/widgets/audio_player.dart';
 
@@ -28,12 +29,9 @@ class CluePanel extends StatelessWidget {
               ),
             ),
           if (selectedClue != null)
-            Text(
-              selectedClue!.text,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-              ),
+            Html(
+              data:
+                  "<div style='text-align: center; font-size: 18px; font-weight: bold;'>${selectedClue!.text}</div>",
             ),
           const SizedBox(height: 16.0),
           if (selectedClue != null && selectedClue!.image != null)

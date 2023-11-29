@@ -40,6 +40,7 @@ dependencies:
   audioplayers: ^5.2.0
   shared_preferences: ^2.2.2
   mobile_scanner: ^3.5.2
+  flutter_html: 3.0.0-beta.2
 
 dev_dependencies:
   flutter_test:
@@ -82,10 +83,10 @@ flutter:
   assets:
   - assets/quests.json
   - assets/elements/clue_data.json
-  - assets/elements/images/Bench.png
-  - assets/elements/audio/Fire-Audio-1.mp3
-  - assets/elements/audio/Fire-Audio-2.mp3
-  - assets/elements/audio/Fire-Audio-3.mp3
+  - assets/elements/audio/FireClue1-4CX6TZPA.mp3
+  - assets/elements/audio/FireClue2-grTp7XkD9.mp3
+  - assets/elements/audio/FireClue3-m4vfVokUV.mp3
+  - assets/elements/images/WaterClue1-oH8AZgEDk.png
   - assets/brand/logos/logo-white.png
   - assets/elements/elements_icon.png
 
