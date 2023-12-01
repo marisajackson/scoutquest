@@ -13,17 +13,11 @@ class CategoryHeader extends StatelessWidget {
     this.isExpanded = false,
   }) : super(key: key);
 
-  int calculateProgress(List<Clue> clues) {
-    int progress = 0;
+  double calculateProgress(List<Clue> clues) {
+    double progress = 0;
 
     for (Clue clue in clues) {
-      if (clue.isFound) {
-        progress += 1;
-      }
-
-      if (clue.isUnlocked) {
-        progress += 1;
-      }
+      progress += clue.clueProgress;
     }
 
     return progress;
@@ -51,7 +45,7 @@ class CategoryHeader extends StatelessWidget {
         children: [
           CircleProgressBar(
             count: calculateProgress(category.clues),
-            total: category.clues.length * 2,
+            total: category.clues.length,
             textStyle: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w900,

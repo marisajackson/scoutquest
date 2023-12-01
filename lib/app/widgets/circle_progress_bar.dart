@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoutquest/utils/constants.dart';
 
 class CircleProgressBar extends StatelessWidget {
-  final int count;
+  final double count;
   final int total;
   final Color progressColor;
   final Color backgroundColor;
@@ -39,7 +39,7 @@ class CircleProgressBar extends StatelessWidget {
           ),
         ),
         Text(
-          '$count/$total',
+          '${((count / total) * 100).toStringAsFixed(0)}%',
           style: textStyle,
         ),
       ],

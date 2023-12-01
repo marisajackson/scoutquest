@@ -18,6 +18,18 @@ class Clue {
   bool get isUnlocked => status == ClueStatus.unlocked;
   bool get hasSecret => secretCode != null;
 
+  double get clueProgress {
+    if (isUnlocked) {
+      return 1;
+    }
+
+    if (isFound) {
+      return 0.5;
+    }
+
+    return 0;
+  }
+
   String get getShortText {
     return shortText ?? text;
   }
