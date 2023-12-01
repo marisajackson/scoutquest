@@ -82,7 +82,7 @@ flutter:
   # example:
   assets:
   - assets/quests.json
-  - assets/elements/clue_data.json
+  - assets/elements/clues.json
   - assets/elements/audio/FireClue1-4CX6TZPA.mp3
   - assets/elements/audio/FireClue2-grTp7XkD9.mp3
   - assets/elements/audio/FireClue3-m4vfVokUV.mp3

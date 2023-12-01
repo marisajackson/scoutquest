@@ -51,9 +51,9 @@ class CluesScreenState extends State<CluesScreen> {
   }
 
   void selectClue(Clue clue) {
-    // if (clue.isUnlocked == false) {
-    //   return;
-    // }
+    if (!clue.isFound) {
+      return;
+    }
 
     setState(() {
       selectedClue = clue;
@@ -64,6 +64,7 @@ class CluesScreenState extends State<CluesScreen> {
         isScrollControlled: true,
         builder: (BuildContext context) {
           return CluePanel(
+            clueRepository: clueRepository,
             selectedClue: clue,
             onTap: () {
               Navigator.of(context).pop(); // Close the BottomSheet
@@ -106,7 +107,13 @@ class CluesScreenState extends State<CluesScreen> {
 
   Future<void> markClueFound(String code) async {
     final clue = clues.firstWhere((clue) => clue.code == code);
-    clueRepository.updateClueStatus(clue.id, ClueStatus.found);
+
+    if (clue.hasSecret) {
+      clueRepository.updateClueStatus(clue.id, ClueStatus.found);
+    } else {
+      clueRepository.updateClueStatus(clue.id, ClueStatus.unlocked);
+    }
+
     await loadClueInfo();
     final category = categories.firstWhere((cat) => cat.name == clue.category);
     expandCategory(category);

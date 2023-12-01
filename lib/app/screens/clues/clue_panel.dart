@@ -2,20 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/app/widgets/audio_player.dart';
-import 'package:scoutquest/utils/logger.dart';
+import 'package:scoutquest/data/repositories/clue_repository.dart';
+import 'package:scoutquest/utils/constants.dart';
 
-class CluePanel extends StatelessWidget {
+class CluePanel extends StatefulWidget {
   const CluePanel({
     Key? key,
     required this.selectedClue,
     required this.onTap,
+    required this.clueRepository,
   }) : super(key: key);
 
   final Clue selectedClue;
   final VoidCallback onTap;
+  final ClueRepository clueRepository;
+
+  @override
+  CluePanelState createState() => CluePanelState();
+}
+
+class CluePanelState extends State<CluePanel> {
+  bool secretCodeIncorrect = false;
+  final TextEditingController _secretCodeController = TextEditingController();
 
   void submitSecretCode() {
-    Logger.log('Secret code submitted: ${selectedClue.secretCode}');
+    final secretCodeGuess = _secretCodeController.text.toLowerCase();
+
+    if (secretCodeGuess != widget.selectedClue.secretCode) {
+      setState(() {
+        secretCodeIncorrect = true;
+      });
+      _secretCodeController.clear();
+      return;
+    }
+
+    widget.clueRepository
+        .updateClueStatus(widget.selectedClue.id, ClueStatus.unlocked);
+
+    setState(() {
+      widget.selectedClue.status = ClueStatus.unlocked;
+    });
   }
 
   @override
@@ -26,7 +52,7 @@ class CluePanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            selectedClue.label,
+            widget.selectedClue.label,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 24.0,
@@ -34,34 +60,38 @@ class CluePanel extends StatelessWidget {
           ),
           Html(
             data:
-                "<div style='text-align: center; font-size: 18px; font-weight: bold;'>${selectedClue.displayText}</div>",
+                "<div style='text-align: center; font-size: 18px; font-weight: bold;'>${widget.selectedClue.displayText}</div>",
           ),
           const SizedBox(height: 16.0),
-          if (selectedClue.hasSecret) // Check if secret code exists
+          if (widget.selectedClue.hasSecret && !widget.selectedClue.isUnlocked)
             Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: TextField(
-                    decoration: InputDecoration(
+                    controller: _secretCodeController,
+                    decoration: defaultInputDecoration.copyWith(
                       labelText: 'Enter Secret Code',
-                      labelStyle: TextStyle(
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        secretCodeIncorrect = false;
+                      });
+                    },
+                  ),
+                ),
+                if (secretCodeIncorrect)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(
+                      'Incorrect secret code',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
                         fontWeight: FontWeight.bold,
-                        fontSize: 24.0,
-                      ),
-                      hintStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24.0,
-                      ),
-                      border: OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.black,
-                            width: 1.0), // Define border style
+                        fontSize: 18.0,
                       ),
                     ),
                   ),
-                ),
                 const SizedBox(height: 8.0),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -80,14 +110,14 @@ class CluePanel extends StatelessWidget {
                 ),
               ],
             ),
-          if (selectedClue.image != null)
+          if (widget.selectedClue.image != null)
             Image.asset(
-              selectedClue.displayImage!,
+              widget.selectedClue.displayImage!,
               height: 200.0,
               fit: BoxFit.cover,
             ),
-          if (selectedClue.audio != null)
-            AudioControlWidget(audioAsset: selectedClue.audio!),
+          if (widget.selectedClue.audio != null)
+            AudioControlWidget(audioAsset: widget.selectedClue.audio!),
           const SizedBox(height: 40.0),
         ],
       ),

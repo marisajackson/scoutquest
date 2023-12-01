@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:scoutquest/data/json_loader.dart';
 import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/app/models/quest.dart';
-import 'package:scoutquest/utils/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ClueRepository {
@@ -17,11 +16,11 @@ class ClueRepository {
     cluesStatus ??= await initializeUserQuestClues(allClues);
 
     cluesStatus = jsonDecode(cluesStatus);
-    cluesStatus = Map<String, bool>.from(cluesStatus);
+    cluesStatus = Map<String, String>.from(cluesStatus);
 
     for (var clue in allClues) {
       if (!cluesStatus.containsKey(clue.id)) {
-        cluesStatus[clue.id] = false;
+        cluesStatus[clue.id] = ClueStatus.locked.toString();
         final prefs = await SharedPreferences.getInstance();
         prefs.setString('$quest.id-clues', jsonEncode(cluesStatus));
       }
@@ -29,10 +28,6 @@ class ClueRepository {
       clue.status = ClueStatus.values.firstWhere(
           (e) => e.toString() == cluesStatus[clue.id],
           orElse: () => ClueStatus.locked);
-
-      Logger.log('Clue ${clue.id} is unlocked: ${clue.status}');
-
-      clue.status = ClueStatus.found; // TODO Remove in production
     }
 
     return allClues;
@@ -75,15 +70,16 @@ class ClueRepository {
     final prefs = await SharedPreferences.getInstance();
     final cluesStatus = prefs.getString('${quest.id}-clues');
     if (cluesStatus == null) {
-      Map<String, bool> cluesMap = {};
-      cluesMap[clueID] = true;
+      Map<String, String> cluesMap = {};
+      cluesMap[clueID] = status.toString();
       prefs.setString('${quest.id}-clues', jsonEncode(cluesMap));
       return;
     }
     final cluesJSON = jsonDecode(cluesStatus);
-    Map<String, ClueStatus> cluesMap = Map<String, ClueStatus>.from(cluesJSON);
+    Map<String, String> cluesMap = Map<String, String>.from(cluesJSON);
     cluesMap[clueID] = ClueStatus.values
-        .firstWhere((e) => e == status, orElse: () => ClueStatus.locked);
+        .firstWhere((e) => e == status, orElse: () => ClueStatus.locked)
+        .toString();
     prefs.setString('${quest.id}-clues', jsonEncode(cluesMap));
   }
 }

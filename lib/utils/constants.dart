@@ -35,3 +35,20 @@ extension ScoutQuestColors on Colors {
   static const Color accentText = Color(0xFF001017);
   static const Color accentAction = Color(0xFFF54E00);
 }
+
+// default input decoration
+const InputDecoration defaultInputDecoration = InputDecoration(
+  labelStyle: TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 24.0,
+  ),
+  hintStyle: TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 24.0,
+  ),
+  border: OutlineInputBorder(),
+  enabledBorder: OutlineInputBorder(
+    borderSide:
+        BorderSide(color: Colors.black, width: 1.0), // Define border style
+  ),
+);
