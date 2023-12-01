@@ -70,6 +70,10 @@ class CluePanelState extends State<CluePanel> {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: TextField(
                     controller: _secretCodeController,
+                    style: const TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                     decoration: defaultInputDecoration.copyWith(
                       labelText: 'Enter Secret Code',
                     ),
