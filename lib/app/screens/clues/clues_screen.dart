@@ -68,6 +68,7 @@ class CluesScreenState extends State<CluesScreen> {
             selectedClue: clue,
             onTap: () {
               Navigator.of(context).pop(); // Close the BottomSheet
+              loadClueInfo();
             },
           );
         });
