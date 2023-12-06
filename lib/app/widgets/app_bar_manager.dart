@@ -19,7 +19,6 @@ class AppBarManager extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0, // Removes shadow
       leading: hasBackButton ? const BackButton() : null,
       title: Image.asset("assets/brand/logos/logo-white.png", height: 60),
-      // title: Image.asset("assets/brand/logos/logo-white.png", height: 60),
       actions: actions,
     );
   }

@@ -8,6 +8,7 @@ import 'package:scoutquest/app/screens/clues/clue_panel.dart';
 import 'package:scoutquest/app/screens/clues/clue_row.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
+import 'package:scoutquest/utils/constants.dart';
 import 'package:scoutquest/utils/logger.dart';
 
 class CluesScreen extends StatefulWidget {
@@ -145,43 +146,64 @@ class CluesScreenState extends State<CluesScreen> {
         appBar: AppBar(),
         hasBackButton: true,
       ),
-      body: RefreshIndicator(
-        onRefresh: () => loadClueInfo(),
-        child: ListView(
-          children: categories.map((category) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    if (category.isExpanded) {
-                      collapseCategory(category);
-                    } else {
-                      expandCategory(category);
-                    }
-                  },
-                  child: CategoryHeader(
-                    category: category,
-                    isExpanded: category.isExpanded,
-                  ),
-                ),
-                if (category.isExpanded)
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: category.clues.length,
-                    itemBuilder: (context, index) {
-                      final clue = category.clues[index];
-                      return ClueRow(
-                        clue: clue,
-                        onTap: () => selectClue(clue),
-                      );
-                    },
-                  ),
-              ],
-            );
-          }).toList(),
-        ),
+      body: Column(
+        children: [
+          // Content below the AppBar
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            width: double.infinity,
+            alignment: Alignment.center,
+            color: ScoutQuestColors.primaryAction,
+            child: Text(
+              widget.quest.name,
+              style: const TextStyle(
+                fontSize: 24.0,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: () => loadClueInfo(),
+              child: ListView(
+                children: categories.map((category) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          if (category.isExpanded) {
+                            collapseCategory(category);
+                          } else {
+                            expandCategory(category);
+                          }
+                        },
+                        child: CategoryHeader(
+                          category: category,
+                          isExpanded: category.isExpanded,
+                        ),
+                      ),
+                      if (category.isExpanded)
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: category.clues.length,
+                          itemBuilder: (context, index) {
+                            final clue = category.clues[index];
+                            return ClueRow(
+                              clue: clue,
+                              onTap: () => selectClue(clue),
+                            );
+                          },
+                        ),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
