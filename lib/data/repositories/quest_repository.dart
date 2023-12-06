@@ -45,6 +45,6 @@ class QuestRepository {
   }
 
   Future<List?> loadQuestsFromJson() async {
-    return await loadJsonFromAsset('assets/quests.json');
+    return await loadJsonFromUrl('http://scoutquest.co/quests/quests.json');
   }
 }

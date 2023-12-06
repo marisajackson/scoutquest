@@ -1,14 +1,12 @@
 import 'dart:convert';
-import 'package:flutter/services.dart';
-import 'package:scoutquest/utils/logger.dart';
+import 'package:http/http.dart' as http;
 
-Future<List?> loadJsonFromAsset(String assetPath) async {
-  try {
-    final jsonString = await rootBundle.loadString(assetPath);
+Future<List?> loadJsonFromUrl(String url) async {
+  final response = await http.get(Uri.parse(url));
 
-    return json.decode(jsonString) as List;
-  } catch (e) {
-    Logger.log('Error loading JSON from asset: $e');
-    return null;
+  if (response.statusCode == 200) {
+    return json.decode(response.body) as List;
+  } else {
+    throw Exception('Failed to load JSON data from $url');
   }
 }

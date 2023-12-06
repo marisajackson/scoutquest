@@ -115,7 +115,7 @@ class CluePanelState extends State<CluePanel> {
               ],
             ),
           if (widget.selectedClue.image != null)
-            Image.asset(
+            Image.network(
               widget.selectedClue.displayImage!,
               height: 200.0,
               fit: BoxFit.cover,
