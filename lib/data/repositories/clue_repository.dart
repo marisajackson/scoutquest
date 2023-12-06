@@ -28,8 +28,6 @@ class ClueRepository {
       clue.status = ClueStatus.values.firstWhere(
           (e) => e.toString() == cluesStatus[clue.id],
           orElse: () => ClueStatus.locked);
-
-      clue.status = ClueStatus.found;
     }
 
     return allClues;
