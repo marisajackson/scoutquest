@@ -28,6 +28,8 @@ class ClueRepository {
       clue.status = ClueStatus.values.firstWhere(
           (e) => e.toString() == cluesStatus[clue.id],
           orElse: () => ClueStatus.locked);
+
+      clue.status = ClueStatus.found;
     }
 
     return allClues;
@@ -46,8 +48,7 @@ class ClueRepository {
   }
 
   Future<List<Clue>> getQuestClues() async {
-    // Load the JSON file containing all quests
-    final clueJSON = await loadJsonFromAsset(quest.clueFile);
+    final clueJSON = await loadJsonFromUrl(quest.clueFile);
 
     if (clueJSON == null) {
       return [];
