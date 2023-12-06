@@ -82,12 +82,6 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   assets:
-  - assets/quests.json
-  - assets/elements/clues.json
-  - assets/elements/audio/FireClue1-4CX6TZPA.mp3
-  - assets/elements/audio/FireClue2-grTp7XkD9.mp3
-  - assets/elements/audio/FireClue3-m4vfVokUV.mp3
-  - assets/elements/images/WaterClue1-oH8AZgEDk.png
   - assets/brand/logos/logo-white.png
   - assets/elements/elements_icon.png
 
