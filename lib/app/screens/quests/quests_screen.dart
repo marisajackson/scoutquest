@@ -52,39 +52,31 @@ class QuestsScreenState extends State<QuestsScreen> {
 
     // if (kDebugMode) {
     // TODO Remove in production
-    processQRCodeQuest(
-        'http://scoutquest.co/quests/quest_element_grTp7XkD9.html');
+    // processQRCodeQuest(
+    //     'http://scoutquest.co/quests/quest_element_grTp7XkD9.html');
     // }
   }
 
-  void processQRCodeQuest(String? scanResult) {
-    Logger.log('QR Code Scanned $scanResult');
+  Future<void> processQRCodeQuest(String? scanResult) async {
     if (scanResult == null) {
       return;
     }
 
-    // sample scan value = "http://scoutquest.co/quests/quest_element_2023.html"
     // regex to extract quest code: quest_element_2023
     RegExp regExp = RegExp(r'\/([^/]+)\.html');
     Match? match = regExp.firstMatch(scanResult);
-
-    Logger.log('Match $match');
 
     // TODO: If it doesn't have a clue prefix, throw error
 
     if (match != null) {
       String questCode = match.group(1)!;
       Logger.log(questCode); // 'quest_element_2023'
-      unlockQuest(questCode);
+      await questRepository.updateUserQuestStatus(
+          questCode, QuestStatus.unlocked);
+      await _loadQuests();
     } else {
       Logger.log('No match found.');
     }
-  }
-
-  Future<void> unlockQuest(String code) async {
-    questRepository.updateUserQuestStatus(code, QuestStatus.unlocked);
-    Navigator.of(context).pop();
-    await _loadQuests();
   }
 
   void _chooseQuest(Quest quest) {

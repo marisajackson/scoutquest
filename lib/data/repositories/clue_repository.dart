@@ -34,9 +34,9 @@ class ClueRepository {
   }
 
   Future<String> initializeUserQuestClues(questClues) async {
-    Map<String, bool> cluesMap = {};
+    Map<String, String> cluesMap = {};
     for (var clue in questClues) {
-      cluesMap[clue.id] = false;
+      cluesMap[clue.id] = ClueStatus.locked.toString();
     }
     var cluesStatus = jsonEncode(cluesMap);
     final prefs = await SharedPreferences.getInstance();

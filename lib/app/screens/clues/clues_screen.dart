@@ -119,7 +119,6 @@ class CluesScreenState extends State<CluesScreen> {
     await loadClueInfo();
     final category = categories.firstWhere((cat) => cat.name == clue.category);
     expandCategory(category);
-    goBack();
     selectClue(clues.firstWhere((clue) => clue.code == code));
   }
 

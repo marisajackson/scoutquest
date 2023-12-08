@@ -4,7 +4,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 class QRScanner extends StatefulWidget {
   final String title;
   final String description;
-  final ValueChanged<String?> onQRCodeScanned;
+  final Function(String?) onQRCodeScanned;
 
   const QRScanner({
     super.key,
@@ -42,6 +42,9 @@ class QRScannerState extends State<QRScanner> {
           const SizedBox(height: 16.0),
           Expanded(
             child: MobileScanner(
+              controller: MobileScannerController(
+                detectionSpeed: DetectionSpeed.noDuplicates,
+              ),
               fit: BoxFit.contain,
               scanWindow: Rect.fromPoints(
                 const Offset(50, 50),
@@ -57,10 +60,10 @@ class QRScannerState extends State<QRScanner> {
 
   void _handleScanResult(capture) {
     final List<Barcode> barcodes = capture.barcodes;
-    for (final barcode in barcodes) {
-      final result = barcode.rawValue;
-      debugPrint('Barcode found! $result');
-      widget.onQRCodeScanned(result);
-    }
+    final barcode = barcodes[0].rawValue;
+    debugPrint('Barcode found! $barcode');
+    widget.onQRCodeScanned(barcode);
+
+    Navigator.of(context).pop();
   }
 }
