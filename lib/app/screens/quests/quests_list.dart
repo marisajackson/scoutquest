@@ -43,11 +43,12 @@ class QuestsList extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Image.asset(
-                    'assets/elements/elements_icon.png',
-                    width: 50,
-                    height: 50,
-                  ),
+                  // Image.asset(
+                  //   'assets/elements/elements_icon.png',
+                  //   width: 50,
+                  //   height: 50,
+                  // ),
+                  const Icon(Icons.park, size: 50, color: Colors.black),
                   const SizedBox(width: 30.0),
                   Expanded(
                     child: Column(
