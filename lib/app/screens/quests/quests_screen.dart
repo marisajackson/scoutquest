@@ -1,0 +1,118 @@
+import 'package:flutter/material.dart';
+import 'package:scoutquest/app.routes.dart';
+import 'package:scoutquest/app/screens/quests/quests_empty.dart';
+import 'package:scoutquest/app/screens/quests/quests_list.dart';
+import 'package:scoutquest/app/models/quest.dart';
+import 'package:scoutquest/app/widgets/app_bar_manager.dart';
+import 'package:scoutquest/app/widgets/qr_scanner.dart';
+import 'package:scoutquest/data/repositories/quest_repository.dart';
+import 'package:scoutquest/utils/logger.dart';
+
+class QuestsScreen extends StatefulWidget {
+  const QuestsScreen({super.key});
+
+  @override
+  QuestsScreenState createState() => QuestsScreenState();
+}
+
+class QuestsScreenState extends State<QuestsScreen> {
+  final QuestRepository questRepository = QuestRepository();
+  List<Quest> quests = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadQuests();
+  }
+
+  Future<void> _loadQuests() async {
+    try {
+      final questList = await questRepository.getAvailableQuests();
+
+      setState(() {
+        quests = questList;
+      });
+    } catch (e) {
+      // Handle errors, e.g., display an error message
+      Logger.log('Error loading quests: $e');
+    }
+  }
+
+  void addQuest() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return QRScanner(
+          title: 'Add Quest',
+          description: 'Scan the Quest QR Code',
+          onQRCodeScanned: processQRCodeQuest,
+        );
+      },
+    );
+
+    // if (kDebugMode) {
+    // TODO Remove in production
+    // processQRCodeQuest(
+    //     'http://scoutquest.co/quests/quest_element_grTp7XkD9.html');
+    // }
+  }
+
+  Future<void> processQRCodeQuest(String? scanResult) async {
+    if (scanResult == null) {
+      return;
+    }
+
+    // regex to extract quest code: quest_element_2023
+    RegExp regExp = RegExp(r'\/([^/]+)\.html');
+    Match? match = regExp.firstMatch(scanResult);
+
+    // TODO: If it doesn't have a clue prefix, throw error
+
+    if (match != null) {
+      String questCode = match.group(1)!;
+      Logger.log(questCode); // 'quest_element_2023'
+      await questRepository.updateUserQuestStatus(
+          questCode, QuestStatus.unlocked);
+      await _loadQuests();
+    } else {
+      Logger.log('No match found.');
+    }
+  }
+
+  void _chooseQuest(Quest quest) {
+    // route to clues screen
+    Navigator.of(context).pushNamed(cluesRoute, arguments: quest);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBarManager(
+        appBar: AppBar(),
+      ),
+      body: quests.isEmpty
+          ? QuestsEmpty(onAddQuest: addQuest)
+          : QuestsList(
+              quests: quests,
+              onRefresh: _loadQuests,
+              onChooseQuest: _chooseQuest,
+            ),
+      floatingActionButton: quests.isNotEmpty
+          ? FloatingActionButton.extended(
+              onPressed: () {
+                // Handle the action when the button is pressed
+                // You can add your code to open a bottom sheet or any other action here
+                addQuest();
+              },
+              label: const Text(
+                "Add Quest",
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 18.0,
+                ),
+              ), // Change the button label // Add an optional icon
+            )
+          : null,
+    );
+  }
+}

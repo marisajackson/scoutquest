@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:scoutquest/utils/logger.dart';
 
 class AudioControlWidget extends StatefulWidget {
   final String audioAsset;
@@ -24,7 +25,7 @@ class AudioControlWidgetState extends State<AudioControlWidget> {
 
   void playAudio(String audioAsset) async {
     if (!isPlaying) {
-      await audioPlayer.play(AssetSource(audioAsset));
+      await audioPlayer.play(UrlSource(audioAsset));
       setState(() {
         isPlaying = true;
       });
@@ -45,6 +46,7 @@ class AudioControlWidgetState extends State<AudioControlWidget> {
 
         // Determine the icon based on the player state
         IconData icon;
+        Logger.log(playerState.toString());
         if (playerState == PlayerState.playing) {
           icon = Icons.pause;
         } else {

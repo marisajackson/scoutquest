@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:scoutquest/data/models/clue_info.dart';
+import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/app/widgets/icon.dart';
 
 class ClueRow extends StatelessWidget {
-  final ClueInfo clue;
+  final Clue clue;
   final VoidCallback onTap;
 
   const ClueRow({
@@ -26,7 +26,9 @@ class ClueRow extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Icon(
-              IconUtil.getIconForClueType(clue.type),
+              clue.isUnlocked
+                  ? IconUtil.getIconForClueType(clue.type)
+                  : Icons.lock,
               size: 50.0,
             ),
             const SizedBox(width: 16.0),
@@ -37,21 +39,23 @@ class ClueRow extends StatelessWidget {
                   Text(
                     clue.label,
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w900,
                       fontSize: 18.0,
                     ),
                   ),
                   const SizedBox(height: 8.0),
                   Text(
-                    clue.text,
-                    style: const TextStyle(fontSize: 16.0),
+                    clue.isFound ? clue.getShortText : '???',
+                    style: const TextStyle(
+                        fontSize: 16.0, fontWeight: FontWeight.w900),
                   ),
                   const SizedBox(height: 8.0),
                   Text(
-                    clue.type,
-                    style: const TextStyle(
+                    clue.isFound ? clue.type : '???',
+                    style: TextStyle(
                       fontSize: 14.0,
-                      color: Colors.grey,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.grey.shade700,
                     ),
                   ),
                 ],
