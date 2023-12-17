@@ -8,6 +8,7 @@ import 'package:scoutquest/app/screens/clues/clue_panel.dart';
 import 'package:scoutquest/app/screens/clues/clue_row.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
+import 'package:scoutquest/utils/alert.dart';
 import 'package:scoutquest/utils/constants.dart';
 import 'package:scoutquest/utils/logger.dart';
 
@@ -92,18 +93,27 @@ class CluesScreenState extends State<CluesScreen> {
     if (value == null) {
       return;
     }
+
+    if (!value.contains("/clues/")) {
+      Alert.toastBottom('Invalid QR Code.');
+      return;
+    }
+
     // sample scan value = "http://scoutquest.co/quests/quest_element_2023/clues/FireClue1-4CX6TZPA.html"
     RegExp regExp = RegExp(r'\/([A-Za-z0-9-]+)\.html');
     Match? match = regExp.firstMatch(value);
 
-    // TODO: If it doesn't have a clue prefix, throw error
-
     if (match != null) {
       String clueCode = match.group(1)!;
-      Logger.log(clueCode); // 'FireClue1-4CX6TZPA'
-      markClueFound(clueCode);
+      clueRepository.verifyClue(clueCode).then((isValid) {
+        if (isValid) {
+          markClueFound(clueCode);
+        } else {
+          Alert.toastBottom('Invalid QR Code. 2');
+        }
+      });
     } else {
-      Logger.log('No match found.');
+      Alert.toastBottom('Invalid QR Code. 1');
     }
   }
 
