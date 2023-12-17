@@ -31,6 +31,24 @@ class QuestRepository {
     return availableQuests;
   }
 
+  Future<bool> verifyQuest(String questID) async {
+    final questJSON = await loadQuestsFromJson();
+
+    if (questJSON == null) {
+      return false; // Handle if JSON data is not available
+    }
+
+    final quest = questJSON.firstWhere(
+        (questJson) => questJson['id'] == questID,
+        orElse: () => null);
+
+    if (quest == null) {
+      return false; // Handle if quest is not found
+    }
+
+    return true;
+  }
+
   Future<QuestStatus> getUserQuestStatus(String questID) async {
     final preferences = await SharedPreferences.getInstance();
     var statusString = preferences.getString(questID);

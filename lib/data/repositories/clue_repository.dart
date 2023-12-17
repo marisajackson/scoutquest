@@ -59,6 +59,17 @@ class ClueRepository {
     return allClues;
   }
 
+  Future verifyClue(String clueID) async {
+    final clues = await getQuestClues();
+
+    bool clueExists = clues.any((clue) => clue.code == clueID);
+
+    if (!clueExists) {
+      return false;
+    }
+    return true;
+  }
+
   Future getUserQuestClueStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final cluesStatus = prefs.getString('${quest.id}-clues');
