@@ -10,7 +10,6 @@ import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
 import 'package:scoutquest/utils/alert.dart';
 import 'package:scoutquest/utils/constants.dart';
-import 'package:scoutquest/utils/logger.dart';
 
 class CluesScreen extends StatefulWidget {
   final Quest quest;
