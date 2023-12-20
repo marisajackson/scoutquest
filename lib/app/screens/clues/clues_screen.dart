@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scoutquest/app.routes.dart';
 import 'package:scoutquest/app/models/clue_category.dart';
 import 'package:scoutquest/app/screens/clues/category_header.dart';
 import 'package:scoutquest/app/widgets/app_bar_manager.dart';
@@ -132,7 +133,7 @@ class CluesScreenState extends State<CluesScreen> {
   }
 
   void goBack() {
-    Navigator.of(context).pop();
+    Navigator.of(context).pushNamed(cluesRoute, arguments: widget.quest);
   }
 
   void collapseCategory(ClueCategory category) {
@@ -150,6 +151,7 @@ class CluesScreenState extends State<CluesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBarManager(
         appBar: AppBar(),
         hasBackButton: true,
