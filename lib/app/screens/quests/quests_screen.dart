@@ -40,6 +40,8 @@ class QuestsScreenState extends State<QuestsScreen> {
   }
 
   void addQuest() {
+    // processQRCodeQuest(
+    //     'http://scoutquest.co/quests/quest_element_grTp7XkD9.html');
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
