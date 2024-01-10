@@ -25,6 +25,7 @@ class CluesScreenState extends State<CluesScreen> {
   List<Clue> clues = [];
   Clue? selectedClue;
   late ClueRepository clueRepository;
+  bool isBottomSheetOpen = false;
 
   @override
   void initState() {
@@ -77,6 +78,7 @@ class CluesScreenState extends State<CluesScreen> {
   }
 
   void addClue() {
+    setState(() => isBottomSheetOpen = true);
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -86,12 +88,16 @@ class CluesScreenState extends State<CluesScreen> {
           onQRCodeScanned: processQRCodeClue,
         );
       },
-    );
+    ).then((_) => {setState(() => isBottomSheetOpen = false)});
   }
 
   void processQRCodeClue(String? value) {
     if (value == null) {
       return;
+    }
+
+    if (isBottomSheetOpen) {
+      Navigator.of(context).pop();
     }
 
     if (!value.contains("/clues/")) {

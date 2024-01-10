@@ -19,6 +19,7 @@ class QuestsScreen extends StatefulWidget {
 class QuestsScreenState extends State<QuestsScreen> {
   final QuestRepository questRepository = QuestRepository();
   List<Quest> quests = [];
+  bool isBottomSheetOpen = false;
 
   @override
   void initState() {
@@ -42,6 +43,8 @@ class QuestsScreenState extends State<QuestsScreen> {
   void addQuest() {
     // processQRCodeQuest(
     //     'http://scoutquest.co/quests/quest_element_grTp7XkD9.html');
+    setState(() => isBottomSheetOpen = true);
+
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -51,12 +54,16 @@ class QuestsScreenState extends State<QuestsScreen> {
           onQRCodeScanned: processQRCodeQuest,
         );
       },
-    );
+    ).then((_) => {setState(() => isBottomSheetOpen = false)});
   }
 
   Future<void> processQRCodeQuest(String? scanResult) async {
     if (scanResult == null) {
       return;
+    }
+
+    if (isBottomSheetOpen) {
+      Navigator.of(context).pop();
     }
 
     if (!scanResult.contains("/quests/")) {

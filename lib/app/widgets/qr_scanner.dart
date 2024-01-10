@@ -64,7 +64,5 @@ class QRScannerState extends State<QRScanner> {
     final barcode = barcodes[0].rawValue;
     debugPrint('Barcode found! $barcode');
     widget.onQRCodeScanned(barcode);
-
-    Navigator.of(context).pop();
   }
 }
