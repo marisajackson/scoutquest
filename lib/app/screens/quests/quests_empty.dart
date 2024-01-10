@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scoutquest/utils/constants.dart';
 
 class QuestsEmpty extends StatelessWidget {
   const QuestsEmpty({
