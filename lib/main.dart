@@ -24,6 +24,7 @@ class Lava extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Scout Quest',
+      debugShowCheckedModeBanner: false,
       theme: buildAppTheme(),
       initialRoute: initialRoute,
       routes: routes,
