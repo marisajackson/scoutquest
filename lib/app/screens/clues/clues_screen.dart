@@ -22,6 +22,7 @@ class CluesScreen extends StatefulWidget {
 
 class CluesScreenState extends State<CluesScreen> {
   List<ClueCategory> categories = [];
+  List<Clue> uncategorizedClues = [];
   List<Clue> clues = [];
   Clue? selectedClue;
   late ClueRepository clueRepository;
@@ -36,9 +37,15 @@ class CluesScreenState extends State<CluesScreen> {
 
   Future<void> loadClueInfo() async {
     clues = await clueRepository.getUserQuestClues();
+    final List<Clue> noCategory = [];
     final List<ClueCategory> loadedCategories = [];
 
     for (final clue in clues) {
+      if (clue.category.trim().isEmpty) {
+        noCategory.add(clue);
+        continue;
+      }
+
       final category = loadedCategories
           .firstWhere((cat) => cat.name == clue.category, orElse: () {
         final newCategory = ClueCategory(name: clue.category, clues: []);
@@ -50,6 +57,7 @@ class CluesScreenState extends State<CluesScreen> {
 
     setState(() {
       categories = loadedCategories;
+      uncategorizedClues = noCategory;
     });
   }
 
@@ -183,39 +191,44 @@ class CluesScreenState extends State<CluesScreen> {
             child: RefreshIndicator(
               onRefresh: () => loadClueInfo(),
               child: ListView(
-                children: categories.map((category) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          if (category.isExpanded) {
-                            collapseCategory(category);
-                          } else {
-                            expandCategory(category);
-                          }
-                        },
-                        child: CategoryHeader(
-                          category: category,
-                          isExpanded: category.isExpanded,
+                children: [
+                  if (uncategorizedClues.isNotEmpty) ...[
+                    ...uncategorizedClues.map((clue) => ClueRow(
+                          clue: clue,
+                          onTap: () => selectClue(clue),
+                        )),
+                    const Divider(),
+                  ],
+                  ...categories.map((category) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () => category.isExpanded
+                              ? collapseCategory(category)
+                              : expandCategory(category),
+                          child: CategoryHeader(
+                            category: category,
+                            isExpanded: category.isExpanded,
+                          ),
                         ),
-                      ),
-                      if (category.isExpanded)
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: category.clues.length,
-                          itemBuilder: (context, index) {
-                            final clue = category.clues[index];
-                            return ClueRow(
-                              clue: clue,
-                              onTap: () => selectClue(clue),
-                            );
-                          },
-                        ),
-                    ],
-                  );
-                }).toList(),
+                        if (category.isExpanded)
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: category.clues.length,
+                            itemBuilder: (ctx, index) {
+                              final clue = category.clues[index];
+                              return ClueRow(
+                                clue: clue,
+                                onTap: () => selectClue(clue),
+                              );
+                            },
+                          ),
+                      ],
+                    );
+                  }).toList(),
+                ],
               ),
             ),
           ),

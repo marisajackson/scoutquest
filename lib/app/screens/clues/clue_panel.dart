@@ -46,86 +46,117 @@ class CluePanelState extends State<CluePanel> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      // padding: const EdgeInsets.all(16.0),
-      padding: EdgeInsets.fromLTRB(
-          16, 16, 16, MediaQuery.of(context).viewInsets.bottom),
+    final maxHeight = MediaQuery.of(context).size.height * 0.8;
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        // The sheet will grow to fit its content,
+        // but never beyond 60% of screen height.
+        maxHeight: maxHeight,
+      ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            widget.selectedClue.label,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 24.0,
+          // ——————— Drag Handle ———————
+          Container(
+            width: 70,
+            height: 4,
+            margin: const EdgeInsets.fromLTRB(0, 16, 0, 12),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade400,
+              borderRadius: BorderRadius.circular(2),
             ),
           ),
-          Html(
-            data:
-                "<div style='text-align: center; font-size: 18px; font-weight: bold;'>${widget.selectedClue.displayText}</div>",
-          ),
-          const SizedBox(height: 16.0),
-          if (widget.selectedClue.hasSecret && !widget.selectedClue.isUnlocked)
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: TextField(
-                    controller: _secretCodeController,
+
+          // ————— Scrollable Content —————
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(
+                16,
+                16,
+                16,
+                MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.selectedClue.label,
                     style: const TextStyle(
-                      fontSize: 24.0,
                       fontWeight: FontWeight.bold,
-                    ),
-                    decoration: defaultInputDecoration.copyWith(
-                      labelText: 'Enter Secret Code',
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        secretCodeIncorrect = false;
-                      });
-                    },
-                  ),
-                ),
-                if (secretCodeIncorrect)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text(
-                      'Incorrect secret code',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
-                      ),
-                    ),
-                  ),
-                const SizedBox(height: 8.0),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0, vertical: 8.0),
-                  ),
-                  onPressed: () =>
-                      submitSecretCode(), // Pass the secret code to the callback
-                  child: const Text(
-                    'Submit',
-                    style: TextStyle(
                       fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-              ],
+                  Html(
+                    data:
+                        "<div style='text-align: center; font-size: 18px; font-weight: bold;'>${widget.selectedClue.displayText}</div>",
+                  ),
+                  const SizedBox(height: 16.0),
+                  if (widget.selectedClue.hasSecret &&
+                      !widget.selectedClue.isUnlocked)
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: TextField(
+                            controller: _secretCodeController,
+                            style: const TextStyle(
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            decoration: defaultInputDecoration.copyWith(
+                              labelText: 'Enter Secret Code',
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                secretCodeIncorrect = false;
+                              });
+                            },
+                          ),
+                        ),
+                        if (secretCodeIncorrect)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              'Incorrect secret code',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0,
+                              ),
+                            ),
+                          ),
+                        const SizedBox(height: 8.0),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24.0, vertical: 8.0),
+                          ),
+                          onPressed: () =>
+                              submitSecretCode(), // Pass the secret code to the callback
+                          child: const Text(
+                            'Submit',
+                            style: TextStyle(
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  if (widget.selectedClue.image != null)
+                    Image.network(
+                      widget.selectedClue.displayImage!,
+                      height: 200.0,
+                      fit: BoxFit.cover,
+                    ),
+                  if (widget.selectedClue.audio != null)
+                    AudioControlWidget(audioAsset: widget.selectedClue.audio!),
+                  const SizedBox(height: 40.0),
+                ],
+              ),
             ),
-          if (widget.selectedClue.image != null)
-            Image.network(
-              widget.selectedClue.displayImage!,
-              height: 200.0,
-              fit: BoxFit.cover,
-            ),
-          if (widget.selectedClue.audio != null)
-            AudioControlWidget(audioAsset: widget.selectedClue.audio!),
-          const SizedBox(height: 40.0),
+          )
         ],
       ),
     );
