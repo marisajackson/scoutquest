@@ -11,6 +11,7 @@ class Clue {
   final String? secretText;
   final String? secretImage;
   final String? shortText;
+  final List<dynamic>? correctOrder;
   ClueStatus status = ClueStatus.locked;
 
   bool get isFound =>
@@ -71,6 +72,7 @@ class Clue {
     this.secretImage,
     this.audio,
     this.image,
+    this.correctOrder,
   });
 
   factory Clue.fromJson(Map<String, dynamic> json) {
@@ -87,6 +89,7 @@ class Clue {
       secretText: json['secretText'],
       secretImage: json['secretImage'],
       shortText: json['shortText'],
+      correctOrder: json['correctOrder'],
     );
   }
 }

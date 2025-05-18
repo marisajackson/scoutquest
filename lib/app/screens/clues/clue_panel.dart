@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:scoutquest/app/models/clue.dart';
@@ -25,6 +26,17 @@ class CluePanelState extends State<CluePanel> {
   bool secretCodeIncorrect = false;
   final TextEditingController _secretCodeController = TextEditingController();
 
+  late List<String> _draggableItems;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.selectedClue.correctOrder == null ||
+        widget.selectedClue.correctOrder!.isEmpty) {
+      return;
+    }
+    _draggableItems = List.from(widget.selectedClue.correctOrder!)..shuffle();
+  }
+
   void submitSecretCode() {
     final secretCodeGuess = _secretCodeController.text.toLowerCase();
 
@@ -44,13 +56,36 @@ class CluePanelState extends State<CluePanel> {
     });
   }
 
+  void _onReorder(int oldIndex, int newIndex) {
+    setState(() {
+      if (newIndex > oldIndex) newIndex--;
+      final item = _draggableItems.removeAt(oldIndex);
+      _draggableItems.insert(newIndex, item);
+    });
+  }
+
+  void _submitOrder() {
+    final correct = widget.selectedClue.correctOrder!;
+    if (listEquals(_draggableItems, correct)) {
+      widget.clueRepository
+          .updateClueStatus(widget.selectedClue.id, ClueStatus.unlocked);
+      setState(() => widget.selectedClue.status = ClueStatus.unlocked);
+      print('UNLOCKED!');
+    } else {
+      print('Incorrect order');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final hasDrag = widget.selectedClue.correctOrder != null &&
+        widget.selectedClue.correctOrder!.isNotEmpty;
+
     final maxHeight = MediaQuery.of(context).size.height * 0.8;
     return ConstrainedBox(
       constraints: BoxConstraints(
         // The sheet will grow to fit its content,
-        // but never beyond 60% of screen height.
+        // but never beyond 80% of screen height.
         maxHeight: maxHeight,
       ),
       child: Column(
@@ -153,6 +188,47 @@ class CluePanelState extends State<CluePanel> {
                   if (widget.selectedClue.audio != null)
                     AudioControlWidget(audioAsset: widget.selectedClue.audio!),
                   const SizedBox(height: 40.0),
+                  if (hasDrag) ...[
+                    ReorderableListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      onReorder: _onReorder,
+                      buildDefaultDragHandles: false,
+                      proxyDecorator: (child, index, animation) {
+                        return FadeTransition(
+                          opacity: animation.drive(Tween(begin: 0.8, end: 1.0)),
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: child,
+                          ),
+                        );
+                      },
+                      children: [
+                        for (int index = 0;
+                            index < _draggableItems.length;
+                            index++)
+                          Align(
+                            key: ValueKey(_draggableItems[index]),
+                            alignment: Alignment.center,
+                            widthFactor: 1.0, // ✏️ only as wide as its child
+                            child: ReorderableDragStartListener(
+                              index: index,
+                              child:
+                                  _buildItemBox(_draggableItems[index], index),
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: _submitOrder,
+                      child: const Text(
+                        'Submit Order',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ],
               ),
             ),
@@ -161,4 +237,34 @@ class CluePanelState extends State<CluePanel> {
       ),
     );
   }
+}
+
+Widget _buildItemBox(String text, int index) {
+  return Container(
+    width: 250,
+    margin: const EdgeInsets.symmetric(vertical: 6),
+    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+    decoration: BoxDecoration(
+      color: Colors.grey.shade200,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: Colors.grey.shade400),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.drag_indicator, color: Colors.grey.shade600),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    ),
+  );
 }
