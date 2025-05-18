@@ -25,35 +25,28 @@ class CluePanel extends StatefulWidget {
 class CluePanelState extends State<CluePanel> {
   bool secretCodeIncorrect = false;
   final TextEditingController _secretCodeController = TextEditingController();
+  late final List<String> _draggableItems;
 
-  late List<String> _draggableItems;
   @override
   void initState() {
     super.initState();
-    if (widget.selectedClue.correctOrder == null ||
-        widget.selectedClue.correctOrder!.isEmpty) {
-      return;
+    if (widget.selectedClue.correctOrder != null &&
+        widget.selectedClue.correctOrder!.isNotEmpty) {
+      _draggableItems = List.from(widget.selectedClue.correctOrder!)..shuffle();
     }
-    _draggableItems = List.from(widget.selectedClue.correctOrder!)..shuffle();
   }
 
-  void submitSecretCode() {
-    final secretCodeGuess = _secretCodeController.text.toLowerCase();
-
-    if (secretCodeGuess != widget.selectedClue.secretCode) {
-      setState(() {
-        secretCodeIncorrect = true;
-      });
+  void _submitSecretCode() {
+    final guess = _secretCodeController.text.toLowerCase();
+    if (guess != widget.selectedClue.secretCode) {
+      setState(() => secretCodeIncorrect = true);
       _secretCodeController.clear();
       return;
     }
 
     widget.clueRepository
         .updateClueStatus(widget.selectedClue.id, ClueStatus.unlocked);
-
-    setState(() {
-      widget.selectedClue.status = ClueStatus.unlocked;
-    });
+    setState(() => widget.selectedClue.status = ClueStatus.unlocked);
   }
 
   void _onReorder(int oldIndex, int newIndex) {
@@ -65,13 +58,13 @@ class CluePanelState extends State<CluePanel> {
   }
 
   void _submitOrder() {
-    final correct = widget.selectedClue.correctOrder!;
-    if (listEquals(_draggableItems, correct)) {
+    if (listEquals(_draggableItems, widget.selectedClue.correctOrder)) {
       widget.clueRepository
           .updateClueStatus(widget.selectedClue.id, ClueStatus.unlocked);
       setState(() => widget.selectedClue.status = ClueStatus.unlocked);
-      print('UNLOCKED!');
+      print('Unlocked');
     } else {
+      // you could swap print() for Alert.toastBottom or similar
       print('Incorrect order');
     }
   }
@@ -80,29 +73,14 @@ class CluePanelState extends State<CluePanel> {
   Widget build(BuildContext context) {
     final hasDrag = widget.selectedClue.correctOrder != null &&
         widget.selectedClue.correctOrder!.isNotEmpty;
-
     final maxHeight = MediaQuery.of(context).size.height * 0.8;
+
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        // The sheet will grow to fit its content,
-        // but never beyond 80% of screen height.
-        maxHeight: maxHeight,
-      ),
+      constraints: BoxConstraints(maxHeight: maxHeight),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ——————— Drag Handle ———————
-          Container(
-            width: 70,
-            height: 4,
-            margin: const EdgeInsets.fromLTRB(0, 16, 0, 12),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade400,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-
-          // ————— Scrollable Content —————
+          _buildHandle(),
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.fromLTRB(
@@ -112,159 +90,161 @@ class CluePanelState extends State<CluePanel> {
                 MediaQuery.of(context).viewInsets.bottom,
               ),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    widget.selectedClue.label,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24.0,
-                    ),
-                  ),
-                  Html(
-                    data:
-                        "<div style='text-align: center; font-size: 18px; font-weight: bold;'>${widget.selectedClue.displayText}</div>",
-                  ),
-                  const SizedBox(height: 16.0),
+                  _buildLabel(),
+                  const SizedBox(height: 12),
+                  _buildDescription(),
+                  const SizedBox(height: 16),
                   if (widget.selectedClue.hasSecret &&
                       !widget.selectedClue.isUnlocked)
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: TextField(
-                            controller: _secretCodeController,
-                            style: const TextStyle(
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            decoration: defaultInputDecoration.copyWith(
-                              labelText: 'Enter Secret Code',
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                secretCodeIncorrect = false;
-                              });
-                            },
-                          ),
-                        ),
-                        if (secretCodeIncorrect)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Text(
-                              'Incorrect secret code',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.error,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.0,
-                              ),
-                            ),
-                          ),
-                        const SizedBox(height: 8.0),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 24.0, vertical: 8.0),
-                          ),
-                          onPressed: () =>
-                              submitSecretCode(), // Pass the secret code to the callback
-                          child: const Text(
-                            'Submit',
-                            style: TextStyle(
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (widget.selectedClue.image != null)
-                    Image.network(
-                      widget.selectedClue.displayImage!,
-                      height: 200.0,
-                      fit: BoxFit.cover,
-                    ),
-                  if (widget.selectedClue.audio != null)
-                    AudioControlWidget(audioAsset: widget.selectedClue.audio!),
-                  const SizedBox(height: 40.0),
-                  if (hasDrag) ...[
-                    ReorderableListView(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      onReorder: _onReorder,
-                      buildDefaultDragHandles: false,
-                      proxyDecorator: (child, index, animation) {
-                        return FadeTransition(
-                          opacity: animation.drive(Tween(begin: 0.8, end: 1.0)),
-                          child: Material(
-                            type: MaterialType.transparency,
-                            child: child,
-                          ),
-                        );
-                      },
-                      children: [
-                        for (int index = 0;
-                            index < _draggableItems.length;
-                            index++)
-                          Align(
-                            key: ValueKey(_draggableItems[index]),
-                            alignment: Alignment.center,
-                            widthFactor: 1.0, // ✏️ only as wide as its child
-                            child: ReorderableDragStartListener(
-                              index: index,
-                              child:
-                                  _buildItemBox(_draggableItems[index], index),
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _submitOrder,
-                      child: const Text(
-                        'Submit Order',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                  ],
+                    _buildSecretCodeEntry(),
+                  _buildMedia(),
+                  if (hasDrag) _buildDragSection(),
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
-}
 
-Widget _buildItemBox(String text, int index) {
-  return Container(
-    width: 250,
-    margin: const EdgeInsets.symmetric(vertical: 6),
-    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-    decoration: BoxDecoration(
-      color: Colors.grey.shade200,
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: Colors.grey.shade400),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
+  Widget _buildHandle() => Container(
+        width: 70,
+        height: 4,
+        margin: const EdgeInsets.fromLTRB(0, 16, 0, 12),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade400,
+          borderRadius: BorderRadius.circular(2),
+        ),
+      );
+
+  Widget _buildLabel() => Text(
+        widget.selectedClue.label,
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
+        textAlign: TextAlign.center,
+      );
+
+  Widget _buildDescription() => Html(
+        data:
+            "<div style='text-align: center; font-size: 18px; font-weight: bold;'>${widget.selectedClue.displayText}</div>",
+      );
+
+  Widget _buildSecretCodeEntry() {
+    return Column(
       children: [
-        Icon(Icons.drag_indicator, color: Colors.grey.shade600),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
-            textAlign: TextAlign.center,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: TextField(
+            controller: _secretCodeController,
+            style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+            decoration:
+                defaultInputDecoration.copyWith(labelText: 'Enter Secret Code'),
+            onChanged: (_) => setState(() => secretCodeIncorrect = false),
           ),
         ),
+        if (secretCodeIncorrect)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              'Incorrect secret code',
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.error,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0),
+            ),
+          ),
+        const SizedBox(height: 8.0),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0)),
+          onPressed: _submitSecretCode,
+          child: const Text('Submit',
+              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold)),
+        ),
+        const SizedBox(height: 24.0),
       ],
-    ),
-  );
+    );
+  }
+
+  Widget _buildMedia() {
+    return Column(
+      children: [
+        if (widget.selectedClue.image != null)
+          Image.network(widget.selectedClue.displayImage!,
+              height: 200.0, fit: BoxFit.cover),
+        if (widget.selectedClue.audio != null)
+          AudioControlWidget(audioAsset: widget.selectedClue.audio!),
+        const SizedBox(height: 40.0),
+      ],
+    );
+  }
+
+  Widget _buildDragSection() {
+    return Column(
+      children: [
+        ReorderableListView(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          onReorder: _onReorder,
+          buildDefaultDragHandles: false,
+          proxyDecorator: (child, index, animation) => FadeTransition(
+            opacity: animation.drive(Tween(begin: 0.8, end: 1.0)),
+            child: Material(type: MaterialType.transparency, child: child),
+          ),
+          children: [
+            for (int i = 0; i < _draggableItems.length; i++)
+              Align(
+                key: ValueKey(_draggableItems[i]),
+                alignment: Alignment.center,
+                widthFactor: 1.0,
+                child: ReorderableDragStartListener(
+                  index: i,
+                  child: _buildItemBox(_draggableItems[i]),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0)),
+          onPressed: _submitOrder,
+          child: const Text('Submit',
+              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold)),
+        ),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+
+  Widget _buildItemBox(String text) {
+    return Container(
+      width: 250,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade400),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.drag_indicator, color: Colors.grey),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
