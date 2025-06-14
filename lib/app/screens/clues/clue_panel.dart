@@ -1,12 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
 import 'package:scoutquest/utils/constants.dart';
 
-// TODO - fix ordering
-
-/// A panel that walks through each step defined in Clu.steps
+/// A panel that walks through each step defined in Clue.steps
 class CluePanel extends StatefulWidget {
   final Clue clue;
   final VoidCallback onTap;
@@ -72,6 +71,7 @@ class CluePanelState extends State<CluePanel> {
               ),
             ),
           ),
+          const SizedBox(height: 40),
         ],
       ),
     );
@@ -172,7 +172,7 @@ class CluePanelState extends State<CluePanel> {
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
         ),
-        onPressed: _advance,
+        onPressed: _submitOrder,
         child: const Text('Submit',
             style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold)),
       ),
@@ -216,6 +216,15 @@ class CluePanelState extends State<CluePanel> {
             style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold)),
       ),
     ]);
+  }
+
+  void _submitOrder() {
+    if (listEquals(_draggableItems, _currentStep.correctOrder)) {
+      _advance();
+    } else {
+      // you could swap print() for Alert.toastBottom or similar
+      print('Incorrect order');
+    }
   }
 
   void _advance() {
