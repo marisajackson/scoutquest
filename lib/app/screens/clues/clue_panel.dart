@@ -5,7 +5,6 @@ import 'package:scoutquest/data/repositories/clue_repository.dart';
 import 'package:scoutquest/utils/constants.dart';
 
 // TODO - fix ordering
-// TODO - title should be fixed
 
 /// A panel that walks through each step defined in Clu.steps
 class CluePanel extends StatefulWidget {
@@ -57,6 +56,10 @@ class CluePanelState extends State<CluePanel> {
         mainAxisSize: MainAxisSize.min,
         children: [
           _buildHandle(),
+          Text(widget.clue.label,
+              style:
+                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 26)),
+          const SizedBox(height: 12),
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.fromLTRB(
@@ -64,10 +67,6 @@ class CluePanelState extends State<CluePanel> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(widget.clue.label,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 26)),
-                  const SizedBox(height: 12),
                   _buildStepContent(_currentStep),
                 ],
               ),
