@@ -17,7 +17,7 @@ class CategoryHeader extends StatelessWidget {
     double progress = 0;
 
     for (Clue clue in clues) {
-      progress += clue.clueProgress;
+      progress += clue.getProgress;
     }
 
     return progress;

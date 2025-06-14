@@ -11,23 +11,33 @@ class ClueRepository {
   Future<List<Clue>> getUserQuestClues() async {
     final allClues = await getQuestClues();
 
-    var cluesStatus = await getUserQuestClueStatus();
+    var cluesProgress = await getUserQuestClueProgress();
 
-    cluesStatus ??= await initializeUserQuestClues(allClues);
+    cluesProgress ??= await initializeUserQuestClues(allClues);
 
-    cluesStatus = jsonDecode(cluesStatus);
-    cluesStatus = Map<String, String>.from(cluesStatus);
+    cluesProgress = jsonDecode(cluesProgress);
+    cluesProgress = Map<String, String>.from(cluesProgress);
 
     for (var clue in allClues) {
-      if (!cluesStatus.containsKey(clue.id)) {
-        cluesStatus[clue.id] = ClueStatus.locked.toString();
+      if (!cluesProgress.containsKey(clue.id)) {
+        cluesProgress[clue.id] = '0';
         final prefs = await SharedPreferences.getInstance();
-        prefs.setString('$quest.id-clues', jsonEncode(cluesStatus));
+        prefs.setString('$quest.id-clues', jsonEncode(cluesProgress));
       }
 
-      clue.status = ClueStatus.values.firstWhere(
-          (e) => e.toString() == cluesStatus[clue.id],
-          orElse: () => ClueStatus.locked);
+      // if the clue progress is a number, set the progress step
+      if (int.tryParse(cluesProgress[clue.id] ?? '') != null) {
+        clue.progressStep = int.parse(cluesProgress[clue.id]!);
+      } else {
+        // map the clue status to the progress step
+        clue.progressStep = ClueStatus.values
+            .indexWhere((e) => e.toString() == cluesProgress[clue.id]);
+        if (clue.progressStep == -1) {
+          clue.progressStep = 0;
+        }
+      }
+
+      // clue.progressStep = 1; // TODO FOR TESTING ONLY
     }
 
     return allClues;
@@ -70,10 +80,26 @@ class ClueRepository {
     return true;
   }
 
-  Future getUserQuestClueStatus() async {
+  Future getUserQuestClueProgress() async {
     final prefs = await SharedPreferences.getInstance();
     final cluesStatus = prefs.getString('${quest.id}-clues');
     return cluesStatus;
+  }
+
+  Future updateClueProgress(clueID, int progressStep) async {
+    final prefs = await SharedPreferences.getInstance();
+    final cluesStatus = prefs.getString('${quest.id}-clues');
+    if (cluesStatus == null) {
+      Map<String, String> cluesMap = {};
+      cluesMap[clueID] = 0.toString();
+      prefs.setString('${quest.id}-clues', jsonEncode(cluesMap));
+      return;
+    }
+
+    final cluesJSON = jsonDecode(cluesStatus);
+    Map<String, String> cluesMap = Map<String, String>.from(cluesJSON);
+    cluesMap[clueID] = progressStep.toString();
+    prefs.setString('${quest.id}-clues', jsonEncode(cluesMap));
   }
 
   Future updateClueStatus(clueID, ClueStatus status) async {

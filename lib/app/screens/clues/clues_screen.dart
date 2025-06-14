@@ -41,14 +41,14 @@ class CluesScreenState extends State<CluesScreen> {
     final List<ClueCategory> loadedCategories = [];
 
     for (final clue in clues) {
-      if (clue.category.trim().isEmpty) {
+      if (clue.category == null || clue.category?.trim().isEmpty == true) {
         noCategory.add(clue);
         continue;
       }
 
       final category = loadedCategories
           .firstWhere((cat) => cat.name == clue.category, orElse: () {
-        final newCategory = ClueCategory(name: clue.category, clues: []);
+        final newCategory = ClueCategory(name: clue.category ?? '', clues: []);
         loadedCategories.add(newCategory);
         return newCategory;
       });
@@ -76,7 +76,7 @@ class CluesScreenState extends State<CluesScreen> {
         builder: (BuildContext context) {
           return CluePanel(
             clueRepository: clueRepository,
-            selectedClue: clue,
+            clue: clue,
             onTap: () {
               Navigator.of(context).pop(); // Close the BottomSheet
               loadClueInfo();
@@ -134,11 +134,8 @@ class CluesScreenState extends State<CluesScreen> {
   Future<void> markClueFound(String code) async {
     final clue = clues.firstWhere((clue) => clue.code == code);
 
-    if (clue.hasSecret) {
-      clueRepository.updateClueStatus(clue.id, ClueStatus.found);
-    } else {
-      clueRepository.updateClueStatus(clue.id, ClueStatus.unlocked);
-    }
+    clueRepository.updateClueStatus(clue.id, ClueStatus.found);
+    clueRepository.updateClueProgress(clue.id, 1);
 
     await loadClueInfo();
     final category = categories.firstWhere((cat) => cat.name == clue.category);
