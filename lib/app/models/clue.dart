@@ -12,7 +12,10 @@ class Clue {
   bool get isUnlocked => progressStep > 0;
 
   ClueStep get currentStep {
-    return steps[progressStep];
+    return steps.firstWhere(
+      (s) => s.step == progressStep,
+      orElse: () => steps.first,
+    );
   }
 
   String get getShortText {

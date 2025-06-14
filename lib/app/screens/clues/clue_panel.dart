@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
+import 'package:scoutquest/utils/constants.dart';
 
-// TODO - fix styles of html
+// TODO - fix ordering
 // TODO - title should be fixed
 
 /// A panel that walks through each step defined in Clu.steps
@@ -65,7 +66,7 @@ class CluePanelState extends State<CluePanel> {
                 children: [
                   Text(widget.clue.label,
                       style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 24)),
+                          fontWeight: FontWeight.bold, fontSize: 26)),
                   const SizedBox(height: 12),
                   _buildStepContent(_currentStep),
                 ],
@@ -98,7 +99,10 @@ class CluePanelState extends State<CluePanel> {
     // default: display HTML or plain text
     return Column(
       children: [
-        Html(data: step.text),
+        Html(
+          data:
+              "<div style='text-align: center; font-size: 18px; font-weight: bold;'>${step.text}</div>",
+        ),
         const SizedBox(height: 24),
         if (step.step < widget.clue.steps.length - 1)
           ElevatedButton(onPressed: _advance, child: const Text('Next')),
@@ -108,7 +112,10 @@ class CluePanelState extends State<CluePanel> {
 
   Widget _buildDragAndDrop(ClueStep step) {
     return Column(children: [
-      Text(step.shortText ?? step.text, textAlign: TextAlign.center),
+      Html(
+        data:
+            "<div style='text-align: center; font-size: 18px; font-weight: bold;'>${step.text}</div>",
+      ),
       const SizedBox(height: 12),
       ReorderableListView(
         shrinkWrap: true,
@@ -162,18 +169,32 @@ class CluePanelState extends State<CluePanel> {
         ],
       ),
       const SizedBox(height: 16),
-      ElevatedButton(onPressed: _advance, child: const Text('Submit Order')),
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+        ),
+        onPressed: _advance,
+        child: const Text('Submit',
+            style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold)),
+      ),
     ]);
   }
 
   Widget _buildSecretCodeEntry(ClueStep step) {
     return Column(children: [
-      Html(data: step.text),
+      Html(
+        data:
+            "<div style='text-align: center; font-size: 20px; font-weight: bold;'>${step.text}</div>",
+      ),
       const SizedBox(height: 24),
-      TextField(
-        controller: _codeController,
-        decoration: const InputDecoration(
-            labelText: 'Enter code', border: OutlineInputBorder()),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: TextField(
+          controller: _codeController,
+          style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+          decoration:
+              defaultInputDecoration.copyWith(labelText: 'Enter Secret Code'),
+        ),
       ),
       if (secretCodeIncorrect)
         const Padding(
@@ -182,14 +203,19 @@ class CluePanelState extends State<CluePanel> {
         ),
       const SizedBox(height: 16),
       ElevatedButton(
-          onPressed: () {
-            if (_codeController!.text.toLowerCase() == step.secretCode) {
-              _advance();
-            } else {
-              setState(() => secretCodeIncorrect = true);
-            }
-          },
-          child: const Text('Submit Code')),
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+        ),
+        onPressed: () {
+          if (_codeController!.text.toLowerCase() == step.secretCode) {
+            _advance();
+          } else {
+            setState(() => secretCodeIncorrect = true);
+          }
+        },
+        child: const Text('Submit',
+            style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold)),
+      ),
     ]);
   }
 
