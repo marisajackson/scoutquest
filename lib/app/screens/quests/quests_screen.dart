@@ -42,7 +42,7 @@ class QuestsScreenState extends State<QuestsScreen> {
 
   void addQuest() {
     // processQRCodeQuest(
-    //     'http://scoutquest.co/quests/quest_element_grTp7XkD9.html');
+    //     'http://scoutquest.co/quests/quest_bicentennial_P2TTzMcei.html');
     setState(() => isBottomSheetOpen = true);
 
     showModalBottomSheet(
@@ -94,8 +94,7 @@ class QuestsScreenState extends State<QuestsScreen> {
   }
 
   void _chooseQuest(Quest quest) {
-    // route to clues screen
-    Navigator.of(context).pushNamed(cluesRoute, arguments: quest);
+    Navigator.of(context).pushNamed(questsStartRoute, arguments: quest);
   }
 
   @override
