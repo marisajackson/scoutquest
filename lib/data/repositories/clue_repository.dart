@@ -100,6 +100,13 @@ class ClueRepository {
     Map<String, String> cluesMap = Map<String, String>.from(cluesJSON);
     cluesMap[clueID] = progressStep.toString();
     prefs.setString('${quest.id}-clues', jsonEncode(cluesMap));
+
+    // if the progress step is the last step of the clue, update the clue status
+    final clues = await getQuestClues();
+    final clue = clues.firstWhere((c) => c.id == clueID);
+    if (progressStep >= clue.steps.length) {
+      await updateClueStatus(clueID, ClueStatus.completed);
+    }
   }
 
   Future updateClueStatus(clueID, ClueStatus status) async {

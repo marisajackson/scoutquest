@@ -90,8 +90,4 @@ class ClueStep {
   }
 }
 
-enum ClueStatus {
-  locked,
-  found,
-  unlocked,
-}
+enum ClueStatus { locked, found, unlocked, completed }

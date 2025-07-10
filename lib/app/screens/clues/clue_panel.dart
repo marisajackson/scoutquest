@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
+import 'package:scoutquest/data/repositories/quest_repository.dart';
+import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/utils/constants.dart';
 
 /// A panel that walks through each step defined in Clue.steps
@@ -227,7 +229,7 @@ class CluePanelState extends State<CluePanel> {
     }
   }
 
-  void _advance() {
+  Future<void> _advance() async {
     setState(() {
       widget.clue.progressStep++;
       widget.clueRepository.updateClueProgress(
@@ -236,6 +238,7 @@ class CluePanelState extends State<CluePanel> {
       );
       // re-init for next step
       final next = _currentStep;
+
       if (next.secretCode != null) {
         _codeController = TextEditingController();
       }
@@ -243,5 +246,13 @@ class CluePanelState extends State<CluePanel> {
         _draggableItems = List.from(next.correctOrder!)..shuffle();
       }
     });
+    // After advancing, check if all clues are completed to update quest status
+    final userClues = await widget.clueRepository.getUserQuestClues();
+    final allCompleted = userClues.every((c) => c.progressStep >= c.steps.length);
+    if (allCompleted) {
+      final questRepo = QuestRepository();
+      await questRepo.updateUserQuestStatus(
+          widget.clueRepository.quest.id, QuestStatus.completed);
+    }
   }
 }

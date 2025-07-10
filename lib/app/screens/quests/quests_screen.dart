@@ -94,7 +94,20 @@ class QuestsScreenState extends State<QuestsScreen> {
   }
 
   void _chooseQuest(Quest quest) {
-    Navigator.of(context).pushNamed(questsStartRoute, arguments: quest);
+    if (quest.status == QuestStatus.unlocked) {
+      Navigator.of(context).pushNamed(questsStartRoute, arguments: quest);
+      return;
+    }
+
+    if (quest.status == QuestStatus.inProgress) {
+      Navigator.of(context).pushNamed(cluesRoute, arguments: quest);
+      return;
+    }
+
+    if (quest.status == QuestStatus.completed) {
+      Navigator.of(context).pushNamed(questCompleteRoute, arguments: quest);
+      return;
+    }
   }
 
   @override
