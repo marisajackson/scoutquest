@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/app/widgets/app_bar_manager.dart';
+import 'package:scoutquest/app/widgets/score_submission_bottom_sheet.dart';
 import 'package:scoutquest/data/repositories/quest_repository.dart';
 
 class QuestComplete extends StatelessWidget {
@@ -14,6 +15,19 @@ class QuestComplete extends StatelessWidget {
       return '$minutes minute${minutes == 1 ? '' : 's'} and $seconds second${seconds == 1 ? '' : 's'}';
     }
     return '$seconds second${seconds == 1 ? '' : 's'}';
+  }
+
+  void _showScoreSubmissionBottomSheet(
+      BuildContext context, Duration duration) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => ScoreSubmissionBottomSheet(
+        quest: quest,
+        duration: duration,
+      ),
+    );
   }
 
   @override
@@ -40,7 +54,7 @@ class QuestComplete extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Icon(
-                  Icons.check_circle_outline,
+                  Icons.check_circle,
                   size: 100,
                   color: Colors.green,
                 ),
@@ -59,8 +73,8 @@ class QuestComplete extends StatelessWidget {
                 const SizedBox(height: 32),
                 ElevatedButton(
                   onPressed: () =>
-                      Navigator.of(context).popUntil((route) => route.isFirst),
-                  child: const Text('Back to Quests'),
+                      _showScoreSubmissionBottomSheet(context, duration),
+                  child: const Text('Submit Score'),
                 ),
               ],
             );
