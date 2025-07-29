@@ -55,10 +55,41 @@ class CluesScreenState extends State<CluesScreen> {
       category.clues.add(clue);
     }
 
+    // Sort clues in each category by status priority
+    for (final category in loadedCategories) {
+      category.clues.sort(
+          (a, b) => _getStatusPriority(a).compareTo(_getStatusPriority(b)));
+    }
+
+    // Sort uncategorized clues by status priority
+    noCategory
+        .sort((a, b) => _getStatusPriority(a).compareTo(_getStatusPriority(b)));
+
     setState(() {
       categories = loadedCategories;
       uncategorizedClues = noCategory;
     });
+  }
+
+  // Helper method to determine status priority for sorting
+  int _getStatusPriority(Clue clue) {
+    // Assuming you have these properties on your Clue model
+    // You may need to adjust these conditions based on your actual Clue model properties
+
+    if (clue.status == ClueStatus.inProgress) {
+      return 0; // InProgress - highest priority
+    }
+    if (clue.status == ClueStatus.unlocked) {
+      return 1; // Unlocked - second priority
+    }
+    if (clue.status == ClueStatus.locked) {
+      return 2; // Locked - third priority
+    }
+    if (clue.status == ClueStatus.completed) {
+      return 3; // Completed - lowest priority
+    }
+
+    return 4; // Default case
   }
 
   void selectClue(Clue clue) {
