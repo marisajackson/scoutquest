@@ -6,6 +6,7 @@ class Quest {
   final DateTime? endTime;
   final String? clueStep;
   final String? welcomeHtml;
+  final String? completionHtml;
   QuestStatus status;
 
   Quest({
@@ -17,6 +18,7 @@ class Quest {
     this.startTime,
     this.endTime,
     this.welcomeHtml,
+    this.completionHtml,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,6 +30,7 @@ class Quest {
       'clueStep': clueStep.toString(),
       'startTime': startTime?.toIso8601String(),
       'welcomeHtml': welcomeHtml,
+      'completionHtml': completionHtml,
     };
   }
 }

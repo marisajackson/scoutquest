@@ -21,6 +21,7 @@ class QuestRepository {
               status: QuestStatus.locked,
               clueStep: questJson['clueStep']?.toString() ?? '0',
               welcomeHtml: questJson['welcomeHtml'] ?? '',
+              completionHtml: questJson['completionHtml'] ?? '',
               startTime: preferences
                           .getString('${questJson['id']}-startTime') !=
                       null

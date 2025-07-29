@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/data/repositories/score_repository.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scoutquest/utils/constants.dart'; // Add this import for consistent colors
 
 class ScoreSubmissionBottomSheet extends StatefulWidget {
   final Quest quest;
@@ -105,13 +106,22 @@ class _ScoreSubmissionBottomSheetState
     return Container(
       padding: EdgeInsets.only(
         top: 16,
-        left: 16,
-        right: 16,
+        left: 26.0, // Match the padding from quest list items
+        right: 26.0,
         bottom: MediaQuery.of(context).viewInsets.bottom + 16,
       ),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius:
+            BorderRadius.circular(10.0), // Match quest list border radius
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.3),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Form(
         key: _formKey,
@@ -133,55 +143,89 @@ class _ScoreSubmissionBottomSheetState
             const SizedBox(height: 16),
             Text(
               'Submit Your Score',
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: const TextStyle(
+                fontWeight: FontWeight.w900, // Match quest name font weight
+                fontSize: 24.0, // Match quest header font size
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
-              'Quest: ${widget.quest.name}',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[600],
-                  ),
+              widget.quest.name,
+              style: const TextStyle(
+                fontSize: 20.0,
+                color: Colors.black54, // Lighter color for quest name
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
-            TextFormField(
-              controller: _teamNameController,
-              decoration: const InputDecoration(
-                labelText: 'Team Name',
-                hintText: 'Enter your team name',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.group),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withValues(alpha: 0.1),
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
               ),
-              validator: _validateTeamName,
-              textCapitalization: TextCapitalization.words,
-              enabled: !_isSubmitting,
+              child: TextFormField(
+                controller: _teamNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Team Name',
+                  hintText: 'Enter your team name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  prefixIcon: Icon(Icons.group,
+                      size: 30.0), // Match icon size from empty screen
+                  contentPadding: EdgeInsets.all(16.0),
+                ),
+                validator: _validateTeamName,
+                textCapitalization: TextCapitalization.words,
+                enabled: !_isSubmitting,
+              ),
             ),
             const SizedBox(height: 16),
-            TextFormField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email Address',
-                hintText: 'Enter your email address',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.email),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withValues(alpha: 0.1),
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
               ),
-              validator: _validateEmail,
-              keyboardType: TextInputType.emailAddress,
-              enabled: !_isSubmitting,
+              child: TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email Address',
+                  hintText: 'Enter your email address',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  prefixIcon: Icon(Icons.email, size: 30.0),
+                  contentPadding: EdgeInsets.all(16.0),
+                ),
+                validator: _validateEmail,
+                keyboardType: TextInputType.emailAddress,
+                enabled: !_isSubmitting,
+              ),
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
+            FloatingActionButton.extended(
               onPressed: _isSubmitting ? null : _submitScore,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: _isSubmitting
+              backgroundColor: _isSubmitting
+                  ? Colors.grey
+                  : ScoutQuestColors.secondaryAction,
+              label: _isSubmitting
                   ? const SizedBox(
                       height: 20,
                       width: 20,
@@ -192,14 +236,21 @@ class _ScoreSubmissionBottomSheetState
                     )
                   : const Text(
                       'Submit Score',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 18.0,
+                        color: Colors.black,
+                      ),
                     ),
             ),
             const SizedBox(height: 8),
             TextButton(
               onPressed:
                   _isSubmitting ? null : () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(fontSize: 18.0),
+              ),
             ),
           ],
         ),

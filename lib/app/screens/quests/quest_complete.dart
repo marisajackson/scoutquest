@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/app/widgets/app_bar_manager.dart';
 import 'package:scoutquest/app/widgets/score_submission_bottom_sheet.dart';
@@ -9,12 +10,10 @@ class QuestComplete extends StatelessWidget {
   const QuestComplete({super.key, required this.quest});
 
   String _formatDuration(Duration duration) {
-    final minutes = duration.inMinutes;
-    final seconds = duration.inSeconds % 60;
-    if (minutes > 0) {
-      return '$minutes minute${minutes == 1 ? '' : 's'} and $seconds second${seconds == 1 ? '' : 's'}';
-    }
-    return '$seconds second${seconds == 1 ? '' : 's'}';
+    final hours = duration.inHours;
+    final minutes = (duration.inMinutes % 60);
+    final seconds = (duration.inSeconds % 60);
+    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
   void _showScoreSubmissionBottomSheet(
@@ -53,28 +52,43 @@ class QuestComplete extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                // icon
                 const Icon(
-                  Icons.check_circle,
+                  Icons.timer_outlined,
                   size: 100,
-                  color: Colors.green,
                 ),
-                const SizedBox(height: 24),
-                const Text(
-                  'Congratulations!',
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                Html(
+                  data:
+                      "<div style='text-align: center; font-size: 20px; font-weight: bold;'>${quest.completionHtml}</div>",
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  _formatDuration(duration),
+                  style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'You completed "${quest.name}" in ${_formatDuration(duration)}.',
-                  style: const TextStyle(fontSize: 20),
+                  "Think you’ve claimed the fastest time?",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  "Submit your time and see how you stack up.",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
-                ElevatedButton(
+                FloatingActionButton.extended(
                   onPressed: () =>
                       _showScoreSubmissionBottomSheet(context, duration),
-                  child: const Text('Submit Score'),
+                  label: const Text(
+                    'Submit Score',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             );
