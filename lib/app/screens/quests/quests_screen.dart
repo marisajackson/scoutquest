@@ -42,7 +42,7 @@ class QuestsScreenState extends State<QuestsScreen> {
 
   void addQuest() {
     // processQRCodeQuest(
-    //     'http://scoutquest.co/quests/quest_element_grTp7XkD9.html');
+    //     'http://scoutquest.co/quests/quest_bicentennial_P2TTzMcei.html');
     setState(() => isBottomSheetOpen = true);
 
     showModalBottomSheet(
@@ -94,8 +94,25 @@ class QuestsScreenState extends State<QuestsScreen> {
   }
 
   void _chooseQuest(Quest quest) {
-    // route to clues screen
-    Navigator.of(context).pushNamed(cluesRoute, arguments: quest);
+    if (quest.status == QuestStatus.unlocked) {
+      Navigator.of(context).pushNamed(questsStartRoute, arguments: quest);
+      return;
+    }
+
+    if (quest.status == QuestStatus.inProgress) {
+      Navigator.of(context).pushNamed(cluesRoute, arguments: quest);
+      return;
+    }
+
+    if (quest.status == QuestStatus.completed) {
+      Navigator.of(context).pushNamed(questCompleteRoute, arguments: quest);
+      return;
+    }
+
+    if (quest.status == QuestStatus.submitted) {
+      Navigator.of(context).pushNamed(questScoreboardRoute, arguments: quest);
+      return;
+    }
   }
 
   @override

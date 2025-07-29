@@ -10,7 +10,7 @@ class CircleProgressBar extends StatelessWidget {
   final TextStyle textStyle;
 
   const CircleProgressBar({
-    Key? key,
+    super.key,
     required this.count,
     required this.total,
     this.progressColor = ScoutQuestColors.primaryAction,
@@ -20,7 +20,7 @@ class CircleProgressBar extends StatelessWidget {
       fontSize: 20,
       fontWeight: FontWeight.bold,
     ),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

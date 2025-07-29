@@ -14,4 +14,27 @@ class IconUtil {
             .text_fields; // Default to text_fields icon if the specified icon is not found
     }
   }
+
+  static IconData getIconFromString(String icon) {
+    switch (icon) {
+      case 'music_note':
+        return Icons.music_note;
+      case 'park':
+        return Icons.park;
+      case 'water':
+        return Icons.water;
+      case 'account_balance':
+        return Icons.account_balance;
+      case 'flight':
+        return Icons.flight;
+      case 'pets':
+        return Icons.pets;
+      case 'cake':
+        return Icons.cake;
+      case 'calendar_month':
+        return Icons.calendar_month;
+      default:
+        return Icons.text_fields;
+    }
+  }
 }

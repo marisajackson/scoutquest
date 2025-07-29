@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 
 class QuestsEmpty extends StatelessWidget {
   const QuestsEmpty({
-    Key? key,
+    super.key,
     required this.onAddQuest,
-  }) : super(key: key);
+  });
 
   final VoidCallback? onAddQuest;
 
   @override
   Widget build(BuildContext context) {
     return Center(
+        child: SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
@@ -23,7 +24,7 @@ class QuestsEmpty extends StatelessWidget {
             ),
             const SizedBox(height: 24.0),
             const Text(
-              'Welcome to Scout Quest!',
+              'Welcome to the Scout Quest Companion App!',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24.0,
@@ -32,7 +33,7 @@ class QuestsEmpty extends StatelessWidget {
             ),
             const SizedBox(height: 24.0),
             const Text(
-              'This app is your companion, designed to organize your digital clues as you navigate through your Scout Quest adventure.',
+              'This app is designed to organize your digital clues as you navigate through your Scout Quest adventure.',
               style: TextStyle(
                 fontSize: 20.0,
               ),
@@ -48,17 +49,17 @@ class QuestsEmpty extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12.0), // Adjusted spacing
-            const ListTile(
-              leading: Icon(Icons.note_add, size: 30.0), // Increased icon size
-              title: Text(
-                'Register for an Adventure',
-                style: TextStyle(fontSize: 18.0),
-              ),
-              subtitle: Text(
-                'Secure your spot in a quest by signing up at scoutquest.co.',
-                style: TextStyle(fontSize: 16.0),
-              ),
-            ),
+            // const ListTile(
+            //   leading: Icon(Icons.note_add, size: 30.0), // Increased icon size
+            //   title: Text(
+            //     'Register for an Adventure',
+            //     style: TextStyle(fontSize: 18.0),
+            //   ),
+            //   subtitle: Text(
+            //     'Secure your spot in a quest by signing up at http://scoutquest.co.',
+            //     style: TextStyle(fontSize: 16.0),
+            //   ),
+            // ),
             const ListTile(
               leading: Icon(Icons.qr_code_scanner,
                   size: 30.0), // Increased icon size
@@ -67,7 +68,7 @@ class QuestsEmpty extends StatelessWidget {
                 style: TextStyle(fontSize: 18.0),
               ),
               subtitle: Text(
-                "On the adventure day, you'll receive a QR Code. Use the 'Add Quest' button here to scan and add your quest.",
+                "Use the 'Add Quest' button here to scan the QR code to start your quest.",
                 style: TextStyle(fontSize: 16.0),
               ),
             ),
@@ -93,9 +94,10 @@ class QuestsEmpty extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 24.0)
           ],
         ),
       ),
-    );
+    ));
   }
 }

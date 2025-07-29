@@ -59,7 +59,7 @@ class QRScannerState extends State<QRScanner> {
     );
   }
 
-  void _handleScanResult(capture) {
+  void _handleScanResult(BarcodeCapture capture) {
     final List<Barcode> barcodes = capture.barcodes;
     final barcode = barcodes[0].rawValue;
     debugPrint('Barcode found! $barcode');
