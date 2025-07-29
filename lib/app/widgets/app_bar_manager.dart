@@ -6,7 +6,7 @@ class AppBarManager extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     this.actions = const [],
     this.hasBackButton = false,
-    this.backButtonOnPressed = null,
+    this.backButtonOnPressed,
     required this.appBar,
   });
 
