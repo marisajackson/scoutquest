@@ -8,10 +8,10 @@ class ScoreSubmissionBottomSheet extends StatefulWidget {
   final Duration duration;
 
   const ScoreSubmissionBottomSheet({
-    Key? key,
+    super.key,
     required this.quest,
     required this.duration,
-  }) : super(key: key);
+  });
 
   @override
   State<ScoreSubmissionBottomSheet> createState() =>

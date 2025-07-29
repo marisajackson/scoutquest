@@ -15,7 +15,7 @@ void main() async {
 }
 
 class Core extends StatelessWidget {
-  const Core({Key? key}) : super(key: key);
+  const Core({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class Core extends StatelessWidget {
 }
 
 class Lava extends StatelessWidget {
-  const Lava({Key? key}) : super(key: key);
+  const Lava({super.key});
 
   @override
   Widget build(BuildContext context) {

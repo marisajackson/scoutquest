@@ -3,7 +3,7 @@ import 'package:scoutquest/app.routes.dart';
 import 'package:scoutquest/utils/constants.dart';
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

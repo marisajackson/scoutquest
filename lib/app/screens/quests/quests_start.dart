@@ -5,7 +5,7 @@ import 'package:scoutquest/app/widgets/app_bar_manager.dart';
 
 class QuestsStart extends StatelessWidget {
   final Quest quest;
-  const QuestsStart({Key? key, required this.quest}) : super(key: key);
+  const QuestsStart({super.key, required this.quest});
 
   void _startQuest(BuildContext context) {
     Navigator.of(context).pushNamed(cluesRoute, arguments: quest);

@@ -14,11 +14,11 @@ class CluePanel extends StatefulWidget {
   final ClueRepository clueRepository;
 
   const CluePanel({
-    Key? key,
+    super.key,
     required this.clue,
     required this.onTap,
     required this.clueRepository,
-  }) : super(key: key);
+  });
 
   @override
   CluePanelState createState() => CluePanelState();
@@ -248,7 +248,8 @@ class CluePanelState extends State<CluePanel> {
     });
     // After advancing, check if all clues are completed to update quest status
     final userClues = await widget.clueRepository.getUserQuestClues();
-    final allCompleted = userClues.every((c) => c.progressStep >= c.steps.length);
+    final allCompleted =
+        userClues.every((c) => c.progressStep >= c.steps.length);
     if (allCompleted) {
       final questRepo = QuestRepository();
       await questRepo.updateUserQuestStatus(

@@ -6,7 +6,7 @@ import 'package:scoutquest/data/repositories/quest_repository.dart';
 
 class QuestComplete extends StatelessWidget {
   final Quest quest;
-  const QuestComplete({Key? key, required this.quest}) : super(key: key);
+  const QuestComplete({super.key, required this.quest});
 
   String _formatDuration(Duration duration) {
     final minutes = duration.inMinutes;

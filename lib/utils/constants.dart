@@ -11,12 +11,10 @@ ThemeData buildAppTheme() {
 const scoutQuestColorScheme = ColorScheme(
   primary: ScoutQuestColors.primaryAction,
   secondary: ScoutQuestColors.secondaryAction,
-  background: ScoutQuestColors.primaryBackground,
   surface: ScoutQuestColors.primaryBackground,
   error: Colors.red, // Customize as needed
   onPrimary: ScoutQuestColors.primaryText,
   onSecondary: ScoutQuestColors.secondaryText,
-  onBackground: ScoutQuestColors.primaryText,
   onSurface: ScoutQuestColors.primaryText,
   onError: Colors.white, // Customize as needed
   brightness:

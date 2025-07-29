@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class QuestsEmpty extends StatelessWidget {
   const QuestsEmpty({
-    Key? key,
+    super.key,
     required this.onAddQuest,
-  }) : super(key: key);
+  });
 
   final VoidCallback? onAddQuest;
 

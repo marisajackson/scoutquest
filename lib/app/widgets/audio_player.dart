@@ -5,8 +5,7 @@ import 'package:scoutquest/utils/logger.dart';
 class AudioControlWidget extends StatefulWidget {
   final String audioAsset;
 
-  const AudioControlWidget({Key? key, required this.audioAsset})
-      : super(key: key);
+  const AudioControlWidget({super.key, required this.audioAsset});
 
   @override
   AudioControlWidgetState createState() => AudioControlWidgetState();

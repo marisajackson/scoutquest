@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 class AppBarManager extends StatelessWidget implements PreferredSizeWidget {
   final AppBar appBar;
   const AppBarManager({
-    Key? key,
+    super.key,
     this.actions = const [],
     this.hasBackButton = false,
     required this.appBar,
-  }) : super(key: key);
+  });
 
   final List<Widget>? actions;
   final bool hasBackButton;

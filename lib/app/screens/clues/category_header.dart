@@ -8,10 +8,10 @@ class CategoryHeader extends StatelessWidget {
   final bool isExpanded;
 
   const CategoryHeader({
-    Key? key,
+    super.key,
     required this.category,
     this.isExpanded = false,
-  }) : super(key: key);
+  });
 
   double calculateProgress(List<Clue> clues) {
     double progress = 0;
@@ -33,7 +33,7 @@ class CategoryHeader extends StatelessWidget {
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
+            color: Colors.grey.withValues(alpha: 0.3),
             spreadRadius: 2,
             blurRadius: 5,
             offset: const Offset(0, 3),
