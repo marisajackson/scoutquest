@@ -19,6 +19,7 @@ class QuestsScreen extends StatefulWidget {
 class QuestsScreenState extends State<QuestsScreen> {
   final QuestRepository questRepository = QuestRepository();
   List<Quest> quests = [];
+  bool isBottomSheetOpen = false;
 
   @override
   void initState() {
@@ -40,6 +41,10 @@ class QuestsScreenState extends State<QuestsScreen> {
   }
 
   void addQuest() {
+    // processQRCodeQuest(
+    //     'http://scoutquest.co/quests/quest_bicentennial_P2TTzMcei.html');
+    setState(() => isBottomSheetOpen = true);
+
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -49,12 +54,16 @@ class QuestsScreenState extends State<QuestsScreen> {
           onQRCodeScanned: processQRCodeQuest,
         );
       },
-    );
+    ).then((_) => {setState(() => isBottomSheetOpen = false)});
   }
 
   Future<void> processQRCodeQuest(String? scanResult) async {
     if (scanResult == null) {
       return;
+    }
+
+    if (isBottomSheetOpen) {
+      Navigator.of(context).pop();
     }
 
     if (!scanResult.contains("/quests/")) {
@@ -85,8 +94,25 @@ class QuestsScreenState extends State<QuestsScreen> {
   }
 
   void _chooseQuest(Quest quest) {
-    // route to clues screen
-    Navigator.of(context).pushNamed(cluesRoute, arguments: quest);
+    if (quest.status == QuestStatus.unlocked) {
+      Navigator.of(context).pushNamed(questsStartRoute, arguments: quest);
+      return;
+    }
+
+    if (quest.status == QuestStatus.inProgress) {
+      Navigator.of(context).pushNamed(cluesRoute, arguments: quest);
+      return;
+    }
+
+    if (quest.status == QuestStatus.completed) {
+      Navigator.of(context).pushNamed(questCompleteRoute, arguments: quest);
+      return;
+    }
+
+    if (quest.status == QuestStatus.submitted) {
+      Navigator.of(context).pushNamed(questScoreboardRoute, arguments: quest);
+      return;
+    }
   }
 
   @override

@@ -7,10 +7,10 @@ class ClueRow extends StatelessWidget {
   final VoidCallback onTap;
 
   const ClueRow({
-    Key? key,
+    super.key,
     required this.clue,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,47 +21,120 @@ class ClueRow extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10.0),
+          border: Border(
+            top: BorderSide(color: Colors.grey.shade300, width: 1.0),
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(
-              clue.isUnlocked
-                  ? IconUtil.getIconForClueType(clue.type)
-                  : Icons.lock,
-              size: 50.0,
+            Stack(
+              children: [
+                Icon(
+                  clue.status != ClueStatus.locked
+                      ? clue.icon != null
+                          ? IconUtil.getIconFromString(clue.icon!)
+                          : IconUtil.getIconForClueType(clue.type)
+                      : Icons.lock,
+                  size: 50.0,
+                  color: clue.status == ClueStatus.completed
+                      ? Colors.grey.shade400
+                      : null,
+                ),
+              ],
             ),
             const SizedBox(width: 16.0),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    clue.label,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 18.0,
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          clue.label,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 18.0,
+                            decoration: clue.status == ClueStatus.completed
+                                ? TextDecoration.lineThrough
+                                : null,
+                            color: clue.status == ClueStatus.completed
+                                ? Colors.grey.shade600
+                                : null,
+                          ),
+                        ),
+                      ),
+                      _buildStatusChip(),
+                    ],
                   ),
                   const SizedBox(height: 8.0),
                   Text(
-                    clue.isFound ? clue.getShortText : '???',
-                    style: const TextStyle(
-                        fontSize: 16.0, fontWeight: FontWeight.w900),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    clue.isFound ? clue.type : '???',
+                    clue.status != ClueStatus.locked
+                        ? clue.getShortText
+                        : '???',
                     style: TextStyle(
-                      fontSize: 14.0,
+                      fontSize: 16.0,
                       fontWeight: FontWeight.w900,
-                      color: Colors.grey.shade700,
+                      color: clue.status == ClueStatus.completed
+                          ? Colors.grey.shade600
+                          : null,
                     ),
                   ),
+                  const SizedBox(height: 8.0),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatusChip() {
+    Color chipColor;
+    String statusText;
+    Color textColor;
+
+    if (clue.status == ClueStatus.unlocked) {
+      return const SizedBox.shrink();
+    }
+
+    switch (clue.status) {
+      case ClueStatus.locked:
+        chipColor = Colors.grey.shade300;
+        statusText = 'LOCKED';
+        textColor = Colors.grey.shade700;
+        break;
+      case ClueStatus.inProgress:
+        chipColor = Colors.yellow.shade100;
+        statusText = 'IN PROGRESS';
+        textColor = Colors.yellow.shade800;
+        break;
+      case ClueStatus.completed:
+        chipColor = Colors.green.shade100;
+        statusText = 'COMPLETED';
+        textColor = Colors.green.shade800;
+        break;
+      default:
+        chipColor = Colors.blue.shade100;
+        statusText = '';
+        textColor = Colors.blue.shade800;
+        break;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      decoration: BoxDecoration(
+        color: chipColor,
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Text(
+        statusText,
+        style: TextStyle(
+          fontSize: 12.0,
+          fontWeight: FontWeight.bold,
+          color: textColor,
         ),
       ),
     );

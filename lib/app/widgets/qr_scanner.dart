@@ -40,30 +40,29 @@ class QRScannerState extends State<QRScanner> {
             ),
           ),
           const SizedBox(height: 16.0),
-          Expanded(
+          // Expanded(
+          // child:
+          SizedBox(
+            height: 275,
+            width: 275,
             child: MobileScanner(
               controller: MobileScannerController(
                 detectionSpeed: DetectionSpeed.noDuplicates,
               ),
-              fit: BoxFit.contain,
-              scanWindow: Rect.fromPoints(
-                const Offset(50, 50),
-                const Offset(250, 250),
-              ),
+              fit: BoxFit.cover,
               onDetect: _handleScanResult,
             ),
           ),
+          // ),
         ],
       ),
     );
   }
 
-  void _handleScanResult(capture) {
+  void _handleScanResult(BarcodeCapture capture) {
     final List<Barcode> barcodes = capture.barcodes;
     final barcode = barcodes[0].rawValue;
     debugPrint('Barcode found! $barcode');
     widget.onQRCodeScanned(barcode);
-
-    Navigator.of(context).pop();
   }
 }

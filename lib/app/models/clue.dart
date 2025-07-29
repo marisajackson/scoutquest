@@ -3,59 +3,40 @@ class Clue {
   final String code;
   final String label;
   final String type;
-  final String text;
-  final String category;
-  final String? audio;
-  final String? image;
-  final String? secretCode;
-  final String? secretText;
-  final String? secretImage;
-  final String? shortText;
-  ClueStatus status = ClueStatus.locked;
+  final String? category;
+  final String? icon;
+  final List<ClueStep> steps;
+  int progressStep;
+  // ClueStatus status = ClueStatus.locked;
 
-  bool get isFound =>
-      status == ClueStatus.found || status == ClueStatus.unlocked;
-  bool get isUnlocked => status == ClueStatus.unlocked;
-  bool get hasSecret => secretCode != null;
+  bool get isFound => progressStep > 0;
+  bool get isUnlocked => progressStep > 0;
 
-  double get clueProgress {
-    if (isUnlocked) {
-      return 1;
+  ClueStep get currentStep {
+    return steps.firstWhere(
+      (s) => s.step == progressStep,
+      orElse: () => steps.first,
+    );
+  }
+
+  ClueStatus get status {
+    if (progressStep >= steps.length) {
+      return ClueStatus.completed;
+    } else if (progressStep > 0) {
+      return ClueStatus.unlocked;
+    } else if (progressStep > 1) {
+      return ClueStatus.inProgress;
+    } else {
+      return ClueStatus.locked;
     }
-
-    if (isFound) {
-      return 0.5;
-    }
-
-    return 0;
   }
 
   String get getShortText {
-    return shortText ?? text;
+    return currentStep.shortText ?? '';
   }
 
-  String? get displayText {
-    if (!isFound) {
-      return '???';
-    }
-
-    if (isUnlocked && hasSecret) {
-      return secretText;
-    }
-
-    return text;
-  }
-
-  String? get displayImage {
-    if (!isFound) {
-      return null;
-    }
-
-    if (isUnlocked && hasSecret) {
-      return secretImage;
-    }
-
-    return image;
+  double get getProgress {
+    return progressStep / steps.length;
   }
 
   Clue({
@@ -63,36 +44,65 @@ class Clue {
     required this.code,
     required this.label,
     required this.type,
-    required this.text,
+    required this.steps,
     required this.category,
-    this.shortText,
-    this.secretCode,
-    this.secretText,
-    this.secretImage,
-    this.audio,
-    this.image,
+    this.icon,
+    this.progressStep = 0,
   });
 
   factory Clue.fromJson(Map<String, dynamic> json) {
     return Clue(
-      id: json['id'],
-      code: json['code'],
-      label: json['label'],
-      type: json['type'],
-      text: json['text'],
-      category: json['category'],
-      audio: json['audio'],
-      image: json['image'],
-      secretCode: json['secretCode'],
-      secretText: json['secretText'],
-      secretImage: json['secretImage'],
-      shortText: json['shortText'],
+      id: json['id'] as String,
+      code: json['code'] as String,
+      label: json['label'] as String,
+      type: json['type'] as String,
+      steps: (json['steps'] as List<dynamic>)
+          .map((s) => ClueStep.fromJson(s as Map<String, dynamic>))
+          .toList(),
+      category: json['category'] as String?,
+      icon: json['icon'] as String?,
+      progressStep: json['progressStep'] as int? ?? 0,
     );
   }
 }
 
-enum ClueStatus {
-  locked,
-  found,
-  unlocked,
+class ClueStep {
+  final int step;
+  final String type;
+  final String text;
+
+  // Optional fields used by various step types
+  final List<String>? correctOrder;
+  final String? secretCode;
+  final String? shortText;
+  final String? audio;
+  final String? image;
+
+  ClueStep({
+    required this.step,
+    required this.type,
+    required this.text,
+    this.correctOrder,
+    this.secretCode,
+    this.shortText,
+    this.audio,
+    this.image,
+  });
+
+  factory ClueStep.fromJson(Map<String, dynamic> json) {
+    return ClueStep(
+      step: json['step'] as int,
+      type: json['type'] as String,
+      text: json['text'] as String,
+      correctOrder: json['correctOrder'] != null
+          ? List<String>.from(json['correctOrder'] as List<dynamic>)
+          : null,
+      secretCode: json['secretCode'] as String?,
+      shortText: json['shortText'] as String?,
+      audio: json['audio'] as String?,
+      image: json['image'] as String?,
+    );
+  }
 }
+
+enum ClueStatus { locked, unlocked, inProgress, completed }
