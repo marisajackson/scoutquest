@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoutquest/app/screens/clues/clues_screen.dart';
+import 'package:scoutquest/app/screens/quests/quest_scoreboard.dart';
 import 'package:scoutquest/app/screens/quests/quests_screen.dart';
 import 'package:scoutquest/app/screens/quests/quests_start.dart';
 import 'package:scoutquest/app/models/quest.dart';
@@ -11,6 +12,7 @@ const String questsRoute = '/quests';
 const String questsStartRoute = '/quests/start';
 const String cluesRoute = '/clues';
 const String questCompleteRoute = '/quests/complete';
+const String questScoreboardRoute = '/quests/scoreboard';
 
 final routes = {
   initialRoute: (BuildContext context) => const SplashScreen(),
@@ -26,5 +28,9 @@ final routes = {
   questCompleteRoute: (BuildContext context) {
     final Quest quest = ModalRoute.of(context)!.settings.arguments as Quest;
     return QuestComplete(quest: quest);
+  },
+  questScoreboardRoute: (BuildContext context) {
+    final Quest quest = ModalRoute.of(context)!.settings.arguments as Quest;
+    return QuestScoreboard(quest: quest);
   },
 };

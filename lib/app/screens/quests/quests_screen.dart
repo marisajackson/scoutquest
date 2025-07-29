@@ -108,6 +108,11 @@ class QuestsScreenState extends State<QuestsScreen> {
       Navigator.of(context).pushNamed(questCompleteRoute, arguments: quest);
       return;
     }
+
+    if (quest.status == QuestStatus.submitted) {
+      Navigator.of(context).pushNamed(questScoreboardRoute, arguments: quest);
+      return;
+    }
   }
 
   @override
