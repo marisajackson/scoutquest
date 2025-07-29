@@ -19,6 +19,7 @@ class QuestRepository {
               name: questJson['name'],
               clueFile: questJson['clueFile'] ?? '',
               status: QuestStatus.locked,
+              clueStep: questJson['clueStep']?.toString() ?? '0',
               startTime: preferences
                           .getString('${questJson['id']}-startTime') !=
                       null
@@ -35,6 +36,7 @@ class QuestRepository {
 
     for (var quest in allQuests) {
       quest.status = await getUserQuestStatus(quest.id);
+      // quest.status = QuestStatus.unlocked; // TESTING ONLY
     }
 
     final availableQuests = allQuests.where((quest) {

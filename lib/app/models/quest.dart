@@ -4,6 +4,7 @@ class Quest {
   final String clueFile;
   final DateTime? startTime;
   final DateTime? endTime;
+  final String? clueStep;
   QuestStatus status;
 
   Quest({
@@ -11,6 +12,7 @@ class Quest {
     required this.name,
     required this.clueFile,
     required this.status,
+    this.clueStep = '0',
     this.startTime,
     this.endTime,
   });
@@ -21,6 +23,7 @@ class Quest {
       'name': name,
       'clueFile': clueFile,
       'status': status.toString().split('.').last,
+      'clueStep': clueStep.toString(),
       'startTime': startTime?.toIso8601String(),
     };
   }

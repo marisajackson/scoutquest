@@ -4,6 +4,7 @@ class Clue {
   final String label;
   final String type;
   final String? category;
+  final String? icon;
   final List<ClueStep> steps;
   int progressStep;
   ClueStatus status = ClueStatus.locked;
@@ -33,6 +34,7 @@ class Clue {
     required this.type,
     required this.steps,
     required this.category,
+    this.icon,
     this.progressStep = 0,
   });
 
@@ -46,6 +48,7 @@ class Clue {
           .map((s) => ClueStep.fromJson(s as Map<String, dynamic>))
           .toList(),
       category: json['category'] as String?,
+      icon: json['icon'] as String?,
       progressStep: json['progressStep'] as int? ?? 0,
     );
   }

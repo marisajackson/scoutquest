@@ -14,7 +14,7 @@ import 'package:scoutquest/utils/constants.dart';
 
 class CluesScreen extends StatefulWidget {
   final Quest quest;
-  const CluesScreen({Key? key, required this.quest}) : super(key: key);
+  const CluesScreen({super.key, required this.quest});
 
   @override
   CluesScreenState createState() => CluesScreenState();
@@ -113,6 +113,7 @@ class CluesScreenState extends State<CluesScreen> {
       return;
     }
 
+    // TODO make sure it's the right quests
     // sample scan value = "http://scoutquest.co/quests/quest_element_2023/clues/FireClue1-4CX6TZPA.html"
     RegExp regExp = RegExp(r'\/([A-Za-z0-9-]+)\.html');
     Match? match = regExp.firstMatch(value);
@@ -224,27 +225,27 @@ class CluesScreenState extends State<CluesScreen> {
                           ),
                       ],
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // Handle the action when the button is pressed
-          // You can add your code to open a bottom sheet or any other action here
-          addClue();
-        },
-        label: const Text(
-          "Add Clue",
-          style: TextStyle(
-            fontWeight: FontWeight.w900,
-            fontSize: 18.0,
-          ),
-        ), // Change the button label // Add an optional icon
-      ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: () {
+      //     // Handle the action when the button is pressed
+      //     // You can add your code to open a bottom sheet or any other action here
+      //     addClue();
+      //   },
+      //   label: const Text(
+      //     "Add Clue",
+      //     style: TextStyle(
+      //       fontWeight: FontWeight.w900,
+      //       fontSize: 18.0,
+      //     ),
+      //   ), // Change the button label // Add an optional icon
+      // ),
     );
   }
 }

@@ -7,10 +7,10 @@ class ClueRow extends StatelessWidget {
   final VoidCallback onTap;
 
   const ClueRow({
-    Key? key,
+    super.key,
     required this.clue,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +21,18 @@ class ClueRow extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10.0),
+          border: Border(
+            top: BorderSide(color: Colors.grey.shade300, width: 1.0),
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Icon(
               clue.isUnlocked
-                  ? IconUtil.getIconForClueType(clue.type)
+                  ? clue.icon != null
+                      ? IconUtil.getIconFromString(clue.icon!)
+                      : IconUtil.getIconForClueType(clue.type)
                   : Icons.lock,
               size: 50.0,
             ),
@@ -50,14 +55,6 @@ class ClueRow extends StatelessWidget {
                         fontSize: 16.0, fontWeight: FontWeight.w900),
                   ),
                   const SizedBox(height: 8.0),
-                  Text(
-                    clue.isFound ? clue.type : '???',
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
                 ],
               ),
             ),
