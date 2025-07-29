@@ -197,6 +197,9 @@ class CluesScreenState extends State<CluesScreen> {
       appBar: AppBarManager(
         appBar: AppBar(),
         hasBackButton: true,
+        backButtonOnPressed: () => {
+          Navigator.of(context).pushReplacementNamed(questsRoute),
+        },
       ),
       body: Column(
         children: [
