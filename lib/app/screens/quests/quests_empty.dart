@@ -49,17 +49,17 @@ class QuestsEmpty extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 12.0), // Adjusted spacing
-            const ListTile(
-              leading: Icon(Icons.note_add, size: 30.0), // Increased icon size
-              title: Text(
-                'Register for an Adventure',
-                style: TextStyle(fontSize: 18.0),
-              ),
-              subtitle: Text(
-                'Secure your spot in a quest by signing up at http://scoutquest.co.',
-                style: TextStyle(fontSize: 16.0),
-              ),
-            ),
+            // const ListTile(
+            //   leading: Icon(Icons.note_add, size: 30.0), // Increased icon size
+            //   title: Text(
+            //     'Register for an Adventure',
+            //     style: TextStyle(fontSize: 18.0),
+            //   ),
+            //   subtitle: Text(
+            //     'Secure your spot in a quest by signing up at http://scoutquest.co.',
+            //     style: TextStyle(fontSize: 16.0),
+            //   ),
+            // ),
             const ListTile(
               leading: Icon(Icons.qr_code_scanner,
                   size: 30.0), // Increased icon size
@@ -68,7 +68,7 @@ class QuestsEmpty extends StatelessWidget {
                 style: TextStyle(fontSize: 18.0),
               ),
               subtitle: Text(
-                "On the adventure day, you'll receive a QR Code. Use the 'Add Quest' button here to scan and add your quest.",
+                "Use the 'Add Quest' button here to scan the QR code to start your quest.",
                 style: TextStyle(fontSize: 16.0),
               ),
             ),

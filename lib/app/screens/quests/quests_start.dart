@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/app.routes.dart';
 import 'package:scoutquest/app/widgets/app_bar_manager.dart';
@@ -24,30 +25,20 @@ class QuestsStart extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 40),
-            Text(
-              'Welcome to ${quest.name}!',
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Get ready to start your quest. Press the button below when you are ready.',
-              style: TextStyle(fontSize: 18),
-              textAlign: TextAlign.center,
+            Html(
+              data:
+                  "<div style='text-align: center; font-size: 20px; font-weight: bold;'>${quest.welcomeHtml}</div>",
             ),
             const Spacer(),
-            ElevatedButton(
+            FloatingActionButton.extended(
               onPressed: () => _startQuest(context),
-              style: ElevatedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                textStyle:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              label: const Text(
+                'Start Quest',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              child: const Text('Start Quest'),
             ),
             const SizedBox(height: 24),
           ],

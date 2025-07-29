@@ -48,7 +48,7 @@ class QuestsList extends StatelessWidget {
                   //   width: 50,
                   //   height: 50,
                   // ),
-                  const Icon(Icons.park, size: 50, color: Colors.black),
+                  const Icon(Icons.access_alarm, size: 50, color: Colors.black),
                   const SizedBox(width: 30.0),
                   Expanded(
                     child: Column(
