@@ -107,6 +107,7 @@ class ClueRepository {
 
     final clues = await getQuestClues();
     final clue = clues.firstWhere((c) => c.id == clueID);
+
     if (progressStep >= clue.steps.length) {
       await updateClueStatus(clueID, ClueStatus.completed);
     }

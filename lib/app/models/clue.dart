@@ -7,7 +7,7 @@ class Clue {
   final String? icon;
   final List<ClueStep> steps;
   int progressStep;
-  ClueStatus status = ClueStatus.locked;
+  // ClueStatus status = ClueStatus.locked;
 
   bool get isFound => progressStep > 0;
   bool get isUnlocked => progressStep > 0;
@@ -17,6 +17,18 @@ class Clue {
       (s) => s.step == progressStep,
       orElse: () => steps.first,
     );
+  }
+
+  ClueStatus get status {
+    if (progressStep >= steps.length) {
+      return ClueStatus.completed;
+    } else if (progressStep > 0) {
+      return ClueStatus.unlocked;
+    } else if (progressStep > 1) {
+      return ClueStatus.inProgress;
+    } else {
+      return ClueStatus.locked;
+    }
   }
 
   String get getShortText {
@@ -93,4 +105,4 @@ class ClueStep {
   }
 }
 
-enum ClueStatus { locked, found, unlocked, completed }
+enum ClueStatus { locked, unlocked, inProgress, completed }

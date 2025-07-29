@@ -135,7 +135,6 @@ class CluesScreenState extends State<CluesScreen> {
   Future<void> markClueFound(String code) async {
     final clue = clues.firstWhere((clue) => clue.code == code);
 
-    clueRepository.updateClueStatus(clue.id, ClueStatus.found);
     clueRepository.updateClueProgress(clue.id, 1);
 
     await loadClueInfo();

@@ -69,6 +69,13 @@ class CluePanelState extends State<CluePanel> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _buildStepContent(_currentStep),
+                  if (widget.clue.status == ClueStatus.completed)
+                    ElevatedButton(
+                      onPressed: widget.onTap,
+                      child: const Text('Back to Quest',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                    ),
                 ],
               ),
             ),
