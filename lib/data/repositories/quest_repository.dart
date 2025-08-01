@@ -96,8 +96,8 @@ class QuestRepository {
 
   Future<Duration?> getQuestDuration(String questID) async {
     final prefs = await SharedPreferences.getInstance();
-    final startString = prefs.getString('\$questID-startTime');
-    final endString = prefs.getString('\$questID-endTime');
+    final startString = prefs.getString("$questID-startTime");
+    final endString = prefs.getString("$questID-endTime");
     if (startString == null || endString == null) return null;
     final start = DateTime.parse(startString);
     final end = DateTime.parse(endString);

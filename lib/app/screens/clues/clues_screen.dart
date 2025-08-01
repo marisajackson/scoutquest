@@ -9,6 +9,7 @@ import 'package:scoutquest/app/screens/clues/clue_panel.dart';
 import 'package:scoutquest/app/screens/clues/clue_row.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
+import 'package:scoutquest/data/repositories/quest_repository.dart';
 import 'package:scoutquest/utils/alert.dart';
 import 'package:scoutquest/utils/constants.dart';
 
@@ -26,16 +27,31 @@ class CluesScreenState extends State<CluesScreen> {
   List<Clue> clues = [];
   Clue? selectedClue;
   late ClueRepository clueRepository;
+  late QuestRepository questRepository;
   bool isBottomSheetOpen = false;
 
   @override
   void initState() {
     super.initState();
     clueRepository = ClueRepository(widget.quest);
+    questRepository = QuestRepository();
     loadClueInfo();
   }
 
   Future<void> loadClueInfo() async {
+    final questStatus =
+        await questRepository.getUserQuestStatus(widget.quest.id);
+    if (questStatus == QuestStatus.completed) {
+      Navigator.of(context)
+          .pushNamed(questCompleteRoute, arguments: widget.quest);
+      return;
+    }
+
+    if (questStatus == QuestStatus.unlocked) {
+      await questRepository.updateUserQuestStatus(
+          widget.quest.id, QuestStatus.inProgress);
+    }
+
     clues = await clueRepository.getUserQuestClues();
     final List<Clue> noCategory = [];
     final List<ClueCategory> loadedCategories = [];

@@ -66,19 +66,33 @@ class _QuestScoreboardState extends State<QuestScoreboard> {
       ),
       body: Column(
         children: [
-          // Header matching clues_screen style
+          // Header with quest name and scoreboard subtitle
           Container(
             padding: const EdgeInsets.all(16.0),
             width: double.infinity,
             alignment: Alignment.center,
             color: ScoutQuestColors.primaryAction,
-            child: Text(
-              'Scoreboard',
-              style: const TextStyle(
-                fontSize: 24.0,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
+            child: Column(
+              children: [
+                Text(
+                  widget.quest.name,
+                  style: const TextStyle(
+                    fontSize: 24.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Scoreboard',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.white.withValues(alpha: 0.9),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -228,20 +242,24 @@ class _QuestScoreboardState extends State<QuestScoreboard> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: Text(
-          'Completed in ${_formatDuration(entry.duration)}',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
+        trailing: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: _getPositionColor(position).withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: _getPositionColor(position).withValues(alpha: 0.3),
+            ),
+          ),
+          child: Text(
+            _formatDuration(entry.duration),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: _getPositionColor(position),
+            ),
           ),
         ),
-        trailing: position <= 3
-            ? Icon(
-                _getPositionIcon(position),
-                color: _getPositionColor(position),
-                size: 28,
-              )
-            : null,
       ),
     );
   }

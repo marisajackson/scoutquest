@@ -22,10 +22,10 @@ class Clue {
   ClueStatus get status {
     if (progressStep >= steps.length) {
       return ClueStatus.completed;
-    } else if (progressStep > 0) {
-      return ClueStatus.unlocked;
     } else if (progressStep > 1) {
       return ClueStatus.inProgress;
+    } else if (progressStep > 0) {
+      return ClueStatus.unlocked;
     } else {
       return ClueStatus.locked;
     }

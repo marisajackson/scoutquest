@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
 import 'package:scoutquest/data/repositories/quest_repository.dart';
 import 'package:scoutquest/app/models/quest.dart';
+import 'package:scoutquest/utils/alert.dart';
 import 'package:scoutquest/utils/constants.dart';
 
 /// A panel that walks through each step defined in Clue.steps
@@ -207,7 +209,8 @@ class CluePanelState extends State<CluePanel> {
       if (secretCodeIncorrect)
         const Padding(
           padding: EdgeInsets.only(top: 8),
-          child: Text('Incorrect code', style: TextStyle(color: Colors.red)),
+          child: Text('Incorrect code',
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
         ),
       const SizedBox(height: 16),
       ElevatedButton(
@@ -215,9 +218,12 @@ class CluePanelState extends State<CluePanel> {
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
         ),
         onPressed: () {
-          if (_codeController!.text.toLowerCase() == step.secretCode) {
+          // remove all spaces
+          if (_codeController!.text.toLowerCase().replaceAll(' ', '') ==
+              step.secretCode!.toLowerCase().replaceAll(' ', '')) {
             _advance();
           } else {
+            Alert.toast('Incorrect code', ToastGravity.CENTER);
             setState(() => secretCodeIncorrect = true);
           }
         },
@@ -231,8 +237,7 @@ class CluePanelState extends State<CluePanel> {
     if (listEquals(_draggableItems, _currentStep.correctOrder)) {
       _advance();
     } else {
-      // you could swap print() for Alert.toastBottom or similar
-      print('Incorrect order');
+      Alert.toast('Incorrect order', ToastGravity.CENTER);
     }
   }
 

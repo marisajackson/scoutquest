@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:scoutquest/app.routes.dart';
 import 'package:scoutquest/app/models/quest.dart';
+import 'package:scoutquest/data/repositories/quest_repository.dart';
 import 'package:scoutquest/data/repositories/score_repository.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoutquest/utils/constants.dart'; // Add this import for consistent colors
@@ -25,6 +27,8 @@ class _ScoreSubmissionBottomSheetState
   final _teamNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _scoreRepository = ScoreRepository();
+  final _questRepo = QuestRepository();
+
   bool _isSubmitting = false;
 
   @override
@@ -73,7 +77,14 @@ class _ScoreSubmissionBottomSheetState
       );
 
       if (mounted) {
-        Navigator.of(context).pop();
+        // update quest status to submitted
+        await _questRepo.updateUserQuestStatus(
+          widget.quest.id,
+          QuestStatus.submitted,
+        );
+        Navigator.of(context)
+            .pushNamed(questScoreboardRoute, arguments: widget.quest);
+
         Fluttertoast.showToast(
           msg: 'Score submitted successfully!',
           toastLength: Toast.LENGTH_LONG,
