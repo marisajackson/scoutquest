@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scoutquest/utils/constants.dart';
 
 class AppBarManager extends StatelessWidget implements PreferredSizeWidget {
   final AppBar appBar;
@@ -26,32 +25,29 @@ class AppBarManager extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       leading:
           hasBackButton ? BackButton(onPressed: backButtonOnPressed) : null,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Logo
-          SizedBox(
-            height: 60,
-            child: Image.asset(
-              "assets/brand/logos/logo-white.png",
-              fit: BoxFit.contain,
-            ),
-          ),
-        ],
+      title: SizedBox(
+        height: 60,
+        child: Image.asset(
+          "assets/brand/logos/logo-white.png",
+          fit: BoxFit.contain,
+        ),
       ),
+      centerTitle: true,
       actions: [
-        // Timer display
+        // Timer display with fixed width
         if (timer != null)
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            width: 90, // Fixed width to prevent jumping
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             margin: const EdgeInsets.only(right: 8),
             child: Row(
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Icon(
                   Icons.timer_outlined,
                   color: Colors.white,
-                  size: 18,
+                  size: 20,
                 ),
                 const SizedBox(width: 4),
                 Text(
@@ -60,6 +56,9 @@ class AppBarManager extends StatelessWidget implements PreferredSizeWidget {
                     color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
+                    fontFeatures: [
+                      FontFeature.tabularFigures()
+                    ], // Monospace numbers
                   ),
                 ),
               ],
