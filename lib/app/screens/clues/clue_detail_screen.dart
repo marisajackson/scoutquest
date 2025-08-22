@@ -3,33 +3,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoutquest/app/models/clue.dart';
+import 'package:scoutquest/app/models/quest.dart';
+import 'package:scoutquest/app/widgets/app_bar_manager.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
 import 'package:scoutquest/data/repositories/quest_repository.dart';
-import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/utils/alert.dart';
 import 'package:scoutquest/utils/constants.dart';
 
-/// A panel that walks through each step defined in Clue.steps
-class CluePanel extends StatefulWidget {
+class ClueDetailScreen extends StatefulWidget {
   final Clue clue;
-  final VoidCallback onTap;
-  final ClueRepository clueRepository;
+  final Quest quest;
 
-  const CluePanel({
+  const ClueDetailScreen({
     super.key,
     required this.clue,
-    required this.onTap,
-    required this.clueRepository,
+    required this.quest,
   });
 
   @override
-  CluePanelState createState() => CluePanelState();
+  ClueDetailScreenState createState() => ClueDetailScreenState();
 }
 
-class CluePanelState extends State<CluePanel> {
+class ClueDetailScreenState extends State<ClueDetailScreen> {
+  late ClueRepository clueRepository;
   TextEditingController? _codeController;
   List<String>? _draggableItems;
   bool secretCodeIncorrect = false;
+
   ClueStep get _currentStep => widget.clue.steps.firstWhere(
         (s) => s.step == widget.clue.progressStep,
         orElse: () => widget.clue.steps.first,
@@ -38,6 +38,7 @@ class CluePanelState extends State<CluePanel> {
   @override
   void initState() {
     super.initState();
+    clueRepository = ClueRepository(widget.quest);
 
     // init controller if secretCode step
     if (_currentStep.secretCode != null) {
@@ -51,52 +52,60 @@ class CluePanelState extends State<CluePanel> {
 
   @override
   Widget build(BuildContext context) {
-    final maxH = MediaQuery.of(context).size.height * 0.8;
-
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: maxH),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+    return Scaffold(
+      appBar: AppBarManager(
+        appBar: AppBar(),
+        hasBackButton: true,
+        backButtonOnPressed: () => Navigator.of(context).pop(),
+        questName: widget.quest.name,
+      ),
+      body: Column(
         children: [
-          _buildHandle(),
-          Text(widget.clue.label,
-              style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 26)),
+          Container(
+            padding: const EdgeInsets.all(16.0),
+            width: double.infinity,
+            alignment: Alignment.center,
+            color: ScoutQuestColors.primaryAction,
+            child: Text(
+              widget.quest.name,
+              style: const TextStyle(
+                fontSize: 24.0,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            widget.clue.label,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
+          ),
           const SizedBox(height: 12),
           Expanded(
             child: SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(
-                  16, 16, 16, MediaQuery.of(context).viewInsets.bottom),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _buildStepContent(_currentStep),
                   if (widget.clue.status == ClueStatus.completed)
                     ElevatedButton(
-                      onPressed: widget.onTap,
-                      child: const Text('Back to Quest',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text(
+                        'Back to Quest',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 40),
         ],
       ),
     );
   }
-
-  Widget _buildHandle() => Container(
-        width: 70,
-        height: 4,
-        margin: const EdgeInsets.only(top: 16, bottom: 12),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade400,
-          borderRadius: BorderRadius.circular(2),
-        ),
-      );
 
   Widget _buildStepContent(ClueStep step) {
     // unified UI: use available optional fields
@@ -244,7 +253,7 @@ class CluePanelState extends State<CluePanel> {
   Future<void> _advance() async {
     setState(() {
       widget.clue.progressStep++;
-      widget.clueRepository.updateClueProgress(
+      clueRepository.updateClueProgress(
         widget.clue.id,
         widget.clue.progressStep,
       );
@@ -259,13 +268,13 @@ class CluePanelState extends State<CluePanel> {
       }
     });
     // After advancing, check if all clues are completed to update quest status
-    final userClues = await widget.clueRepository.getUserQuestClues();
+    final userClues = await clueRepository.getUserQuestClues();
     final allCompleted =
         userClues.every((c) => c.progressStep >= c.steps.length);
     if (allCompleted) {
       final questRepo = QuestRepository();
       await questRepo.updateUserQuestStatus(
-          widget.clueRepository.quest.id, QuestStatus.completed);
+          clueRepository.quest.id, QuestStatus.completed);
     }
   }
 }

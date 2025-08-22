@@ -5,7 +5,6 @@ import 'package:scoutquest/app/screens/clues/category_header.dart';
 import 'package:scoutquest/app/widgets/app_bar_manager.dart';
 import 'package:scoutquest/app/widgets/qr_scanner.dart';
 import 'package:scoutquest/app/models/clue.dart';
-import 'package:scoutquest/app/screens/clues/clue_panel.dart';
 import 'package:scoutquest/app/screens/clues/clue_row.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
@@ -113,23 +112,13 @@ class CluesScreenState extends State<CluesScreen> {
       return;
     }
 
-    setState(() {
-      selectedClue = clue;
-    });
-
-    showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        builder: (BuildContext context) {
-          return CluePanel(
-            clueRepository: clueRepository,
-            clue: clue,
-            onTap: () {
-              Navigator.of(context).pop(); // Close the BottomSheet
-              loadClueInfo();
-            },
-          );
-        });
+    Navigator.of(context).pushNamed(
+      clueDetailRoute,
+      arguments: {
+        'clue': clue,
+        'quest': widget.quest,
+      },
+    );
   }
 
   void addClue() {
@@ -187,7 +176,15 @@ class CluesScreenState extends State<CluesScreen> {
     await loadClueInfo();
     final category = categories.firstWhere((cat) => cat.name == clue.category);
     expandCategory(category);
-    selectClue(clues.firstWhere((clue) => clue.code == code));
+
+    final updatedClue = clues.firstWhere((clue) => clue.code == code);
+    Navigator.of(context).pushNamed(
+      clueDetailRoute,
+      arguments: {
+        'clue': updatedClue,
+        'quest': widget.quest,
+      },
+    );
   }
 
   void goBack() {
