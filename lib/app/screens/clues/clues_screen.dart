@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:scoutquest/app.routes.dart';
 import 'package:scoutquest/app/models/clue_category.dart';
@@ -10,7 +11,6 @@ import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
 import 'package:scoutquest/data/repositories/quest_repository.dart';
 import 'package:scoutquest/utils/alert.dart';
-import 'package:scoutquest/utils/constants.dart';
 
 class CluesScreen extends StatefulWidget {
   final Quest quest;
@@ -28,6 +28,8 @@ class CluesScreenState extends State<CluesScreen> {
   late ClueRepository clueRepository;
   late QuestRepository questRepository;
   bool isBottomSheetOpen = false;
+  String _elapsedTime = "00:00";
+  Timer? _timer;
 
   @override
   void initState() {
@@ -35,6 +37,41 @@ class CluesScreenState extends State<CluesScreen> {
     clueRepository = ClueRepository(widget.quest);
     questRepository = QuestRepository();
     loadClueInfo();
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _updateElapsedTime();
+    });
+    _updateElapsedTime(); // Initial update
+  }
+
+  void _updateElapsedTime() {
+    if (widget.quest.startTime != null) {
+      final elapsed = DateTime.now().difference(widget.quest.startTime!);
+      setState(() {
+        _elapsedTime = _formatDuration(elapsed);
+      });
+    }
+  }
+
+  String _formatDuration(Duration duration) {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    final seconds = duration.inSeconds.remainder(60);
+
+    if (hours > 0) {
+      return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    } else {
+      return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    }
   }
 
   Future<void> loadClueInfo() async {
@@ -213,24 +250,11 @@ class CluesScreenState extends State<CluesScreen> {
         backButtonOnPressed: () => {
           Navigator.of(context).pushReplacementNamed(questsRoute),
         },
+        questName: widget.quest.name,
+        timer: _elapsedTime,
       ),
       body: Column(
         children: [
-          // Content below the AppBar
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            width: double.infinity,
-            alignment: Alignment.center,
-            color: ScoutQuestColors.primaryAction,
-            child: Text(
-              widget.quest.name,
-              style: const TextStyle(
-                fontSize: 24.0,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
           Expanded(
             child: RefreshIndicator(
               onRefresh: () => loadClueInfo(),

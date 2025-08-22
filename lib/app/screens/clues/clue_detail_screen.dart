@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -29,6 +30,8 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
   TextEditingController? _codeController;
   List<String>? _draggableItems;
   bool secretCodeIncorrect = false;
+  String _elapsedTime = "00:00";
+  Timer? _timer;
 
   ClueStep get _currentStep => widget.clue.steps.firstWhere(
         (s) => s.step == widget.clue.progressStep,
@@ -39,6 +42,7 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
   void initState() {
     super.initState();
     clueRepository = ClueRepository(widget.quest);
+    _startTimer();
 
     // init controller if secretCode step
     if (_currentStep.secretCode != null) {
@@ -51,6 +55,40 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
   }
 
   @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _updateElapsedTime();
+    });
+    _updateElapsedTime(); // Initial update
+  }
+
+  void _updateElapsedTime() {
+    if (widget.quest.startTime != null) {
+      final elapsed = DateTime.now().difference(widget.quest.startTime!);
+      setState(() {
+        _elapsedTime = _formatDuration(elapsed);
+      });
+    }
+  }
+
+  String _formatDuration(Duration duration) {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    final seconds = duration.inSeconds.remainder(60);
+
+    if (hours > 0) {
+      return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    } else {
+      return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarManager(
@@ -58,23 +96,10 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
         hasBackButton: true,
         backButtonOnPressed: () => Navigator.of(context).pop(),
         questName: widget.quest.name,
+        timer: _elapsedTime,
       ),
       body: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            width: double.infinity,
-            alignment: Alignment.center,
-            color: ScoutQuestColors.primaryAction,
-            child: Text(
-              widget.quest.name,
-              style: const TextStyle(
-                fontSize: 24.0,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
           const SizedBox(height: 12),
           Text(
             widget.clue.label,
