@@ -18,6 +18,9 @@ class ClueRepository {
     cluesProgress = jsonDecode(cluesProgress);
     cluesProgress = Map<String, String>.from(cluesProgress);
 
+    // Load hint usage status
+    await _loadHintUsageStatus(allClues);
+
     for (var clue in allClues) {
       if (!cluesProgress.containsKey(clue.id)) {
         var questClueStep = quest.clueStep ?? 0;
@@ -41,9 +44,58 @@ class ClueRepository {
       if (clue.progressStep < int.parse(quest.clueStep ?? '0')) {
         clue.progressStep = int.parse(quest.clueStep ?? '0');
       }
+
+      // TESTING
+      // clue.progressStep = 1;
     }
 
     return allClues;
+  }
+
+  Future<void> _loadHintUsageStatus(List<Clue> clues) async {
+    final prefs = await SharedPreferences.getInstance();
+    final hintsStatus = prefs.getString('${quest.id}-hints');
+
+    if (hintsStatus == null) return;
+
+    final hintsJSON = jsonDecode(hintsStatus);
+    final hintsMap = Map<String, List<dynamic>>.from(hintsJSON);
+
+    for (var clue in clues) {
+      for (var step in clue.steps) {
+        if (step.hints != null) {
+          final key = '${clue.id}_step_${step.step}';
+          if (hintsMap.containsKey(key)) {
+            final usedHintIds = List<String>.from(hintsMap[key]!);
+            for (var hint in step.hints!) {
+              hint.isUsed = usedHintIds.contains(hint.id);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Future<void> saveHintUsage(
+      String clueId, int stepNumber, String hintId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final hintsStatus = prefs.getString('${quest.id}-hints') ?? '{}';
+
+    final hintsJSON = jsonDecode(hintsStatus);
+    final hintsMap = Map<String, List<dynamic>>.from(hintsJSON);
+
+    final key = '${clueId}_step_$stepNumber';
+    if (!hintsMap.containsKey(key)) {
+      hintsMap[key] = [];
+    }
+
+    final usedHints = List<String>.from(hintsMap[key]!);
+    if (!usedHints.contains(hintId)) {
+      usedHints.add(hintId);
+      hintsMap[key] = usedHints;
+
+      await prefs.setString('${quest.id}-hints', jsonEncode(hintsMap));
+    }
   }
 
   Future<String> initializeUserQuestClues(List<Clue> questClues) async {

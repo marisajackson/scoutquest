@@ -113,24 +113,30 @@ class ClueStep {
 }
 
 class Hint {
+  final String id;
   final int order;
   final String preview;
   final String text;
   final int minutePenalty;
+  bool isUsed;
 
   Hint({
+    required this.id,
     required this.order,
     required this.preview,
     required this.text,
     required this.minutePenalty,
+    this.isUsed = false,
   });
 
   factory Hint.fromJson(Map<String, dynamic> json) {
     return Hint(
+      id: json['id'] as String,
       order: json['order'] as int,
       preview: json['preview'] as String,
       text: json['text'] as String,
       minutePenalty: json['minutePenalty'] as int,
+      isUsed: json['isUsed'] as bool? ?? false,
     );
   }
 }

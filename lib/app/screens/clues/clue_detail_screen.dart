@@ -331,89 +331,178 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(24),
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.8,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return Container(
+              padding: const EdgeInsets.all(24),
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.8,
               ),
-              const SizedBox(height: 20),
-              const Text(
-                'Hints',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-              if (_currentStep.hints != null && _currentStep.hints!.isNotEmpty)
-                Flexible(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: _currentStep.hints!.length,
-                    itemBuilder: (context, index) {
-                      final hint = _currentStep.hints![index];
-                      return _buildHintCard(hint);
-                    },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
-                )
-              else
-                const Text(
-                  'No hints available for this step.',
-                  style: TextStyle(fontSize: 18),
-                  textAlign: TextAlign.center,
-                ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Close'),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Hints',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  if (_currentStep.hints != null &&
+                      _currentStep.hints!.isNotEmpty)
+                    Flexible(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: _currentStep.hints!.length,
+                        itemBuilder: (context, index) {
+                          final hint = _currentStep.hints![index];
+                          return _buildHintCard(hint, setModalState);
+                        },
+                      ),
+                    )
+                  else
+                    const Text(
+                      'No hints available for this step.',
+                      style: TextStyle(fontSize: 18),
+                      textAlign: TextAlign.center,
+                    ),
+                  const SizedBox(height: 24),
+                ],
               ),
-              const SizedBox(height: 16),
-            ],
-          ),
+            );
+          },
         );
       },
     );
   }
 
-  Widget _buildHintCard(Hint hint) {
+  Widget _buildHintCard(Hint hint, StateSetter setModalState) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      child: ExpansionTile(
-        title: Text(
-          hint.preview,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
+      elevation: 2,
+      child: InkWell(
+        onTap: hint.isUsed ? null : () => _showHintWarning(hint, setModalState),
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      hint.preview,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color:
+                          hint.isUsed ? Colors.green[100] : Colors.orange[100],
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: hint.isUsed
+                            ? Colors.green[300]!
+                            : Colors.orange[300]!,
+                      ),
+                    ),
+                    child: Text(
+                      '+${hint.minutePenalty} min',
+                      style: TextStyle(
+                        color: hint.isUsed
+                            ? Colors.green[800]
+                            : Colors.orange[800],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (hint.isUsed) ...[
+                const SizedBox(height: 12),
+                Text(
+                  hint.text,
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ],
+            ],
           ),
         ),
-        subtitle: Text(
-          'Penalty: ${hint.minutePenalty} minutes',
-          style: TextStyle(
-            color: Colors.orange[700],
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              hint.text,
-              style: const TextStyle(fontSize: 16),
-            ),
-          ),
-        ],
       ),
     );
+  }
+
+  void _showHintWarning(Hint hint, StateSetter setModalState) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Are you sure?',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+          ),
+          content: Text(
+            'This hint will add ${hint.minutePenalty} minutes to your quest time.',
+            style: const TextStyle(fontSize: 20),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.grey[700],
+              ),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                setState(() {
+                  hint.isUsed = true;
+                });
+                setModalState(() {
+                  hint.isUsed = true;
+                });
+                _applyHintPenalty(hint);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepOrange,
+                foregroundColor: Colors.white,
+                elevation: 2,
+              ),
+              child: const Text(
+                'Accept Penalty',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _applyHintPenalty(Hint hint) {
+    clueRepository.saveHintUsage(widget.clue.id, _currentStep.step, hint.id);
+    Alert.toast('+${hint.minutePenalty} minute penalty', ToastGravity.TOP);
+    hint.isUsed = true;
   }
 }
