@@ -34,36 +34,6 @@ class AppBarManager extends StatelessWidget implements PreferredSizeWidget {
       ),
       centerTitle: true,
       actions: [
-        // Timer display with fixed width
-        if (timer != null)
-          Container(
-            width: 90, // Fixed width to prevent jumping
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            margin: const EdgeInsets.only(right: 8),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.timer_outlined,
-                  color: Colors.white,
-                  size: 20,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  timer!,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    fontFeatures: [
-                      FontFeature.tabularFigures()
-                    ], // Monospace numbers
-                  ),
-                ),
-              ],
-            ),
-          ),
         ...?actions,
       ],
       bottom: questName != null
@@ -83,13 +53,46 @@ class AppBarManager extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                 ),
-                child: Text(
-                  questName!,
-                  style: const TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        questName!,
+                        textAlign: TextAlign.left,
+                        style: const TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    if (timer != null) ...[
+                      const SizedBox(width: 16),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.timer_outlined,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            timer!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              fontFeatures: [
+                                FontFeature.tabularFigures()
+                              ], // Monospace numbers
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
                 ),
               ),
             )

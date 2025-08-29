@@ -92,12 +92,20 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarManager(
-        appBar: AppBar(),
-        hasBackButton: true,
-        backButtonOnPressed: () => Navigator.of(context).pop(),
-        questName: widget.quest.name,
-        timer: _elapsedTime,
-      ),
+          appBar: AppBar(),
+          hasBackButton: true,
+          backButtonOnPressed: () => Navigator.of(context).pop(),
+          questName: widget.quest.name,
+          timer: _elapsedTime,
+          actions: [
+            // help button
+            IconButton(
+              icon: const Icon(Icons.help_outline, size: 32),
+              onPressed: () {
+                // Show help dialog or tooltip
+              },
+            ),
+          ]),
       body: Column(
         children: [
           const SizedBox(height: 12),
@@ -119,6 +127,18 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
                         'Back to Quest',
                         style: TextStyle(
                           fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  if (widget.clue.status != ClueStatus.completed)
+                    TextButton(
+                      onPressed: _showHintModal,
+                      child: const Text(
+                        'I need a hint!',
+                        style: TextStyle(
+                          color: ScoutQuestColors.accentAction,
+                          fontSize: 19,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -301,5 +321,99 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
       await questRepo.updateUserQuestStatus(
           clueRepository.quest.id, QuestStatus.completed);
     }
+  }
+
+  void _showHintModal() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(24),
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Hints',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              if (_currentStep.hints != null && _currentStep.hints!.isNotEmpty)
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: _currentStep.hints!.length,
+                    itemBuilder: (context, index) {
+                      final hint = _currentStep.hints![index];
+                      return _buildHintCard(hint);
+                    },
+                  ),
+                )
+              else
+                const Text(
+                  'No hints available for this step.',
+                  style: TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center,
+                ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Close'),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildHintCard(Hint hint) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ExpansionTile(
+        title: Text(
+          hint.preview,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
+        ),
+        subtitle: Text(
+          'Penalty: ${hint.minutePenalty} minutes',
+          style: TextStyle(
+            color: Colors.orange[700],
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              hint.text,
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

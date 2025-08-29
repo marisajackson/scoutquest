@@ -77,6 +77,7 @@ class ClueStep {
   final String? shortText;
   final String? audio;
   final String? image;
+  final List<Hint>? hints;
 
   ClueStep({
     required this.step,
@@ -87,6 +88,7 @@ class ClueStep {
     this.shortText,
     this.audio,
     this.image,
+    this.hints,
   });
 
   factory ClueStep.fromJson(Map<String, dynamic> json) {
@@ -101,6 +103,34 @@ class ClueStep {
       shortText: json['shortText'] as String?,
       audio: json['audio'] as String?,
       image: json['image'] as String?,
+      hints: json['hints'] != null
+          ? (json['hints'] as List<dynamic>)
+              .map((h) => Hint.fromJson(h as Map<String, dynamic>))
+              .toList()
+          : null,
+    );
+  }
+}
+
+class Hint {
+  final int order;
+  final String preview;
+  final String text;
+  final int minutePenalty;
+
+  Hint({
+    required this.order,
+    required this.preview,
+    required this.text,
+    required this.minutePenalty,
+  });
+
+  factory Hint.fromJson(Map<String, dynamic> json) {
+    return Hint(
+      order: json['order'] as int,
+      preview: json['preview'] as String,
+      text: json['text'] as String,
+      minutePenalty: json['minutePenalty'] as int,
     );
   }
 }
