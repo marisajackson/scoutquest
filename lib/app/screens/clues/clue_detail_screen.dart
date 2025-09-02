@@ -428,15 +428,28 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
                             : Colors.orange[300]!,
                       ),
                     ),
-                    child: Text(
-                      '+${hint.minutePenalty} min',
-                      style: TextStyle(
-                        color: hint.isUsed
-                            ? Colors.green[800]
-                            : Colors.orange[800],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          hint.isUsed ? Icons.add : Icons.timer,
+                          size: 16,
+                          color: hint.isUsed
+                              ? Colors.green[800]
+                              : Colors.orange[800],
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${hint.minutePenalty} min',
+                          style: TextStyle(
+                            color: hint.isUsed
+                                ? Colors.green[800]
+                                : Colors.orange[800],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -464,9 +477,18 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
             'Are you sure?',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
           ),
-          content: Text(
-            'This hint will add ${hint.minutePenalty} minutes to your quest time.',
-            style: const TextStyle(fontSize: 20),
+          content: RichText(
+            text: TextSpan(
+              style: const TextStyle(fontSize: 20, color: Colors.black),
+              children: [
+                const TextSpan(text: 'This hint will add '),
+                TextSpan(
+                  text: '${hint.minutePenalty} minutes',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const TextSpan(text: ' to your quest time.'),
+              ],
+            ),
           ),
           actions: [
             TextButton(
