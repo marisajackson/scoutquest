@@ -70,10 +70,16 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
   void _updateElapsedTime() {
     if (widget.quest.startTime != null) {
       final elapsed = DateTime.now().difference(widget.quest.startTime!);
-      setState(() {
-        _elapsedTime = _formatDuration(elapsed);
-      });
+      _loadPenaltyAndUpdateTime(elapsed);
     }
+  }
+
+  void _loadPenaltyAndUpdateTime(Duration elapsed) async {
+    final penaltyMinutes = await clueRepository.getTotalPenaltyMinutes();
+    final totalElapsed = elapsed + Duration(minutes: penaltyMinutes);
+    setState(() {
+      _elapsedTime = _formatDuration(totalElapsed);
+    });
   }
 
   String _formatDuration(Duration duration) {
@@ -500,8 +506,10 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
     );
   }
 
-  void _applyHintPenalty(Hint hint) {
-    clueRepository.saveHintUsage(widget.clue.id, _currentStep.step, hint.id);
+  void _applyHintPenalty(Hint hint) async {
+    await clueRepository.saveHintUsage(
+        widget.clue.id, _currentStep.step, hint.id);
+    await clueRepository.addPenaltyMinutes(hint.minutePenalty);
     Alert.toast('+${hint.minutePenalty} minute penalty', ToastGravity.TOP);
     hint.isUsed = true;
   }

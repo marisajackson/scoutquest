@@ -98,6 +98,17 @@ class ClueRepository {
     }
   }
 
+  Future<void> addPenaltyMinutes(int minutes) async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentPenalty = prefs.getInt('${quest.id}-penalty') ?? 0;
+    await prefs.setInt('${quest.id}-penalty', currentPenalty + minutes);
+  }
+
+  Future<int> getTotalPenaltyMinutes() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('${quest.id}-penalty') ?? 0;
+  }
+
   Future<String> initializeUserQuestClues(List<Clue> questClues) async {
     var questClueStep = quest.clueStep ?? 0;
     Map<String, String> cluesMap = {};
