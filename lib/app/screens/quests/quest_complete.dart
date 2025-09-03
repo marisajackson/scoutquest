@@ -41,13 +41,19 @@ class QuestComplete extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder<Duration?>(
-          future: repo.getQuestDuration(quest.id),
+        child: FutureBuilder<Map<String, dynamic>?>(
+          future: repo.getUserQuest(quest.id),
           builder: (context, snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
               return const Center(child: CircularProgressIndicator());
             }
-            final duration = snapshot.data ?? Duration.zero;
+            final data = snapshot.data;
+            if (data == null) {
+              return const Center(child: Text("No data available"));
+            }
+            final duration = Duration(seconds: data['totalDuration'] ?? 0);
+            final penaltyMinutes = data['penalty'] ?? 0;
+
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -61,15 +67,27 @@ class QuestComplete extends StatelessWidget {
                   data:
                       "<div style='text-align: center; font-size: 20px; font-weight: bold;'>${quest.completionHtml}</div>",
                 ),
-                const SizedBox(height: 12),
                 Text(
                   _formatDuration(duration),
                   style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
+                if (penaltyMinutes > 0) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    "(includes +$penaltyMinutes min penalty)",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.orange[700],
+                      fontStyle: FontStyle.italic,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
                 const SizedBox(height: 16),
                 Text(
-                  "Think you’ve claimed the fastest time?",
+                  "Think you've claimed the fastest time?",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),

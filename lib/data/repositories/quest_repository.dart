@@ -94,13 +94,35 @@ class QuestRepository {
     return await loadJsonFromUrl('http://scoutquest.co/quests/quests.json');
   }
 
-  Future<Duration?> getQuestDuration(String questID) async {
+  Future<Map<String, dynamic>?> getUserQuest(String questID) async {
     final prefs = await SharedPreferences.getInstance();
+    // return status, total duration, penalty amount, duration (without penalty), start time, end time
     final startString = prefs.getString("$questID-startTime");
     final endString = prefs.getString("$questID-endTime");
-    if (startString == null || endString == null) return null;
-    final start = DateTime.parse(startString);
-    final end = DateTime.parse(endString);
-    return end.difference(start);
+
+    Duration? totalDuration;
+    Duration? durationWithoutPenalty;
+    final penaltyMinutes = prefs.getInt("$questID-penalty") ?? 0;
+
+    if (startString != null) {
+      final start = DateTime.parse(startString);
+      // Use endTime if available, otherwise use current time
+      final end =
+          endString != null ? DateTime.parse(endString) : DateTime.now();
+      final baseDuration = end.difference(start);
+      final penaltyDuration = Duration(minutes: penaltyMinutes);
+      totalDuration = baseDuration + penaltyDuration;
+      durationWithoutPenalty = baseDuration;
+    }
+
+    return {
+      'status': prefs.getString(questID),
+      'totalDuration': totalDuration?.inSeconds, // Duration in seconds
+      'penalty': penaltyMinutes,
+      'durationWithoutPenalty':
+          durationWithoutPenalty?.inSeconds, // Duration in seconds
+      'startTime': startString,
+      'endTime': endString,
+    };
   }
 }
