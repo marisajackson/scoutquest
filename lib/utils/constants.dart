@@ -35,15 +35,33 @@ extension ScoutQuestColors on Colors {
   static const Color accentAction = Color(0xFFF54E00);
 }
 
+// Font sizes based on clue_detail_screen usage
+extension ScoutQuestFontSizes on TextStyle {
+  static const double headerLarge = 26.0; // Clue label
+  static const double headerMedium = 24.0; // Modal titles, input decoration
+  static const double headerSmall = 22.0; // Dialog titles
+
+  static const double bodyLarge =
+      20.0; // Hint preview, draggable items, content
+  static const double bodyMedium = 19.0; // "I need a hint!" button
+  static const double bodyRegular = 18.0; // Hint text, default text
+  static const double bodySmall = 16.0; // Dialog content, buttons
+
+  static const double inputLarge = 24.0; // Text field input
+  static const double buttonLarge = 24.0; // Submit buttons
+  static const double buttonMedium = 20.0; // Back to Quest button
+  static const double buttonSmall = 16.0; // Cancel, Accept Penalty buttons
+}
+
 // default input decoration
 const InputDecoration defaultInputDecoration = InputDecoration(
   labelStyle: TextStyle(
     fontWeight: FontWeight.bold,
-    fontSize: 24.0,
+    fontSize: ScoutQuestFontSizes.headerMedium,
   ),
   hintStyle: TextStyle(
     fontWeight: FontWeight.bold,
-    fontSize: 24.0,
+    fontSize: ScoutQuestFontSizes.headerMedium,
   ),
   border: OutlineInputBorder(),
   enabledBorder: OutlineInputBorder(

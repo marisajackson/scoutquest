@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
+import 'package:scoutquest/utils/constants.dart';
 
 class QuestHeader extends StatefulWidget implements PreferredSizeWidget {
   final Quest quest;
@@ -102,72 +103,73 @@ class QuestHeaderState extends State<QuestHeader> {
             });
 
             return Dialog(
+              backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(
+                  color: ScoutQuestColors.primaryAction,
+                  width: 2,
+                ),
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
+                    Text(
                       'Time Breakdown',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: ScoutQuestFontSizes.headerMedium,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Actual Time:',
-                            style: TextStyle(fontSize: 16)),
-                        Text(
-                          _formatDuration(actualElapsed),
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w500),
-                        ),
-                      ],
+                    const SizedBox(height: 20),
+                    _buildTimeRow(
+                      'Actual Time:',
+                      _formatDuration(actualElapsed),
+                      ScoutQuestColors.primaryBackground,
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Penalty Time:',
-                            style: TextStyle(fontSize: 16)),
-                        Text(
-                          '+$_penaltyMinutes min',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: _penaltyMinutes > 0
-                                ? Colors.orange[700]
-                                : Colors.grey,
-                          ),
-                        ),
-                      ],
+                    const SizedBox(height: 12),
+                    _buildTimeRow(
+                      'Penalty Time:',
+                      '+$_penaltyMinutes min',
+                      _penaltyMinutes > 0
+                          ? ScoutQuestColors.primaryAction
+                          : Colors.grey,
                     ),
-                    const Divider(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Total Time:',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          _elapsedTime,
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Divider(
+                        color: ScoutQuestColors.primaryAction,
+                        thickness: 1,
+                      ),
                     ),
-                    const SizedBox(height: 16),
-                    TextButton(
+                    _buildTimeRow(
+                      'Total Time:',
+                      _elapsedTime,
+                      ScoutQuestColors.primaryAction,
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
                       onPressed: () {
                         dialogTimer?.cancel();
                         Navigator.of(context).pop();
                       },
-                      child: const Text('Close'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ScoutQuestColors.primaryAction,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                      ),
+                      child: Text(
+                        'Close',
+                        style: TextStyle(
+                          fontSize: ScoutQuestFontSizes.bodyRegular,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -177,6 +179,30 @@ class QuestHeaderState extends State<QuestHeader> {
         );
       },
     ).then((_) => dialogTimer?.cancel());
+  }
+
+  Widget _buildTimeRow(String label, String value, Color color) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: ScoutQuestFontSizes.bodyRegular,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: ScoutQuestFontSizes.bodyRegular,
+            fontWeight: FontWeight.bold,
+            color: color,
+            fontFeatures: [FontFeature.tabularFigures()],
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -203,8 +229,8 @@ class QuestHeaderState extends State<QuestHeader> {
               child: Text(
                 widget.quest.name,
                 textAlign: TextAlign.left,
-                style: const TextStyle(
-                  fontSize: 20.0,
+                style: TextStyle(
+                  fontSize: ScoutQuestFontSizes.bodyLarge,
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
                 ),
@@ -228,9 +254,9 @@ class QuestHeaderState extends State<QuestHeader> {
                     const SizedBox(width: 4),
                     Text(
                       _elapsedTime,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: ScoutQuestFontSizes.bodySmall,
                         fontWeight: FontWeight.w600,
                         fontFeatures: [FontFeature.tabularFigures()],
                       ),
