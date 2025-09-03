@@ -69,11 +69,15 @@ class _ScoreSubmissionBottomSheetState
     });
 
     try {
+      final questData =
+          await _questRepo.getQuestSubmissionData(widget.quest.id);
+
       await _scoreRepository.submitScore(
         questId: widget.quest.id,
         teamName: _teamNameController.text.trim(),
         email: _emailController.text.trim().toLowerCase(),
         duration: widget.duration,
+        questData: questData,
       );
 
       if (mounted) {

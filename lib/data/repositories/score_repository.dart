@@ -9,15 +9,23 @@ class ScoreRepository {
     required String teamName,
     required String email,
     required Duration duration,
+    Map<String, dynamic>? questData,
   }) async {
     try {
-      await _firestore.collection('scores').add({
+      final submissionData = {
         'questId': questId,
         'teamName': teamName,
         'email': email,
         'duration': duration.inSeconds,
         'submittedAt': DateTime.now().toIso8601String(),
-      });
+      };
+
+      // Add quest data if provided
+      if (questData != null) {
+        submissionData['questData'] = questData;
+      }
+
+      await _firestore.collection('scores').add(submissionData);
     } catch (e) {
       throw Exception('Failed to submit score: $e');
     }

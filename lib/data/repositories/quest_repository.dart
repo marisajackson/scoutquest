@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:scoutquest/data/json_loader.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -124,5 +125,36 @@ class QuestRepository {
       'startTime': startString,
       'endTime': endString,
     };
+  }
+
+  Future<Map<String, dynamic>?> getQuestSubmissionData(String questID) async {
+    final prefs = await SharedPreferences.getInstance();
+    final startString = prefs.getString("$questID-startTime");
+    final endString = prefs.getString("$questID-endTime");
+
+    if (startString == null || endString == null) return null;
+
+    final start = DateTime.parse(startString);
+    final end = DateTime.parse(endString);
+    final baseDuration = end.difference(start);
+    final penaltyMinutes = prefs.getInt("$questID-penalty") ?? 0;
+    final totalDuration = baseDuration + Duration(minutes: penaltyMinutes);
+
+    // Get hint usage data
+    final hintsStatus = prefs.getString('$questID-hints') ?? '{}';
+    final hintsUsage = Map<String, List<dynamic>>.from(jsonDecode(hintsStatus));
+
+    final questInfo = {
+      'questId': questID,
+      'startTime': startString,
+      'endTime': endString,
+      'baseDurationMinutes': baseDuration.inMinutes,
+      'penaltyMinutes': penaltyMinutes,
+      'totalDurationMinutes': totalDuration.inMinutes,
+      'hintsUsage': hintsUsage,
+      'submittedAt': DateTime.now().toIso8601String(),
+    };
+
+    return questInfo;
   }
 }
