@@ -28,12 +28,14 @@ class CluesScreenState extends State<CluesScreen> {
   late ClueRepository clueRepository;
   late QuestRepository questRepository;
   bool isBottomSheetOpen = false;
+  late Quest currentQuest;
 
   @override
   void initState() {
     super.initState();
     clueRepository = ClueRepository(widget.quest);
     questRepository = QuestRepository();
+    currentQuest = widget.quest;
     loadClueInfo();
   }
 
@@ -50,6 +52,8 @@ class CluesScreenState extends State<CluesScreen> {
       await questRepository.updateUserQuestStatus(
           widget.quest.id, QuestStatus.inProgress);
     }
+
+    currentQuest = await questRepository.refreshQuest(widget.quest);
 
     clues = await clueRepository.getUserQuestClues();
     final List<Clue> noCategory = [];
@@ -83,6 +87,7 @@ class CluesScreenState extends State<CluesScreen> {
     setState(() {
       categories = loadedCategories;
       uncategorizedClues = noCategory;
+      currentQuest = currentQuest;
     });
   }
 
@@ -116,7 +121,7 @@ class CluesScreenState extends State<CluesScreen> {
       clueDetailRoute,
       arguments: {
         'clue': clue,
-        'quest': widget.quest,
+        'quest': currentQuest, // Changed from widget.quest
       },
     );
   }
@@ -182,13 +187,14 @@ class CluesScreenState extends State<CluesScreen> {
       clueDetailRoute,
       arguments: {
         'clue': updatedClue,
-        'quest': widget.quest,
+        'quest': currentQuest, // Changed from widget.quest
       },
     );
   }
 
   void goBack() {
-    Navigator.of(context).pushNamed(cluesRoute, arguments: widget.quest);
+    Navigator.of(context).pushNamed(cluesRoute,
+        arguments: currentQuest); // Changed from widget.quest
   }
 
   void collapseCategory(ClueCategory category) {
@@ -213,7 +219,7 @@ class CluesScreenState extends State<CluesScreen> {
         backButtonOnPressed: () => {
           Navigator.of(context).pushReplacementNamed(questsRoute),
         },
-        quest: widget.quest,
+        quest: currentQuest, // Changed from widget.quest to currentQuest
       ),
       body: Column(
         children: [

@@ -127,6 +127,24 @@ class QuestRepository {
     };
   }
 
+  Future<Quest> refreshQuest(Quest quest) async {
+    final prefs = await SharedPreferences.getInstance();
+    final startString = prefs.getString("${quest.id}-startTime");
+    final endString = prefs.getString("${quest.id}-endTime");
+
+    return Quest(
+      id: quest.id,
+      name: quest.name,
+      clueFile: quest.clueFile,
+      status: await getUserQuestStatus(quest.id),
+      clueStep: quest.clueStep,
+      welcomeHtml: quest.welcomeHtml,
+      completionHtml: quest.completionHtml,
+      startTime: startString != null ? DateTime.parse(startString) : null,
+      endTime: endString != null ? DateTime.parse(endString) : null,
+    );
+  }
+
   Future<Map<String, dynamic>?> getQuestSubmissionData(String questID) async {
     final prefs = await SharedPreferences.getInstance();
     final startString = prefs.getString("$questID-startTime");

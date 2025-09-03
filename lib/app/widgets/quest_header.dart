@@ -38,6 +38,15 @@ class QuestHeaderState extends State<QuestHeader> {
   }
 
   @override
+  void didUpdateWidget(QuestHeader oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.quest != widget.quest) {
+      _currentQuest = widget.quest;
+      _clueRepository = ClueRepository(widget.quest);
+    }
+  }
+
+  @override
   void dispose() {
     _timer?.cancel();
     super.dispose();
