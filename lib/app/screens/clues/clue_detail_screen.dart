@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -30,9 +29,6 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
   TextEditingController? _codeController;
   List<String>? _draggableItems;
   bool secretCodeIncorrect = false;
-  String _elapsedTime = "00:00";
-  Timer? _timer;
-  int _penaltyMinutes = 0;
 
   ClueStep get _currentStep => widget.clue.steps.firstWhere(
         (s) => s.step == widget.clue.progressStep,
@@ -43,7 +39,6 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
   void initState() {
     super.initState();
     clueRepository = ClueRepository(widget.quest);
-    _startTimer();
 
     // init controller if secretCode step
     if (_currentStep.secretCode != null) {
@@ -56,158 +51,13 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
   }
 
   @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      _updateElapsedTime();
-    });
-    _updateElapsedTime(); // Initial update
-  }
-
-  void _updateElapsedTime() {
-    if (widget.quest.startTime != null) {
-      final elapsed = DateTime.now().difference(widget.quest.startTime!);
-      _loadPenaltyAndUpdateTime(elapsed);
-    }
-  }
-
-  void _loadPenaltyAndUpdateTime(Duration elapsed) async {
-    final penaltyMinutes = await clueRepository.getTotalPenaltyMinutes();
-    final totalElapsed = elapsed + Duration(minutes: penaltyMinutes);
-    setState(() {
-      _elapsedTime = _formatDuration(totalElapsed);
-      _penaltyMinutes = penaltyMinutes;
-    });
-  }
-
-  String _formatDuration(Duration duration) {
-    final hours = duration.inHours;
-    final minutes = duration.inMinutes.remainder(60);
-    final seconds = duration.inSeconds.remainder(60);
-
-    if (hours > 0) {
-      return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-    } else {
-      return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-    }
-  }
-
-  void _showTimeBreakdown() {
-    debugPrint("Elapsed Time: $_elapsedTime");
-    debugPrint("Penalty Minutes: $_penaltyMinutes");
-
-    if (widget.quest.startTime == null) return;
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setDialogState) {
-            final actualElapsed =
-                DateTime.now().difference(widget.quest.startTime!);
-
-            // Start a timer for this dialog to update the elapsed time
-            Timer.periodic(const Duration(seconds: 1), (timer) {
-              if (context.mounted) {
-                setDialogState(() {
-                  // This will trigger a rebuild with updated time
-                });
-              } else {
-                timer.cancel();
-              }
-            });
-
-            return Dialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'Time Breakdown',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Actual Time:',
-                            style: TextStyle(fontSize: 16)),
-                        Text(
-                          _formatDuration(actualElapsed),
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Penalty Time:',
-                            style: TextStyle(fontSize: 16)),
-                        Text(
-                          '+${_penaltyMinutes} min',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: _penaltyMinutes > 0
-                                ? Colors.orange[700]
-                                : Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Divider(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Total Time:',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          _elapsedTime,
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Close'),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarManager(
           appBar: AppBar(),
           hasBackButton: true,
           backButtonOnPressed: () => Navigator.of(context).pop(),
-          questName: widget.quest.name,
-          timer: _elapsedTime,
-          onTimerTapped: _showTimeBreakdown,
+          quest: widget.quest,
           actions: [
             // help button
             IconButton(
@@ -636,7 +486,6 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
   void _applyHintPenalty(Hint hint) async {
     await clueRepository.saveHintUsage(
         widget.clue.id, _currentStep.step, hint.id);
-    await clueRepository.addPenaltyMinutes(hint.minutePenalty);
     Alert.toast('+${hint.minutePenalty} minute penalty', ToastGravity.TOP);
     hint.isUsed = true;
   }

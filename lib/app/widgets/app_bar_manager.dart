@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:scoutquest/app/models/quest.dart';
+import 'package:scoutquest/app/widgets/quest_header.dart';
 
 class AppBarManager extends StatelessWidget implements PreferredSizeWidget {
   final AppBar appBar;
@@ -6,18 +8,16 @@ class AppBarManager extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     this.actions = const [],
     this.hasBackButton = false,
-    this.questName,
+    this.quest,
     this.backButtonOnPressed,
-    this.timer,
     this.onTimerTapped,
     required this.appBar,
   });
 
   final List<Widget>? actions;
   final bool hasBackButton;
-  final String? questName;
+  final Quest? quest;
   final VoidCallback? backButtonOnPressed;
-  final String? timer;
   final VoidCallback? onTimerTapped;
 
   @override
@@ -38,75 +38,16 @@ class AppBarManager extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         ...?actions,
       ],
-      bottom: questName != null
-          ? PreferredSize(
-              preferredSize: const Size.fromHeight(50),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: 12.0),
-                width: double.infinity,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.15),
-                  border: Border(
-                    top: BorderSide(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      width: 1,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        questName!,
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontSize: 20.0,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    if (timer != null) ...[
-                      const SizedBox(width: 16),
-                      GestureDetector(
-                        onTap: onTimerTapped,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.timer_outlined,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              timer!,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                fontFeatures: [
-                                  FontFeature.tabularFigures()
-                                ], // Monospace numbers
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
+      bottom: quest != null
+          ? QuestHeader(
+              quest: quest!,
+              onTimerTapped: onTimerTapped,
             )
-          : PreferredSize(
-              preferredSize: const Size.fromHeight(0), child: Container()),
+          : null,
     );
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(
-      appBar.preferredSize.height + (questName != null ? 50 : 0));
+  Size get preferredSize =>
+      Size.fromHeight(appBar.preferredSize.height + (quest != null ? 50 : 0));
 }
