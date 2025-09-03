@@ -9,6 +9,7 @@ class AppBarManager extends StatelessWidget implements PreferredSizeWidget {
     this.questName,
     this.backButtonOnPressed,
     this.timer,
+    this.onTimerTapped,
     required this.appBar,
   });
 
@@ -17,6 +18,7 @@ class AppBarManager extends StatelessWidget implements PreferredSizeWidget {
   final String? questName;
   final VoidCallback? backButtonOnPressed;
   final String? timer;
+  final VoidCallback? onTimerTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -69,27 +71,30 @@ class AppBarManager extends StatelessWidget implements PreferredSizeWidget {
                     ),
                     if (timer != null) ...[
                       const SizedBox(width: 16),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.timer_outlined,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            timer!,
-                            style: const TextStyle(
+                      GestureDetector(
+                        onTap: onTimerTapped,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.timer_outlined,
                               color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              fontFeatures: [
-                                FontFeature.tabularFigures()
-                              ], // Monospace numbers
+                              size: 20,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 4),
+                            Text(
+                              timer!,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                fontFeatures: [
+                                  FontFeature.tabularFigures()
+                                ], // Monospace numbers
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ],
