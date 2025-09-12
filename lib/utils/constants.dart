@@ -5,6 +5,7 @@ ThemeData buildAppTheme() {
     useMaterial3: false,
     fontFamily: 'Quicksand',
     colorScheme: scoutQuestColorScheme,
+    scaffoldBackgroundColor: ScoutQuestColors.primaryText,
   );
 }
 

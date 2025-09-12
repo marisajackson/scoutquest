@@ -108,6 +108,7 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
               ),
             ),
           ),
+          const SizedBox(height: 24),
         ],
       ),
     );
@@ -348,78 +349,174 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
   }
 
   Widget _buildHintCard(Hint hint, StateSetter setModalState) {
+    final isUnlocked = hint.isUnlocked(_currentStep.hints ?? []);
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 2,
       child: InkWell(
-        onTap: hint.isUsed ? null : () => _showHintWarning(hint, setModalState),
+        onTap: hint.isUsed
+            ? null
+            : isUnlocked
+                ? () => _showHintWarning(hint, setModalState)
+                : () => _showLockedHintExplanation(hint),
         borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
+        child: Opacity(
+          opacity: isUnlocked ? 1.0 : 0.5,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        isUnlocked ? hint.preview : 'Locked hint',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                    if (!isUnlocked)
+                      const Icon(
+                        Icons.lock,
+                        color: Colors.grey,
+                        size: 20,
+                      )
+                    else
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: hint.isUsed
+                              ? Colors.green[100]
+                              : Colors.orange[100],
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: hint.isUsed
+                                ? Colors.green[300]!
+                                : Colors.orange[300]!,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              hint.isUsed ? Icons.add : Icons.timer,
+                              size: 16,
+                              color: hint.isUsed
+                                  ? Colors.green[800]
+                                  : Colors.orange[800],
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${hint.minutePenalty} min',
+                              style: TextStyle(
+                                color: hint.isUsed
+                                    ? Colors.green[800]
+                                    : Colors.orange[800],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+                if (hint.isUsed && isUnlocked) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    hint.text,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showLockedHintExplanation(Hint hint) {
+    final requiredHints = _currentStep.hints
+            ?.where((h) => hint.hintUnlockIds.contains(h.id))
+            .toList() ??
+        [];
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: const [
+              Icon(Icons.lock, size: 24),
+              SizedBox(width: 8),
+              Text(
+                'Hint Locked',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      hint.preview,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color:
-                          hint.isUsed ? Colors.green[100] : Colors.orange[100],
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: hint.isUsed
-                            ? Colors.green[300]!
-                            : Colors.orange[300]!,
-                      ),
-                    ),
+              const Text(
+                'This hint is not available yet.',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'You must use these hints first:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              ...requiredHints.map((requiredHint) => Padding(
+                    padding: const EdgeInsets.only(left: 2, bottom: 4),
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          hint.isUsed ? Icons.add : Icons.timer,
+                          requiredHint.isUsed
+                              ? Icons.check
+                              : Icons.circle_outlined,
                           size: 16,
-                          color: hint.isUsed
-                              ? Colors.green[800]
-                              : Colors.orange[800],
+                          color:
+                              requiredHint.isUsed ? Colors.green : Colors.grey,
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${hint.minutePenalty} min',
-                          style: TextStyle(
-                            color: hint.isUsed
-                                ? Colors.green[800]
-                                : Colors.orange[800],
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            requiredHint.preview,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              decoration: requiredHint.isUsed
+                                  ? TextDecoration.lineThrough
+                                  : null,
+                              color: requiredHint.isUsed ? Colors.grey : null,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-              if (hint.isUsed) ...[
-                const SizedBox(height: 12),
-                Text(
-                  hint.text,
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ],
+                  )),
             ],
           ),
-        ),
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                'OK',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

@@ -42,6 +42,7 @@ class CluesScreenState extends State<CluesScreen> {
   Future<void> loadClueInfo() async {
     final questStatus =
         await questRepository.getUserQuestStatus(widget.quest.id);
+
     if (questStatus == QuestStatus.completed) {
       Navigator.of(context)
           .pushNamed(questCompleteRoute, arguments: widget.quest);

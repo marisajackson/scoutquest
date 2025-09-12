@@ -118,6 +118,8 @@ class Hint {
   final String preview;
   final String text;
   final int minutePenalty;
+  final List<String> hintUnlockIds;
+  final String? image;
   bool isUsed;
 
   Hint({
@@ -126,8 +128,17 @@ class Hint {
     required this.preview,
     required this.text,
     required this.minutePenalty,
+    this.hintUnlockIds = const [],
     this.isUsed = false,
+    this.image,
   });
+
+  bool isUnlocked(List<Hint> allHints) {
+    if (hintUnlockIds.isEmpty) return true;
+
+    return hintUnlockIds.every((unlockId) =>
+        allHints.any((hint) => hint.id == unlockId && hint.isUsed));
+  }
 
   factory Hint.fromJson(Map<String, dynamic> json) {
     return Hint(
@@ -136,7 +147,11 @@ class Hint {
       preview: json['preview'] as String,
       text: json['text'] as String,
       minutePenalty: json['minutePenalty'] as int,
+      hintUnlockIds: json['hintUnlockIds'] != null
+          ? List<String>.from(json['hintUnlockIds'] as List<dynamic>)
+          : [],
       isUsed: json['isUsed'] as bool? ?? false,
+      image: json['image'] as String?,
     );
   }
 }
