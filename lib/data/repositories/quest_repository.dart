@@ -23,6 +23,8 @@ class QuestRepository {
               clueStep: questJson['clueStep']?.toString() ?? '0',
               welcomeHtml: questJson['welcomeHtml'] ?? '',
               completionHtml: questJson['completionHtml'] ?? '',
+              iconImage: questJson['iconImage'] ?? '',
+              tipsHtml: questJson['tipsHtml'] ?? '',
               startTime: preferences
                           .getString('${questJson['id']}-startTime') !=
                       null
@@ -142,6 +144,8 @@ class QuestRepository {
       completionHtml: quest.completionHtml,
       startTime: startString != null ? DateTime.parse(startString) : null,
       endTime: endString != null ? DateTime.parse(endString) : null,
+      iconImage: quest.iconImage,
+      tipsHtml: quest.tipsHtml,
     );
   }
 

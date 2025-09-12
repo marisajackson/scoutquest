@@ -43,13 +43,17 @@ class QuestsList extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // Image.asset(
-                  //   'assets/elements/elements_icon.png',
-                  //   width: 50,
-                  //   height: 50,
-                  // ),
-                  const Icon(Icons.timer_outlined,
-                      size: 50, color: Colors.black),
+                  if (quest.iconImage != null) ...[
+                    Image.network(
+                      quest.iconImage!,
+                      width: 50,
+                      height: 50,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.timer_outlined,
+                            size: 50, color: Colors.black);
+                      },
+                    ),
+                  ],
                   const SizedBox(width: 30.0),
                   Expanded(
                     child: Column(

@@ -428,9 +428,11 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
                 ),
                 if (hint.isUsed && isUnlocked) ...[
                   const SizedBox(height: 12),
+                  if (hint.image != null) ...[Image.network(hint.image!)],
                   Text(
                     hint.text,
-                    style: const TextStyle(fontSize: 18),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
               ],
