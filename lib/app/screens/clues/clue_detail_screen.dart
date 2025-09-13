@@ -54,19 +54,11 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarManager(
-          appBar: AppBar(),
-          hasBackButton: true,
-          backButtonOnPressed: () => Navigator.of(context).pop(),
-          quest: widget.quest,
-          actions: [
-            // help button
-            IconButton(
-              icon: const Icon(Icons.help_outline, size: 32),
-              onPressed: () {
-                // Show help dialog or tooltip
-              },
-            ),
-          ]),
+        appBar: AppBar(),
+        hasBackButton: true,
+        backButtonOnPressed: () => Navigator.of(context).pop(),
+        quest: widget.quest,
+      ),
       body: Column(
         children: [
           const SizedBox(height: 12),
