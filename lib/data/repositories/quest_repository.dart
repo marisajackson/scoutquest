@@ -94,7 +94,7 @@ class QuestRepository {
   }
 
   Future<List?> loadQuestsFromJson() async {
-    return await loadJsonFromUrl('http://scoutquest.co/quests/quests.json');
+    return await loadJsonFromUrl('https://scoutquest.co/quests/quests.json');
   }
 
   Future<Map<String, dynamic>?> getUserQuest(String questID) async {
