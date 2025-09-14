@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:scoutquest/app.routes.dart';
 import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/app/widgets/app_bar_manager.dart';
@@ -56,7 +57,8 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
       appBar: AppBarManager(
         appBar: AppBar(),
         hasBackButton: true,
-        backButtonOnPressed: () => Navigator.of(context).pop(),
+        backButtonOnPressed: () => Navigator.of(context)
+            .pushNamed(cluesRoute, arguments: widget.quest),
         quest: widget.quest,
       ),
       body: Column(
@@ -75,7 +77,8 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
                   _buildStepContent(_currentStep),
                   if (widget.clue.status == ClueStatus.completed)
                     ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () => Navigator.of(context)
+                          .pushNamed(cluesRoute, arguments: widget.quest),
                       child: const Text(
                         'Back to Quest',
                         style: TextStyle(
