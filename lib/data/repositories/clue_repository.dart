@@ -76,8 +76,7 @@ class ClueRepository {
     }
   }
 
-  Future<void> saveHintUsage(
-      String clueId, int stepNumber, String hintId) async {
+  Future<void> saveHintUsage(String clueId, int stepNumber, Hint hint) async {
     final prefs = await SharedPreferences.getInstance();
     final hintsStatus = prefs.getString('${quest.id}-hints') ?? '{}';
 
@@ -90,11 +89,14 @@ class ClueRepository {
     }
 
     final usedHints = List<String>.from(hintsMap[key]!);
-    if (!usedHints.contains(hintId)) {
-      usedHints.add(hintId);
+    if (!usedHints.contains(hint.id)) {
+      usedHints.add(hint.id);
       hintsMap[key] = usedHints;
 
       await prefs.setString('${quest.id}-hints', jsonEncode(hintsMap));
+
+      // Add the penalty minutes
+      await addPenaltyMinutes(hint.minutePenalty);
     }
   }
 

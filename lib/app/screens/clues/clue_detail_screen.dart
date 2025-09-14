@@ -578,8 +578,7 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
   }
 
   void _applyHintPenalty(Hint hint) async {
-    await clueRepository.saveHintUsage(
-        widget.clue.id, _currentStep.step, hint.id);
+    await clueRepository.saveHintUsage(widget.clue.id, _currentStep.step, hint);
     Alert.toast('+${hint.minutePenalty} minute penalty', ToastGravity.TOP);
     hint.isUsed = true;
   }
