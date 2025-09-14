@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:scoutquest/app.routes.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/app/widgets/app_bar_manager.dart';
 import 'package:scoutquest/app/widgets/score_submission_bottom_sheet.dart';
@@ -38,6 +39,7 @@ class QuestComplete extends StatelessWidget {
       appBar: AppBarManager(
         appBar: AppBar(),
         hasBackButton: true,
+        backButtonOnPressed: () => Navigator.of(context).pushNamed(questsRoute),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
