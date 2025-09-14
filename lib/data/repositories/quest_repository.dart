@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'package:scoutquest/data/json_loader.dart';
 import 'package:scoutquest/app/models/quest.dart';
+import 'package:scoutquest/data/repositories/score_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class QuestRepository {
+  final ScoreRepository _scoreRepository = ScoreRepository();
+
   QuestRepository();
 
   Future<List<Quest>> getAvailableQuests() async {
@@ -89,8 +92,39 @@ class QuestRepository {
     if (status == QuestStatus.completed) {
       await preferences.setString(
           '$questID-endTime', DateTime.now().toIso8601String());
+
+      // Check if score has already been presubmitted
+      final existingDocId = preferences.getString('$questID-scoreDocId');
+
+      if (existingDocId == null) {
+        // Presubmit score data only if not already done
+        try {
+          final questData = await getQuestSubmissionData(questID);
+          if (questData != null) {
+            final duration =
+                Duration(minutes: questData['totalDurationMinutes']);
+            final documentId = await _scoreRepository.presubmitScore(
+              questId: questID,
+              duration: duration,
+              questData: questData,
+            );
+
+            // Store the document ID for later update
+            await preferences.setString('$questID-scoreDocId', documentId);
+          }
+        } catch (e) {
+          // Log error but don't prevent quest completion
+          print('Failed to presubmit score: $e');
+        }
+      }
     }
     return result;
+  }
+
+  // Get the presubmitted score document ID
+  Future<String?> getPresubmittedScoreDocId(String questID) async {
+    final preferences = await SharedPreferences.getInstance();
+    return preferences.getString('$questID-scoreDocId');
   }
 
   Future<List?> loadQuestsFromJson() async {

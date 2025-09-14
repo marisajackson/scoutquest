@@ -69,16 +69,30 @@ class _ScoreSubmissionBottomSheetState
     });
 
     try {
-      final questData =
-          await _questRepo.getQuestSubmissionData(widget.quest.id);
+      // Check if there's a presubmitted score to update
+      final presubmittedDocId =
+          await _questRepo.getPresubmittedScoreDocId(widget.quest.id);
 
-      await _scoreRepository.submitScore(
-        questId: widget.quest.id,
-        teamName: _teamNameController.text.trim(),
-        email: _emailController.text.trim().toLowerCase(),
-        duration: widget.duration,
-        questData: questData,
-      );
+      if (presubmittedDocId != null) {
+        // Update the presubmitted score with team information
+        await _scoreRepository.updatePresubmittedScore(
+          documentId: presubmittedDocId,
+          teamName: _teamNameController.text.trim(),
+          email: _emailController.text.trim().toLowerCase(),
+        );
+      } else {
+        // Fallback to creating a new score entry
+        final questData =
+            await _questRepo.getQuestSubmissionData(widget.quest.id);
+
+        await _scoreRepository.submitScore(
+          questId: widget.quest.id,
+          teamName: _teamNameController.text.trim(),
+          email: _emailController.text.trim().toLowerCase(),
+          duration: widget.duration,
+          questData: questData,
+        );
+      }
 
       if (mounted) {
         // update quest status to submitted
