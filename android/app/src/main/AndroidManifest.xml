@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.scoutquest">
+    package="com.hoplindigital.scoutquest">
    <application
         android:label="scoutquest"
         android:name="${applicationName}"

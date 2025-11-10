@@ -1,4 +1,4 @@
-package com.example.scoutquest
+package com.hoplindigital.scoutquest
 
 import io.flutter.embedding.android.FlutterActivity
 
