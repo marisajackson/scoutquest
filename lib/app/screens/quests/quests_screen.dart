@@ -4,6 +4,7 @@ import 'package:scoutquest/app/screens/quests/quests_empty.dart';
 import 'package:scoutquest/app/screens/quests/quests_list.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/app/widgets/app_bar_manager.dart';
+import 'package:scoutquest/app/widgets/help_note.dart';
 import 'package:scoutquest/app/widgets/qr_scanner.dart';
 import 'package:scoutquest/data/repositories/quest_repository.dart';
 import 'package:scoutquest/utils/alert.dart';
@@ -118,9 +119,14 @@ class QuestsScreenState extends State<QuestsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarManager(
-        appBar: AppBar(),
-      ),
+      appBar: AppBarManager(appBar: AppBar(), actions: [
+        IconButton(
+          icon: const Icon(Icons.help_outline, size: 32),
+          onPressed: () {
+            _showHelpModal();
+          },
+        ),
+      ]),
       body: quests.isEmpty
           ? QuestsEmpty(onAddQuest: addQuest)
           : QuestsList(
@@ -144,6 +150,28 @@ class QuestsScreenState extends State<QuestsScreen> {
               ), // Change the button label // Add an optional icon
             )
           : null,
+    );
+  }
+
+  void _showHelpModal() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Need Help?',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
+          content: const HelpNote(),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

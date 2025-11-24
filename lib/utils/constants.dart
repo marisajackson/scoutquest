@@ -6,6 +6,20 @@ ThemeData buildAppTheme() {
     fontFamily: 'Quicksand',
     colorScheme: scoutQuestColorScheme,
     scaffoldBackgroundColor: ScoutQuestColors.primaryText,
+    textTheme: const TextTheme(
+      bodyLarge: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: ScoutQuestFontSizes.bodyLarge,
+      ),
+      bodyMedium: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: ScoutQuestFontSizes.bodyMedium,
+      ),
+      bodySmall: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: ScoutQuestFontSizes.bodySmall,
+      ),
+    ),
   );
 }
 

@@ -65,7 +65,7 @@ class QuestsEmpty extends StatelessWidget {
                   size: 30.0), // Increased icon size
               title: Text(
                 'Scan Your Quest QR Code',
-                style: TextStyle(fontSize: 18.0),
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
                 "Use the 'Add Quest' button here to scan the QR code to start your quest.",
@@ -77,7 +77,7 @@ class QuestsEmpty extends StatelessWidget {
                   Icon(Icons.track_changes, size: 30.0), // Increased icon size
               title: Text(
                 'Follow the Clues',
-                style: TextStyle(fontSize: 18.0),
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
                 'The app will keep track of your digital clues and progress as you uncover the mysteries of your quest.',
