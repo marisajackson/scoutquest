@@ -9,6 +9,8 @@ class Quest {
   final String? completionHtml;
   final String? iconImage;
   final String? tipsHtml;
+  final String? billboardImage;
+  final String? billboardBackgroundColor;
   QuestStatus status;
 
   Quest({
@@ -23,6 +25,8 @@ class Quest {
     this.completionHtml,
     this.iconImage,
     this.tipsHtml,
+    this.billboardImage,
+    this.billboardBackgroundColor,
   });
 
   Map<String, dynamic> toMap() {
@@ -37,6 +41,8 @@ class Quest {
       'completionHtml': completionHtml,
       'iconImage': iconImage,
       'tipsHtml': tipsHtml,
+      'billboardImage': billboardImage,
+      'billboardBackgroundColor': billboardBackgroundColor,
     };
   }
 }

@@ -39,6 +39,9 @@ class QuestRepository {
                       ? DateTime.parse(
                           preferences.getString('${questJson['id']}-endTime')!)
                       : null,
+              billboardImage: questJson['billboardImage'],
+              billboardBackgroundColor:
+                  questJson['billboardBackgroundColor'] ?? 'ffffff',
             ))
         .toList();
 
