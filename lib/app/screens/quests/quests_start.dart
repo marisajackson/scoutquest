@@ -41,9 +41,9 @@ class _QuestsStartState extends State<QuestsStart> {
 
   Future<void> _openTerms() async {
     // Replace this URL with your actual terms/waiver URL or route.
-    final Uri url = Uri.parse('https://example.com/scout-quest-terms');
+    final Uri url = Uri.parse('https://scoutquest.co/terms-of-participation');
     if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
+      await launchUrl(url, mode: LaunchMode.inAppWebView);
     }
   }
 
