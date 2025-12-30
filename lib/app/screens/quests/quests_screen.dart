@@ -8,6 +8,7 @@ import 'package:scoutquest/app/widgets/help_note.dart';
 import 'package:scoutquest/app/widgets/qr_scanner.dart';
 import 'package:scoutquest/data/repositories/quest_repository.dart';
 import 'package:scoutquest/utils/alert.dart';
+import 'package:scoutquest/utils/constants.dart';
 import 'package:scoutquest/utils/logger.dart';
 
 class QuestsScreen extends StatefulWidget {
@@ -48,11 +49,35 @@ class QuestsScreenState extends State<QuestsScreen> {
 
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (BuildContext context) {
-        return QRScanner(
-          title: 'Add Quest',
-          description: 'Scan the Quest QR Code',
-          onQRCodeScanned: processQRCodeQuest,
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.75,
+          child: Column(
+            children: [
+              QRScanner(
+                title: 'Add Quest',
+                description: 'Scan the Quest QR Code',
+                onQRCodeScanned: processQRCodeQuest,
+              ),
+              TextButton(
+                onPressed: () {
+                  // Close the bottom sheet and open manual entry dialog
+                  if (isBottomSheetOpen) {
+                    Navigator.of(context).pop();
+                    setState(() => isBottomSheetOpen = false);
+                  }
+                  _showManualCodeDialog();
+                },
+                child: Text(
+                  'QR Code Not Working? Enter code manually.',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      decoration: TextDecoration.underline,
+                      color: ScoutQuestColors.primaryAction),
+                ),
+              ),
+            ],
+          ),
         );
       },
     ).then((_) => {setState(() => isBottomSheetOpen = false)});
@@ -167,6 +192,72 @@ class QuestsScreenState extends State<QuestsScreen> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
               onPressed: () {
                 Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showManualCodeDialog() async {
+    final TextEditingController _controller = TextEditingController();
+
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text('Enter Quest Code',
+              style: Theme.of(context).textTheme.bodyMedium),
+          content: TextField(
+            controller: _controller,
+            decoration: const InputDecoration(
+              hintText: 'e.g. quest_name_dsh49sm',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              ),
+              contentPadding: EdgeInsets.all(16.0),
+            ),
+            autofocus: true,
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: ScoutQuestColors.primaryAction)),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Submit',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: ScoutQuestColors.primaryAction)),
+              onPressed: () async {
+                final code = _controller.text.trim();
+                if (code.isEmpty) {
+                  Alert.toastBottom('Please enter a code.');
+                  return;
+                }
+                Navigator.of(dialogContext).pop();
+
+                // change - to _ in case user entered with dashes
+                final formattedCode = code.replaceAll('-', '_');
+
+                final questExists =
+                    await questRepository.verifyQuest(formattedCode);
+                if (!questExists) {
+                  Alert.toastBottom('Invalid code.');
+                  return;
+                }
+
+                await questRepository.updateUserQuestStatus(
+                    code, QuestStatus.unlocked);
+                await _loadQuests();
               },
             ),
           ],

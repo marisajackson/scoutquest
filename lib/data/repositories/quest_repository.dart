@@ -65,7 +65,8 @@ class QuestRepository {
     }
 
     final quest = questJSON.firstWhere(
-        (questJson) => questJson['id'] == questID,
+        (questJson) =>
+            questJson['id'].toString().toLowerCase() == questID.toLowerCase(),
         orElse: () => null);
 
     if (quest == null) {
