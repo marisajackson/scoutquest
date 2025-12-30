@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:scoutquest/app/widgets/help_note.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/app.routes.dart';
@@ -51,9 +52,16 @@ class _QuestsStartState extends State<QuestsStart> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarManager(
-        appBar: AppBar(),
-        hasBackButton: true,
-      ),
+          appBar: AppBar(),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.help_outline, size: 32),
+              onPressed: () {
+                _showHelpModal();
+              },
+            ),
+          ],
+          hasBackButton: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -144,6 +152,28 @@ class _QuestsStartState extends State<QuestsStart> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showHelpModal() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Need Help?',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
+          content: const HelpNote(),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
