@@ -5,6 +5,7 @@ class Clue {
   final String type;
   final String? category;
   final String? icon;
+  final String? iconImage;
   final List<ClueStep> steps;
   int progressStep;
   // ClueStatus status = ClueStatus.locked;
@@ -47,6 +48,7 @@ class Clue {
     required this.steps,
     required this.category,
     this.icon,
+    this.iconImage,
     this.progressStep = 0,
   });
 
@@ -61,6 +63,7 @@ class Clue {
           .toList(),
       category: json['category'] as String?,
       icon: json['icon'] as String?,
+      iconImage: json['iconImage'] as String?,
       progressStep: json['progressStep'] as int? ?? 0,
     );
   }

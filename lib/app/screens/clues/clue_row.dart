@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/app/widgets/icon.dart';
 
@@ -30,17 +31,32 @@ class ClueRow extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Icon(
-                  clue.status != ClueStatus.locked
-                      ? clue.icon != null
-                          ? IconUtil.getIconFromString(clue.icon!)
-                          : IconUtil.getIconForClueType(clue.type)
-                      : Icons.lock,
-                  size: 50.0,
-                  color: clue.status == ClueStatus.completed
-                      ? Colors.grey.shade400
-                      : null,
-                ),
+                if (clue.iconImage != null && clue.iconImage!.isNotEmpty) ...[
+                  SizedBox(
+                      width: 50.0,
+                      height: 50.0,
+                      child: SvgPicture.network(
+                        clue.iconImage!,
+                        width: 50.0,
+                        height: 50.0,
+                        colorFilter: clue.status == ClueStatus.completed
+                            ? ColorFilter.mode(
+                                Colors.grey.shade400, BlendMode.srcIn)
+                            : null,
+                      )),
+                ] else ...[
+                  Icon(
+                    clue.status != ClueStatus.locked
+                        ? (clue.icon != null
+                            ? IconUtil.getIconFromString(clue.icon!)
+                            : IconUtil.getIconForClueType(clue.type))
+                        : Icons.lock,
+                    size: 50.0,
+                    color: clue.status == ClueStatus.completed
+                        ? Colors.grey.shade400
+                        : null,
+                  ),
+                ],
               ],
             ),
             const SizedBox(width: 16.0),
