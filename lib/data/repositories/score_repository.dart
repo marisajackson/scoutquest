@@ -36,11 +36,13 @@ class ScoreRepository {
     required String documentId,
     required String teamName,
     required String email,
+    required bool acceptsMarketing,
   }) async {
     try {
       await _firestore.collection('scores').doc(documentId).update({
         'teamName': teamName,
         'email': email,
+        'acceptsMarketing': acceptsMarketing,
         'teamSubmitted': true,
         'teamSubmittedAt': DateTime.now().toIso8601String(),
       });
@@ -53,6 +55,7 @@ class ScoreRepository {
     required String questId,
     required String teamName,
     required String email,
+    required bool acceptsMarketing,
     required Duration duration,
     Map<String, dynamic>? questData,
   }) async {
@@ -61,6 +64,7 @@ class ScoreRepository {
         'questId': questId,
         'teamName': teamName,
         'email': email,
+        'acceptsMarketing': true,
         'duration': duration.inSeconds,
         'submittedAt': DateTime.now().toIso8601String(),
         'teamSubmitted': true,

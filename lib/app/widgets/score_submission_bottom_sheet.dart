@@ -4,7 +4,8 @@ import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/data/repositories/quest_repository.dart';
 import 'package:scoutquest/data/repositories/score_repository.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:scoutquest/utils/constants.dart'; // Add this import for consistent colors
+import 'package:scoutquest/utils/constants.dart';
+import 'package:scoutquest/app/widgets/text_input.dart';
 
 class ScoreSubmissionBottomSheet extends StatefulWidget {
   final Quest quest;
@@ -28,6 +29,7 @@ class _ScoreSubmissionBottomSheetState
   final _emailController = TextEditingController();
   final _scoreRepository = ScoreRepository();
   final _questRepo = QuestRepository();
+  bool _acceptsMarketing = false;
 
   bool _isSubmitting = false;
 
@@ -79,6 +81,7 @@ class _ScoreSubmissionBottomSheetState
           documentId: presubmittedDocId,
           teamName: _teamNameController.text.trim(),
           email: _emailController.text.trim().toLowerCase(),
+          acceptsMarketing: _acceptsMarketing,
         );
       } else {
         // Fallback to creating a new score entry
@@ -89,6 +92,7 @@ class _ScoreSubmissionBottomSheetState
           questId: widget.quest.id,
           teamName: _teamNameController.text.trim(),
           email: _emailController.text.trim().toLowerCase(),
+          acceptsMarketing: _acceptsMarketing,
           duration: widget.duration,
           questData: questData,
         );
@@ -201,51 +205,41 @@ class _ScoreSubmissionBottomSheetState
                   ),
                 ],
               ),
-              child: TextFormField(
+              child: TextInput(
                 controller: _teamNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Team Name',
-                  hintText: 'Enter your team name',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                  prefixIcon: Icon(Icons.group,
-                      size: 30.0), // Match icon size from empty screen
-                  contentPadding: EdgeInsets.all(16.0),
-                ),
+                labelText: 'Team Name',
+                hintText: 'Enter your team name',
                 validator: _validateTeamName,
-                textCapitalization: TextCapitalization.words,
                 enabled: !_isSubmitting,
+                prefixIcon: Icon(Icons.group,
+                    size: 30.0, color: Theme.of(context).colorScheme.primary),
               ),
             ),
             const SizedBox(height: 16),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withValues(alpha: 0.1),
-                    spreadRadius: 1,
-                    blurRadius: 3,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-              child: TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email Address',
-                  hintText: 'Enter your email address',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  ),
-                  prefixIcon: Icon(Icons.email, size: 30.0),
-                  contentPadding: EdgeInsets.all(16.0),
-                ),
-                validator: _validateEmail,
-                keyboardType: TextInputType.emailAddress,
-                enabled: !_isSubmitting,
+            TextInput(
+              controller: _emailController,
+              labelText: 'Email Address',
+              hintText: 'Enter your email address',
+              validator: _validateEmail,
+              enabled: !_isSubmitting,
+              prefixIcon: Icon(Icons.email,
+                  size: 30.0, color: Theme.of(context).colorScheme.primary),
+            ),
+            CheckboxListTile(
+              value: _acceptsMarketing,
+              onChanged: (v) => setState(() => _acceptsMarketing = v ?? false),
+              controlAffinity: ListTileControlAffinity.leading,
+              contentPadding: EdgeInsets.zero,
+              // blue when checked
+              activeColor: Colors.blue,
+              visualDensity:
+                  const VisualDensity(horizontal: -3.0, vertical: -1.0),
+              title: Text(
+                'Email me about future Scout Quest events and updates.',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(fontSize: 14),
               ),
             ),
             const SizedBox(height: 24),

@@ -205,14 +205,16 @@ class QuestsScreenState extends State<QuestsScreen> {
 
     await showDialog<void>(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           title: Text('Enter Quest Code',
               style: Theme.of(context).textTheme.bodyMedium),
+          contentPadding: EdgeInsets.all(16.0),
           content: TextField(
             controller: _controller,
             decoration: const InputDecoration(
-              hintText: 'e.g. quest_name_dsh49sm',
+              hintText: 'e.g. quest-name-4526223',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
               ),
@@ -231,12 +233,15 @@ class QuestsScreenState extends State<QuestsScreen> {
                 Navigator.of(dialogContext).pop();
               },
             ),
-            TextButton(
-              child: Text('Submit',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: ScoutQuestColors.primaryAction)),
+            FloatingActionButton.extended(
+              label: const Text(
+                'Submit',
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 18.0,
+                  color: Colors.black,
+                ),
+              ),
               onPressed: () async {
                 final code = _controller.text.trim();
                 if (code.isEmpty) {
@@ -245,11 +250,7 @@ class QuestsScreenState extends State<QuestsScreen> {
                 }
                 Navigator.of(dialogContext).pop();
 
-                // change - to _ in case user entered with dashes
-                final formattedCode = code.replaceAll('-', '_');
-
-                final questExists =
-                    await questRepository.verifyQuest(formattedCode);
+                final questExists = await questRepository.verifyQuest(code);
                 if (!questExists) {
                   Alert.toastBottom('Invalid code.');
                   return;
