@@ -6,6 +6,7 @@ import 'package:scoutquest/app.routes.dart';
 import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/app/widgets/app_bar_manager.dart';
+import 'package:scoutquest/app/widgets/audio_player.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
 import 'package:scoutquest/data/repositories/quest_repository.dart';
 import 'package:scoutquest/utils/alert.dart';
@@ -87,7 +88,9 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
                         ),
                       ),
                     ),
-                  if (widget.clue.status != ClueStatus.completed)
+                  if (widget.clue.status != ClueStatus.completed &&
+                      _currentStep.hints != null &&
+                      _currentStep.hints!.isNotEmpty)
                     TextButton(
                       onPressed: _showHintModal,
                       child: const Text(
@@ -124,6 +127,13 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
           data:
               "<div style='text-align: center; font-size: 18px; font-weight: bold;'>${step.text}</div>",
         ),
+        const SizedBox(height: 24),
+        if (step.image != null)
+          Image.network(
+            step.image!,
+            fit: BoxFit.cover,
+          ),
+        if (step.audio != null) AudioControlWidget(audioAsset: step.audio!),
         const SizedBox(height: 24),
         if (step.step < widget.clue.steps.length - 1)
           ElevatedButton(onPressed: _advance, child: const Text('Next')),

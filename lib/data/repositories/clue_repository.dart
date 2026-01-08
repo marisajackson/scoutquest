@@ -187,6 +187,7 @@ class ClueRepository {
       prefs.setString('${quest.id}-clues', jsonEncode(cluesMap));
       return;
     }
+
     final cluesJSON = jsonDecode(cluesStatus);
     Map<String, String> cluesMap = Map<String, String>.from(cluesJSON);
     cluesMap[clueID] = ClueStatus.values

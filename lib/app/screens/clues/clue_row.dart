@@ -39,7 +39,8 @@ class ClueRow extends StatelessWidget {
                         clue.iconImage!,
                         width: 50.0,
                         height: 50.0,
-                        colorFilter: clue.status == ClueStatus.completed
+                        colorFilter: clue.status == ClueStatus.completed &&
+                                !clue.infoOnly
                             ? ColorFilter.mode(
                                 Colors.grey.shade400, BlendMode.srcIn)
                             : null,
@@ -52,7 +53,7 @@ class ClueRow extends StatelessWidget {
                             : IconUtil.getIconForClueType(clue.type))
                         : Icons.lock,
                     size: 50.0,
-                    color: clue.status == ClueStatus.completed
+                    color: clue.status == ClueStatus.completed && !clue.infoOnly
                         ? Colors.grey.shade400
                         : null,
                   ),
@@ -72,10 +73,12 @@ class ClueRow extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 18.0,
-                            decoration: clue.status == ClueStatus.completed
+                            decoration: clue.status == ClueStatus.completed &&
+                                    !clue.infoOnly
                                 ? TextDecoration.lineThrough
                                 : null,
-                            color: clue.status == ClueStatus.completed
+                            color: clue.status == ClueStatus.completed &&
+                                    !clue.infoOnly
                                 ? Colors.grey.shade600
                                 : null,
                           ),
@@ -92,9 +95,10 @@ class ClueRow extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.w900,
-                      color: clue.status == ClueStatus.completed
-                          ? Colors.grey.shade600
-                          : null,
+                      color:
+                          clue.status == ClueStatus.completed && !clue.infoOnly
+                              ? Colors.grey.shade600
+                              : null,
                     ),
                   ),
                   const SizedBox(height: 8.0),
@@ -112,7 +116,7 @@ class ClueRow extends StatelessWidget {
     String statusText;
     Color textColor;
 
-    if (clue.status == ClueStatus.unlocked) {
+    if (clue.status == ClueStatus.unlocked || clue.infoOnly) {
       return const SizedBox.shrink();
     }
 

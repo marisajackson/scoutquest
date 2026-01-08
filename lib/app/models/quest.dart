@@ -11,6 +11,7 @@ class Quest {
   final String? tipsHtml;
   final String? billboardImage;
   final String? billboardBackgroundColor;
+  final bool canAddClues;
   QuestStatus status;
 
   Quest({
@@ -27,6 +28,7 @@ class Quest {
     this.tipsHtml,
     this.billboardImage,
     this.billboardBackgroundColor,
+    this.canAddClues = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -43,6 +45,7 @@ class Quest {
       'tipsHtml': tipsHtml,
       'billboardImage': billboardImage,
       'billboardBackgroundColor': billboardBackgroundColor,
+      'canAddClues': canAddClues,
     };
   }
 }

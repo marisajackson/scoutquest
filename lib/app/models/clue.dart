@@ -7,6 +7,7 @@ class Clue {
   final String? icon;
   final String? iconImage;
   final List<ClueStep> steps;
+  final bool infoOnly;
   int progressStep;
   // ClueStatus status = ClueStatus.locked;
 
@@ -50,6 +51,7 @@ class Clue {
     this.icon,
     this.iconImage,
     this.progressStep = 0,
+    this.infoOnly = false,
   });
 
   factory Clue.fromJson(Map<String, dynamic> json) {
@@ -65,13 +67,14 @@ class Clue {
       icon: json['icon'] as String?,
       iconImage: json['iconImage'] as String?,
       progressStep: json['progressStep'] as int? ?? 0,
+      infoOnly: json['infoOnly'] as bool? ?? false,
     );
   }
 }
 
 class ClueStep {
   final int step;
-  final String type;
+  final String? type;
   final String text;
 
   // Optional fields used by various step types
@@ -84,7 +87,7 @@ class ClueStep {
 
   ClueStep({
     required this.step,
-    required this.type,
+    this.type,
     required this.text,
     this.correctOrder,
     this.secretCode,
@@ -97,7 +100,7 @@ class ClueStep {
   factory ClueStep.fromJson(Map<String, dynamic> json) {
     return ClueStep(
       step: json['step'] as int,
-      type: json['type'] as String,
+      type: json['type'] as String? ?? 'Text Clue',
       text: json['text'] as String,
       correctOrder: json['correctOrder'] != null
           ? List<String>.from(json['correctOrder'] as List<dynamic>)

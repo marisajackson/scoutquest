@@ -14,10 +14,12 @@ class CategoryHeader extends StatelessWidget {
   });
 
   double calculateProgress(List<Clue> clues) {
+    // progress is number of completed clues / total clues.
     double progress = 0;
-
-    for (Clue clue in clues) {
-      progress += clue.getProgress;
+    for (var clue in clues) {
+      if (clue.status == ClueStatus.completed) {
+        progress += 1;
+      }
     }
 
     return progress;

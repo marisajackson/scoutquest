@@ -28,6 +28,7 @@ class QuestRepository {
               completionHtml: questJson['completionHtml'] ?? '',
               iconImage: questJson['iconImage'] ?? '',
               tipsHtml: questJson['tipsHtml'] ?? '',
+              canAddClues: questJson['canAddClues'] ?? false,
               startTime: preferences
                           .getString('${questJson['id']}-startTime') !=
                       null
@@ -184,6 +185,9 @@ class QuestRepository {
       endTime: endString != null ? DateTime.parse(endString) : null,
       iconImage: quest.iconImage,
       tipsHtml: quest.tipsHtml,
+      canAddClues: quest.canAddClues,
+      billboardImage: quest.billboardImage,
+      billboardBackgroundColor: quest.billboardBackgroundColor,
     );
   }
 

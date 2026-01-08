@@ -11,6 +11,7 @@ import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
 import 'package:scoutquest/data/repositories/quest_repository.dart';
 import 'package:scoutquest/utils/alert.dart';
+import 'package:scoutquest/utils/logger.dart';
 
 class CluesScreen extends StatefulWidget {
   final Quest quest;
@@ -30,6 +31,9 @@ class CluesScreenState extends State<CluesScreen> {
   bool isBottomSheetOpen = false;
   late Quest currentQuest;
 
+  // Prevent processing the same scan multiple times
+  bool _isProcessingQRCode = false;
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +48,7 @@ class CluesScreenState extends State<CluesScreen> {
         await questRepository.getUserQuestStatus(widget.quest.id);
 
     if (questStatus == QuestStatus.completed) {
+      if (!mounted) return;
       Navigator.of(context)
           .pushNamed(questCompleteRoute, arguments: widget.quest);
       return;
@@ -85,6 +90,7 @@ class CluesScreenState extends State<CluesScreen> {
     noCategory
         .sort((a, b) => _getStatusPriority(a).compareTo(_getStatusPriority(b)));
 
+    if (!mounted) return;
     setState(() {
       categories = loadedCategories;
       uncategorizedClues = noCategory;
@@ -96,8 +102,8 @@ class CluesScreenState extends State<CluesScreen> {
   int _getStatusPriority(Clue clue) {
     // Assuming you have these properties on your Clue model
     // You may need to adjust these conditions based on your actual Clue model properties
-
-    if (clue.status == ClueStatus.inProgress) {
+    if (clue.status == ClueStatus.inProgress ||
+        (clue.status != ClueStatus.locked && clue.infoOnly)) {
       return 0; // InProgress - highest priority
     }
     if (clue.status == ClueStatus.unlocked) {
@@ -117,7 +123,7 @@ class CluesScreenState extends State<CluesScreen> {
     if (!clue.isFound) {
       return;
     }
-
+    if (!mounted) return;
     Navigator.of(context).pushNamed(
       clueDetailRoute,
       arguments: {
@@ -138,59 +144,59 @@ class CluesScreenState extends State<CluesScreen> {
           onQRCodeScanned: processQRCodeClue,
         );
       },
-    ).then((_) => {setState(() => isBottomSheetOpen = false)});
+    ).then((_) {
+      if (!mounted) return;
+      setState(() => isBottomSheetOpen = false);
+    });
   }
 
-  void processQRCodeClue(String? value) {
-    if (value == null) {
-      return;
-    }
+  Future<void> processQRCodeClue(String? value) async {
+    if (value == null) return;
 
-    if (isBottomSheetOpen) {
-      Navigator.of(context).pop();
-    }
+    // Debounce / guard: ignore if already handling a scan
+    if (_isProcessingQRCode) return;
+    _isProcessingQRCode = true;
 
-    if (!value.contains("/clues/")) {
-      Alert.toastBottom('Invalid QR Code.');
-      return;
-    }
+    try {
+      if (isBottomSheetOpen && mounted) {
+        Navigator.of(context).pop();
+      }
 
-    // TODO make sure it's the right quests
-    // sample scan value = "http://scoutquest.co/quests/quest_element_2023/clues/FireClue1-4CX6TZPA.html"
-    RegExp regExp = RegExp(r'\/([A-Za-z0-9-]+)\.html');
-    Match? match = regExp.firstMatch(value);
+      if (!value.contains("/clues/")) {
+        Alert.toastBottom('Invalid QR Code.');
+        return;
+      }
 
-    if (match != null) {
-      String clueCode = match.group(1)!;
-      clueRepository.verifyClue(clueCode).then((isValid) {
+      // TODO make sure it's the right quests
+      // sample scan value = "http://scoutquest.co/quests/quest_element_2023/clues/FireClue1-4CX6TZPA.html"
+      RegExp regExp = RegExp(r'\/([A-Za-z0-9-]+)\.html');
+      Match? match = regExp.firstMatch(value);
+
+      if (match != null) {
+        String clueCode = match.group(1)!;
+        final isValid = await clueRepository.verifyClue(clueCode);
         if (isValid) {
-          markClueFound(clueCode);
+          await markClueFound(clueCode);
         } else {
           Alert.toastBottom('Invalid QR Code. 2');
         }
-      });
-    } else {
-      Alert.toastBottom('Invalid QR Code. 1');
+      } else {
+        Alert.toastBottom('Invalid QR Code. 1');
+      }
+    } finally {
+      _isProcessingQRCode = false;
     }
   }
 
   Future<void> markClueFound(String code) async {
     final clue = clues.firstWhere((clue) => clue.code == code);
 
-    clueRepository.updateClueProgress(clue.id, 1);
+    await clueRepository.updateClueProgress(clue.id, 1);
 
     await loadClueInfo();
-    final category = categories.firstWhere((cat) => cat.name == clue.category);
-    expandCategory(category);
-
+    Logger.log('Clue found: $code, loaded clue info');
     final updatedClue = clues.firstWhere((clue) => clue.code == code);
-    Navigator.of(context).pushNamed(
-      clueDetailRoute,
-      arguments: {
-        'clue': updatedClue,
-        'quest': currentQuest, // Changed from widget.quest
-      },
-    );
+    selectClue(updatedClue);
   }
 
   void goBack() {
@@ -271,20 +277,18 @@ class CluesScreenState extends State<CluesScreen> {
           ),
         ],
       ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   onPressed: () {
-      //     // Handle the action when the button is pressed
-      //     // You can add your code to open a bottom sheet or any other action here
-      //     addClue();
-      //   },
-      //   label: const Text(
-      //     "Add Clue",
-      //     style: TextStyle(
-      //       fontWeight: FontWeight.w900,
-      //       fontSize: 18.0,
-      //     ),
-      //   ), // Change the button label // Add an optional icon
-      // ),
+      floatingActionButton: currentQuest.canAddClues
+          ? FloatingActionButton.extended(
+              onPressed: addClue,
+              label: const Text(
+                "Add Clue",
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 18.0,
+                ),
+              ),
+            )
+          : null,
     );
   }
 }
