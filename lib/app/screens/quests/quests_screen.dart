@@ -22,6 +22,7 @@ class QuestsScreenState extends State<QuestsScreen> {
   final QuestRepository questRepository = QuestRepository();
   List<Quest> quests = [];
   bool isBottomSheetOpen = false;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -30,6 +31,10 @@ class QuestsScreenState extends State<QuestsScreen> {
   }
 
   Future<void> _loadQuests() async {
+    setState(() {
+      isLoading = true;
+    });
+
     try {
       final questList = await questRepository.getAvailableQuests();
 
@@ -37,8 +42,12 @@ class QuestsScreenState extends State<QuestsScreen> {
         quests = questList;
       });
     } catch (e) {
-      // Handle errors, e.g., display an error message
       Logger.log('Error loading quests: $e');
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -152,14 +161,16 @@ class QuestsScreenState extends State<QuestsScreen> {
           },
         ),
       ]),
-      body: quests.isEmpty
-          ? QuestsEmpty(onAddQuest: addQuest)
-          : QuestsList(
-              quests: quests,
-              onRefresh: _loadQuests,
-              onChooseQuest: _chooseQuest,
-            ),
-      floatingActionButton: quests.isNotEmpty
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : quests.isEmpty
+              ? QuestsEmpty(onAddQuest: addQuest)
+              : QuestsList(
+                  quests: quests,
+                  onRefresh: _loadQuests,
+                  onChooseQuest: _chooseQuest,
+                ),
+      floatingActionButton: !isLoading && quests.isNotEmpty
           ? FloatingActionButton.extended(
               onPressed: () {
                 // Handle the action when the button is pressed
