@@ -279,7 +279,11 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
         _draggableItems = List.from(next.correctOrder!)..shuffle();
       }
     });
+
     // After advancing, check if all clues are completed to update quest status
+    // If it's not infoOnly
+    if (widget.clue.infoOnly) return;
+
     final userClues = await clueRepository.getUserQuestClues();
     final allCompleted =
         userClues.every((c) => c.progressStep >= c.steps.length);

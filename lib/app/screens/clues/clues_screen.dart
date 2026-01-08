@@ -30,6 +30,7 @@ class CluesScreenState extends State<CluesScreen> {
   late QuestRepository questRepository;
   bool isBottomSheetOpen = false;
   late Quest currentQuest;
+  Clue? completionClue;
 
   // Prevent processing the same scan multiple times
   bool _isProcessingQRCode = false;
@@ -64,8 +65,14 @@ class CluesScreenState extends State<CluesScreen> {
     clues = await clueRepository.getUserQuestClues();
     final List<Clue> noCategory = [];
     final List<ClueCategory> loadedCategories = [];
+    Clue? completionClue;
 
     for (final clue in clues) {
+      if (clue.type == 'Completion Clue') {
+        completionClue = clue;
+        continue;
+      }
+
       if (clue.category == null || clue.category?.trim().isEmpty == true) {
         noCategory.add(clue);
         continue;
@@ -95,6 +102,7 @@ class CluesScreenState extends State<CluesScreen> {
       categories = loadedCategories;
       uncategorizedClues = noCategory;
       currentQuest = currentQuest;
+      completionClue = completionClue;
     });
   }
 
@@ -176,6 +184,31 @@ class CluesScreenState extends State<CluesScreen> {
         String clueCode = match.group(1)!;
         final isValid = await clueRepository.verifyClue(clueCode);
         if (isValid) {
+          final clue = clues.firstWhere((clue) => clue.code == clueCode);
+
+          if (clue.type == 'Completion Clue') {
+            // check that other clues are all found
+            final allOtherCluesFound = clues
+                .where((c) => c.id != clue.id && c.type != 'Completion Clue')
+                .every((c) => c.status == ClueStatus.completed);
+
+            if (!allOtherCluesFound) {
+              Alert.toastBottom(
+                  'You must find all clues before completing the quest.');
+              return;
+            } else {
+              // Mark the quest as completed
+              await questRepository.updateUserQuestStatus(
+                  currentQuest.id, QuestStatus.completed);
+
+              if (!mounted) return;
+              Navigator.of(context).pushReplacementNamed(
+                questCompleteRoute,
+                arguments: currentQuest,
+              );
+              return;
+            }
+          }
           await markClueFound(clueCode);
         } else {
           Alert.toastBottom('Invalid QR Code. 2');
@@ -194,7 +227,7 @@ class CluesScreenState extends State<CluesScreen> {
     await clueRepository.updateClueProgress(clue.id, 1);
 
     await loadClueInfo();
-    Logger.log('Clue found: $code, loaded clue info');
+
     final updatedClue = clues.firstWhere((clue) => clue.code == code);
     selectClue(updatedClue);
   }
