@@ -1,17 +1,43 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:scoutquest/app.routes.dart';
 import 'package:scoutquest/utils/constants.dart';
+import 'package:scoutquest/deep_links.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Delay navigation to the quests route by one second
-    Future.delayed(const Duration(seconds: 3), () {
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _timer = Timer(const Duration(seconds: 3), () {
+      // If we got disposed (e.g., deep link already navigated), do nothing.
+      if (!mounted) return;
+
+      // If deep links already routed somewhere, don't override it.
+      if (deepLinkNavigated) return;
+
       Navigator.of(context).pushReplacementNamed(questsRoute);
     });
+  }
 
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         color: ScoutQuestColors.primaryAction,
@@ -19,11 +45,9 @@ class SplashScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Your app logo or image goes here
               Image.asset(
                 'assets/brand/logos/logo-white.png',
                 width: 250,
-                // adjust width and height as needed
               ),
             ],
           ),
