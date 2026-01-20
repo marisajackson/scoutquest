@@ -69,6 +69,11 @@ class QuestsScreenState extends State<QuestsScreen> {
                 description: 'Scan the Quest QR Code',
                 onQRCodeScanned: processQRCodeQuest,
               ),
+              Text(
+                'QR Code Not Working?',
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold, color: Colors.black87),
+              ),
               TextButton(
                 onPressed: () {
                   // Close the bottom sheet and open manual entry dialog
@@ -79,7 +84,7 @@ class QuestsScreenState extends State<QuestsScreen> {
                   _showManualCodeDialog();
                 },
                 child: Text(
-                  'QR Code Not Working? Enter code manually.',
+                  'Enter code manually.',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       decoration: TextDecoration.underline,
                       color: ScoutQuestColors.primaryAction),
