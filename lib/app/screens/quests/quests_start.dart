@@ -64,8 +64,8 @@ class _QuestsStartState extends State<QuestsStart> {
           hasBackButton: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
           children: [
             Html(
               data:
