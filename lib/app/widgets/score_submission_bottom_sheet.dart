@@ -29,7 +29,7 @@ class _ScoreSubmissionBottomSheetState
   final _emailController = TextEditingController();
   final _scoreRepository = ScoreRepository();
   final _questRepo = QuestRepository();
-  bool _acceptsMarketing = false;
+  bool _acceptsMarketing = true;
 
   bool _isSubmitting = false;
 

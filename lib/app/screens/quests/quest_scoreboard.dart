@@ -277,19 +277,6 @@ class _QuestScoreboardState extends State<QuestScoreboard> {
     }
   }
 
-  IconData _getPositionIcon(int position) {
-    switch (position) {
-      case 1:
-        return Icons.emoji_events; // Trophy
-      case 2:
-        return Icons.military_tech; // Medal
-      case 3:
-        return Icons.workspace_premium; // Badge
-      default:
-        return Icons.star;
-    }
-  }
-
   String _formatDuration(Duration duration) {
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
