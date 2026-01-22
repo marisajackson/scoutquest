@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:scoutquest/utils/constants.dart';
+import 'package:scoutquest/utils/webview.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HelpNote extends StatelessWidget {
@@ -23,7 +24,12 @@ class HelpNote extends StatelessWidget {
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                launchUrl(Uri.parse('https://scoutquest.co/help'));
+                final Uri url = Uri.parse('https://scoutquest.co/help');
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => WebViewScreen(url: url),
+                  ),
+                );
               },
           ),
           const TextSpan(

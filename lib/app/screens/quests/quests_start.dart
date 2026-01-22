@@ -2,10 +2,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:scoutquest/app/widgets/help_note.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/app.routes.dart';
 import 'package:scoutquest/app/widgets/app_bar_manager.dart';
+import 'package:scoutquest/utils/webview.dart';
 
 class QuestsStart extends StatefulWidget {
   final Quest quest;
@@ -43,9 +43,12 @@ class _QuestsStartState extends State<QuestsStart> {
   Future<void> _openTerms() async {
     // Replace this URL with your actual terms/waiver URL or route.
     final Uri url = Uri.parse('https://scoutquest.co/terms-of-participation');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.inAppWebView);
-    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => WebViewScreen(url: url),
+      ),
+    );
   }
 
   @override

@@ -1,5 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hoplindigital.scoutquest">
+
+  <!-- network permission -->
+  <uses-permission android:name="android.permission.INTERNET"/>
+
+  <!-- allow PackageManager to find apps that handle http/https VIEW intents -->
+  <queries>
+    <intent>
+      <action android:name="android.intent.action.VIEW" />
+      <data android:scheme="https" />
+    </intent>
+  </queries>
+
    <application
         android:label="scoutquest"
         android:name="${applicationName}"
