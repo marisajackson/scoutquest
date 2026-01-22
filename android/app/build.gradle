@@ -1,9 +1,18 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
   id "com.android.application"
   id "kotlin-android"
   id "dev.flutter.flutter-gradle-plugin"
   // Keep if google-services.json is present
   id "com.google.gms.google-services"
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+  keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
 android {
@@ -29,10 +38,22 @@ android {
 
   sourceSets { main.java.srcDirs += 'src/main/kotlin' }
 
+  signingConfigs {
+    create("release") {
+      keyAlias = keystoreProperties.getProperty('keyAlias')
+      keyPassword = keystoreProperties.getProperty('keyPassword')
+      def storeFileProp = keystoreProperties.getProperty('storeFile')
+      if (storeFileProp) {
+        storeFile = file(storeFileProp)
+      }
+      storePassword = keystoreProperties.getProperty('storePassword')
+    }
+  }
+
   buildTypes {
     release {
       // TODO: replace with your real signing
-      signingConfig signingConfigs.debug
+      signingConfig = signingConfigs.getByName("release")
       // minifyEnabled true
       // shrinkResources true
     }
