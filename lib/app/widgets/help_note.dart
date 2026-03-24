@@ -17,7 +17,7 @@ class HelpNote extends StatelessWidget {
         children: [
           const TextSpan(text: 'Check out the '),
           TextSpan(
-            text: 'ScoutQuest Guide',
+            text: 'Scout Quest Guide',
             style: const TextStyle(
               color: ScoutQuestColors.primaryAction,
               decoration: TextDecoration.underline,

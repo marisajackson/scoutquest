@@ -217,7 +217,7 @@ class QuestsScreenState extends State<QuestsScreen> {
   }
 
   Future<void> _showManualCodeDialog() async {
-    final TextEditingController _controller = TextEditingController();
+    final TextEditingController controller = TextEditingController();
 
     await showDialog<void>(
       context: context,
@@ -228,7 +228,7 @@ class QuestsScreenState extends State<QuestsScreen> {
               style: Theme.of(context).textTheme.bodyMedium),
           contentPadding: EdgeInsets.all(16.0),
           content: TextField(
-            controller: _controller,
+            controller: controller,
             decoration: const InputDecoration(
               hintText: 'e.g. quest-name-4526223',
               border: OutlineInputBorder(
@@ -259,7 +259,7 @@ class QuestsScreenState extends State<QuestsScreen> {
                 ),
               ),
               onPressed: () async {
-                final code = _controller.text.trim();
+                final code = controller.text.trim();
                 if (code.isEmpty) {
                   Alert.toastBottom('Please enter a code.');
                   return;

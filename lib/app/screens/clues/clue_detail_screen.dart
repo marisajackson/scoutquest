@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:scoutquest/app.routes.dart';
 import 'package:scoutquest/app/models/clue.dart';
 import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/app/widgets/app_bar_manager.dart';
@@ -58,8 +57,7 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
       appBar: AppBarManager(
         appBar: AppBar(),
         hasBackButton: true,
-        backButtonOnPressed: () => Navigator.of(context)
-            .pushNamed(cluesRoute, arguments: widget.quest),
+        backButtonOnPressed: () => Navigator.of(context).pop(),
         quest: widget.quest,
       ),
       body: Column(
@@ -78,8 +76,7 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
                   _buildStepContent(_currentStep),
                   if (widget.clue.status == ClueStatus.completed)
                     ElevatedButton(
-                      onPressed: () => Navigator.of(context)
-                          .pushNamed(cluesRoute, arguments: widget.quest),
+                      onPressed: () => Navigator.of(context).pop(),
                       child: const Text(
                         'Back to Quest',
                         style: TextStyle(
@@ -263,13 +260,16 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
   }
 
   Future<void> _advance() async {
+    widget.clue.progressStep++;
+
+    // Persist progress and wait for it to finish before checking completion
+    await clueRepository.updateClueProgress(
+      widget.clue.id,
+      widget.clue.progressStep,
+    );
+
+    // Re-init UI for next step
     setState(() {
-      widget.clue.progressStep++;
-      clueRepository.updateClueProgress(
-        widget.clue.id,
-        widget.clue.progressStep,
-      );
-      // re-init for next step
       final next = _currentStep;
 
       if (next.secretCode != null) {
@@ -285,8 +285,9 @@ class ClueDetailScreenState extends State<ClueDetailScreen> {
     if (widget.clue.infoOnly) return;
 
     final userClues = await clueRepository.getUserQuestClues();
-    final allCompleted =
-        userClues.every((c) => c.progressStep >= c.steps.length);
+    final allCompleted = userClues
+        .where((c) => c.type != 'Completion Clue')
+        .every((c) => c.progressStep >= c.steps.length);
     if (allCompleted) {
       final questRepo = QuestRepository();
       await questRepo.updateUserQuestStatus(

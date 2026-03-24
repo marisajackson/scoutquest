@@ -11,7 +11,6 @@ import 'package:scoutquest/app/models/quest.dart';
 import 'package:scoutquest/data/repositories/clue_repository.dart';
 import 'package:scoutquest/data/repositories/quest_repository.dart';
 import 'package:scoutquest/utils/alert.dart';
-import 'package:scoutquest/utils/logger.dart';
 
 class CluesScreen extends StatefulWidget {
   final Quest quest;
@@ -127,18 +126,22 @@ class CluesScreenState extends State<CluesScreen> {
     return 4; // Default case
   }
 
-  void selectClue(Clue clue) {
+  Future<void> selectClue(Clue clue) async {
     if (!clue.isFound) {
       return;
     }
     if (!mounted) return;
-    Navigator.of(context).pushNamed(
+    await Navigator.of(context).pushNamed(
       clueDetailRoute,
       arguments: {
         'clue': clue,
         'quest': currentQuest, // Changed from widget.quest
       },
     );
+
+    // Re-check clue/quest status when returning from detail screen
+    // (covers Android back button, app bar back, and "Back to Quest" button)
+    await loadClueInfo();
   }
 
   void addClue() {
@@ -229,7 +232,7 @@ class CluesScreenState extends State<CluesScreen> {
     await loadClueInfo();
 
     final updatedClue = clues.firstWhere((clue) => clue.code == code);
-    selectClue(updatedClue);
+    await selectClue(updatedClue);
   }
 
   void goBack() {
