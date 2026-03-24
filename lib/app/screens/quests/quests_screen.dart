@@ -111,6 +111,19 @@ class QuestsScreenState extends State<QuestsScreen> {
       return;
     }
 
+    // Show a brief loading indicator while processing
+    bool loaderShown = false;
+    if (mounted) {
+      loaderShown = true;
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final minDelay = Future.delayed(const Duration(milliseconds: 500));
+
     // regex to extract quest code: quest_element_2023 from 'http://scoutquest.co/quests/quest_element_2023.html'
     RegExp regExp = RegExp(r'\/([^/]+)\.html');
     Match? match = regExp.firstMatch(scanResult);
@@ -120,6 +133,8 @@ class QuestsScreenState extends State<QuestsScreen> {
       final questExists = await questRepository.verifyQuest(questCode);
 
       if (!questExists) {
+        await minDelay;
+        if (loaderShown && mounted) Navigator.of(context).pop();
         Alert.toastBottom('Invalid QR Code.');
         return;
       }
@@ -127,7 +142,11 @@ class QuestsScreenState extends State<QuestsScreen> {
       await questRepository.updateUserQuestStatus(
           questCode, QuestStatus.unlocked);
       await _loadQuests();
+      await minDelay;
+      if (loaderShown && mounted) Navigator.of(context).pop();
     } else {
+      await minDelay;
+      if (loaderShown && mounted) Navigator.of(context).pop();
       Alert.toastBottom('Invalid QR Code.');
       return;
     }

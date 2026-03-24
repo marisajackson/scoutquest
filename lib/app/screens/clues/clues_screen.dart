@@ -178,6 +178,20 @@ class CluesScreenState extends State<CluesScreen> {
         return;
       }
 
+      // Show a brief loading indicator while processing
+      bool loaderShown = false;
+      if (mounted) {
+        loaderShown = true;
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => const Center(child: CircularProgressIndicator()),
+        );
+      }
+
+      // Ensure the loader is visible for at least 500ms
+      final minDelay = Future.delayed(const Duration(milliseconds: 500));
+
       // TODO make sure it's the right quests
       // sample scan value = "http://scoutquest.co/quests/quest_element_2023/clues/FireClue1-4CX6TZPA.html"
       RegExp regExp = RegExp(r'\/([A-Za-z0-9-]+)\.html');
@@ -196,6 +210,8 @@ class CluesScreenState extends State<CluesScreen> {
                 .every((c) => c.status == ClueStatus.completed);
 
             if (!allOtherCluesFound) {
+              await minDelay;
+              if (loaderShown && mounted) Navigator.of(context).pop();
               Alert.toastBottom(
                   'You must find all clues before completing the quest.');
               return;
@@ -204,6 +220,8 @@ class CluesScreenState extends State<CluesScreen> {
               await questRepository.updateUserQuestStatus(
                   currentQuest.id, QuestStatus.completed);
 
+              await minDelay;
+              if (loaderShown && mounted) Navigator.of(context).pop();
               if (!mounted) return;
               Navigator.of(context).pushReplacementNamed(
                 questCompleteRoute,
@@ -212,11 +230,17 @@ class CluesScreenState extends State<CluesScreen> {
               return;
             }
           }
+          await minDelay;
+          if (loaderShown && mounted) Navigator.of(context).pop();
           await markClueFound(clueCode);
         } else {
+          await minDelay;
+          if (loaderShown && mounted) Navigator.of(context).pop();
           Alert.toastBottom('Invalid QR Code. 2');
         }
       } else {
+        await minDelay;
+        if (loaderShown && mounted) Navigator.of(context).pop();
         Alert.toastBottom('Invalid QR Code. 1');
       }
     } finally {

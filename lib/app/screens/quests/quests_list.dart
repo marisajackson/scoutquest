@@ -14,6 +14,21 @@ class QuestsList extends StatelessWidget {
     required this.onChooseQuest,
   });
 
+  String _billboardButtonLabel(Quest quest) {
+    switch (quest.status) {
+      case QuestStatus.unlocked:
+        return 'Start Quest';
+      case QuestStatus.inProgress:
+        return 'Continue Quest';
+      case QuestStatus.completed:
+        return 'Submit Your Score';
+      case QuestStatus.submitted:
+        return 'View Scoreboard';
+      default:
+        return 'View Quest';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -42,14 +57,43 @@ class QuestsList extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: ClipRRect(
-                      child: Image.network(
-                        quest.billboardImage!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const SizedBox.shrink();
-                        },
-                      ),
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10.0)),
+                          child: Image.network(
+                            quest.billboardImage!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const SizedBox.shrink();
+                            },
+                          ),
+                        ),
+                        Container(
+                          color: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 16.0),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: ElevatedButton(
+                              onPressed: () => onChooseQuest(quest),
+                              style: ElevatedButton.styleFrom(
+                                shape: const StadiumBorder(),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 32.0, vertical: 12.0),
+                              ),
+                              child: Text(
+                                _billboardButtonLabel(quest),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   )
                 : Container(
