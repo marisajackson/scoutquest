@@ -56,61 +56,58 @@ class QuestComplete extends StatelessWidget {
             final duration = Duration(seconds: data['totalDuration'] ?? 0);
             final penaltyMinutes = data['penalty'] ?? 0;
 
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // icon
-                const Icon(
-                  Icons.timer_outlined,
-                  size: 100,
-                ),
-                Html(
-                  data:
-                      "<div style='text-align: center; font-size: 20px; font-weight: bold;'>${quest.completionHtml}</div>",
-                ),
-                Text(
-                  _formatDuration(duration),
-                  style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                if (penaltyMinutes > 0) ...[
-                  const SizedBox(height: 8),
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Html(
+                    data:
+                        "<div style='text-align: center; font-size: 20px; font-weight: bold; margin: 10px'>${quest.completionHtml}</div>",
+                  ),
                   Text(
-                    "(includes +$penaltyMinutes min penalty)",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.orange[700],
-                      fontStyle: FontStyle.italic,
-                    ),
+                    _formatDuration(duration),
+                    style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
-                ],
-                const SizedBox(height: 16),
-                Text(
-                  "Think you've claimed the fastest time?",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  "Submit your time and see how you stack up.",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 32),
-                FloatingActionButton.extended(
-                  onPressed: () =>
-                      _showScoreSubmissionBottomSheet(context, duration),
-                  label: const Text(
-                    'Submit Score',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
+                  if (penaltyMinutes > 0) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      "(includes +$penaltyMinutes min penalty)",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange[700],
+                        fontStyle: FontStyle.italic,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                  const SizedBox(height: 16),
+                  Text(
+                    "Think you've claimed the fastest time?",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    "Submit your time and see how you stack up.",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 32),
+                  FloatingActionButton.extended(
+                    onPressed: () =>
+                        _showScoreSubmissionBottomSheet(context, duration),
+                    label: const Text(
+                      'Submit Score',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           },
         ),

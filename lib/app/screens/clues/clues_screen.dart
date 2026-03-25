@@ -44,8 +44,8 @@ class CluesScreenState extends State<CluesScreen> {
   }
 
   Future<void> loadClueInfo() async {
-    final questStatus =
-        await questRepository.getUserQuestStatus(widget.quest.id);
+    final questStatus = await questRepository
+        .getUserQuestStatus(widget.quest.id, clueRepository: clueRepository);
 
     if (questStatus == QuestStatus.completed) {
       if (!mounted) return;

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:scoutquest/data/json_loader.dart';
 import 'package:scoutquest/app/models/quest.dart';
+import 'package:scoutquest/data/repositories/clue_repository.dart';
 import 'package:scoutquest/data/repositories/score_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -77,9 +78,24 @@ class QuestRepository {
     return true;
   }
 
-  Future<QuestStatus> getUserQuestStatus(String questID) async {
+  Future<QuestStatus> getUserQuestStatus(String questID,
+      {ClueRepository? clueRepository}) async {
     final preferences = await SharedPreferences.getInstance();
     var statusString = preferences.getString(questID);
+
+    // If in progress, check if all clues are completed as a fallback
+    if (statusString == QuestStatus.inProgress.toString()) {
+      if (clueRepository != null) {
+        final userClues = await clueRepository.getUserQuestClues();
+        final allCompleted = userClues
+            .where((c) => c.type != 'Completion Clue')
+            .every((c) => c.progressStep >= c.steps.length);
+        if (allCompleted) {
+          await updateUserQuestStatus(questID, QuestStatus.completed);
+          statusString = QuestStatus.completed.toString();
+        }
+      }
+    }
 
     return QuestStatus.values.firstWhere((e) => e.toString() == statusString,
         orElse: () => QuestStatus.locked);
