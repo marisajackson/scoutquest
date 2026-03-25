@@ -6,6 +6,7 @@ import 'package:scoutquest/data/repositories/score_repository.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scoutquest/utils/constants.dart';
 import 'package:scoutquest/app/widgets/text_input.dart';
+import 'package:scoutquest/utils/profanity_filter.dart';
 
 class ScoreSubmissionBottomSheet extends StatefulWidget {
   final Quest quest;
@@ -57,6 +58,9 @@ class _ScoreSubmissionBottomSheetState
     }
     if (value.length < 2) {
       return 'Team name must be at least 2 characters';
+    }
+    if (ProfanityFilter.containsProfanity(value)) {
+      return 'Please choose an appropriate team name';
     }
     return null;
   }
