@@ -135,7 +135,7 @@ class QuestRepository {
           }
         } catch (e) {
           // Log error but don't prevent quest completion
-          print('Failed to presubmit score: $e');
+          // print('Failed to presubmit score: $e');
         }
       }
     }
